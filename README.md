@@ -32,4 +32,19 @@ notebook()
 
 This will open a Jupyter notebook in your browser. Navigate to the github repository and open `main.ipynb` to get started.
 
-Alternatively, you can open the cloned repository in VS Code (or your preferred IDE) and run the notebooks this way. If using VS Code, we recommend installing the [Julia extension](link.link).
+*Alternatively, you can open the cloned repository in VS Code (or your preferred IDE) and run the notebooks this way. If using VS Code, we recommend installing the [Julia extension](link.link).*
+
+## Structure of this repository
+
+The files and folders you should care about:
+- `gettingstarted.ipynb`: A jupyter notebook to help with setup and navigation
+- `/notebooks/`: Contains the main tutorial notebooks
+- `/data/`: Contains all example data used in the tutorial
+- `/src/`: Contains crticial source code
+
+You can ignore (but feel free to explore):
+- `/docs/`: Contains the rendered tutorial
+- `/site/`: Contains the quarto website files (these are rendered to `/docs/`)
+- `/assets/`: Contains images and other assets used in the tutorials and readme files
+- Files like `.gitignore` and `.nojekyll` which are for repo management
+
