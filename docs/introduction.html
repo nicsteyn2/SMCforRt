@@ -510,7 +510,7 @@ C_t|R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \om
 <p>where <span class="math inline">\(\Lambda_t^c\)</span> is called the <strong>force-of-infection</strong> at time <span class="math inline">\(t\)</span>. The superscript <span class="math inline">\(c\)</span> denotes that <span class="math inline">\(\Lambda_t^c\)</span> is calculated using past reported cases, to differentiate it from <span class="math inline">\(\Lambda_t\)</span>, which we use when modelling <em>infections</em>.</p>
 <section id="simulating-the-renewal-model" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="simulating-the-renewal-model"><span class="header-section-number">1.1</span> Simulating the renewal model</h2>
-<div id="1c56f3d5" class="cell" data-execution_count="1">
+<div id="79168470" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#TODO: Re-label "Code" to "Setup code"</span></span>
@@ -524,20 +524,20 @@ C_t|R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \om
 <ol type="1">
 <li><strong>Initial cases</strong> <span class="math inline">\(C_1\)</span>. Let’s start with <span class="math inline">\(C_1 = 50\)</span>.</li>
 </ol>
-<div id="227eff41" class="cell" data-execution_count="2">
+<div id="58368e88" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> <span class="fu">zeros</span>(T) </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>C[<span class="fl">1</span>] <span class="op">=</span> <span class="fl">50</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="2" type="1">
 <li>The <strong>reproduction number</strong> over time. We will use a sin-curve for this example:</li>
 </ol>
-<div id="63d639f5" class="cell" data-execution_count="3">
+<div id="51fa9216" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> <span class="fl">1.0</span> <span class="op">.+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu">sin</span>.((<span class="fl">2</span><span class="op">*</span><span class="cn">π</span><span class="op">/</span><span class="fl">50</span>) <span class="op">.*</span> (<span class="fl">1</span><span class="op">:</span>T))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="3" type="1">
 <li>A <strong>serial interval</strong>. We use a discretised Gamma(2.36, 2.74)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> distribution:</li>
 </ol>
-<div id="a7120c2e" class="cell" data-execution_count="4">
+<div id="f9bb1b9b" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span>T)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> ω<span class="op">/</span><span class="fu">sum</span>(ω) <span class="co"># Ensure it is normalised!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -565,7 +565,7 @@ Figure&nbsp;1.2: Assumed time-varying reproduction number and serial intervals.
 </div>
 </div>
 <p>Now we are ready to simulate from the renewal model. We do this by iteratively sampling a new <span class="math inline">\(C_t\)</span> and calculating the new force-of-infection term:</p>
-<div id="1d2ae659" class="cell" data-execution_count="6">
+<div id="c4cfa9e1" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate the force-of-infection</span></span>
@@ -606,7 +606,7 @@ Figure&nbsp;1.3: Simulated epidemic from the renewal model using our chosen valu
 <p><span id="eq-intro-simpleposterior"><span class="math display">\[
 R_t | C_{1:t} \sim \text{Gamma}\left(a_0 + C_t, b_0 + \sum_{u=1}^{u_{max}} C_{t-u} \omega_u \right)
 \tag{1.4}\]</span></span></p>
-<div id="901513e4" class="cell" data-execution_count="8">
+<div id="e66739b1" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(MeanRt, LowerRt, UpperRt) <span class="op">=</span> (<span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T)) <span class="co"># Pre-allocate results vectors</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>(a0, b0) <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">5</span>) <span class="co"># Set prior parameters</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -625,7 +625,7 @@ R_t | C_{1:t} \sim \text{Gamma}\left(a_0 + C_t, b_0 + \sum_{u=1}^{u_{max}} C_{t-
 <span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We will compare our estimates with those from a popular model, EpiEstim, which smooths the data by assuming <span class="math inline">\(R_t\)</span> is fixed over a <span class="math inline">\(\tau\)</span>-day (typically <span class="math inline">\(\tau = 7\)</span>) trailing window:</p>
-<div id="cbe17a8f" class="cell" data-execution_count="9">
+<div id="547b71ad" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/RtEstimators.jl"</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>EpiEstimPosterior <span class="op">=</span> <span class="fu">EpiEstim</span>(<span class="fl">7</span>, ω, C; a0<span class="op">=</span>a0, b0<span class="op">=</span>b0)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>(EpiEstMean, EpiEstLower, EpiEstUpper) <span class="op">=</span> (<span class="fu">mean</span>.(EpiEstimPosterior), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.025</span>), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
