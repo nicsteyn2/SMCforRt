@@ -510,7 +510,7 @@ C_t|R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \om
 <p>where <span class="math inline">\(\Lambda_t^c\)</span> is called the <strong>force-of-infection</strong> at time <span class="math inline">\(t\)</span>. The superscript <span class="math inline">\(c\)</span> denotes that <span class="math inline">\(\Lambda_t^c\)</span> is calculated using past reported cases, to differentiate it from <span class="math inline">\(\Lambda_t\)</span>, which we use when modelling <em>infections</em>.</p>
 <section id="simulating-the-renewal-model" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="simulating-the-renewal-model"><span class="header-section-number">1.1</span> Simulating the renewal model</h2>
-<div id="89ea81e7" class="cell" data-execution_count="1">
+<div id="1c56f3d5" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#TODO: Re-label "Code" to "Setup code"</span></span>
@@ -524,20 +524,20 @@ C_t|R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \om
 <ol type="1">
 <li><strong>Initial cases</strong> <span class="math inline">\(C_1\)</span>. Let’s start with <span class="math inline">\(C_1 = 50\)</span>.</li>
 </ol>
-<div id="5cdeea55" class="cell" data-execution_count="2">
+<div id="227eff41" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> <span class="fu">zeros</span>(T) </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>C[<span class="fl">1</span>] <span class="op">=</span> <span class="fl">50</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="2" type="1">
 <li>The <strong>reproduction number</strong> over time. We will use a sin-curve for this example:</li>
 </ol>
-<div id="99f48d69" class="cell" data-execution_count="3">
+<div id="63d639f5" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> <span class="fl">1.0</span> <span class="op">.+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu">sin</span>.((<span class="fl">2</span><span class="op">*</span><span class="cn">π</span><span class="op">/</span><span class="fl">50</span>) <span class="op">.*</span> (<span class="fl">1</span><span class="op">:</span>T))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="3" type="1">
 <li>A <strong>serial interval</strong>. We use a discretised Gamma(2.36, 2.74)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> distribution:</li>
 </ol>
-<div id="ffb45d00" class="cell" data-execution_count="4">
+<div id="a7120c2e" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span>T)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> ω<span class="op">/</span><span class="fu">sum</span>(ω) <span class="co"># Ensure it is normalised!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -565,7 +565,7 @@ Figure&nbsp;1.2: Assumed time-varying reproduction number and serial intervals.
 </div>
 </div>
 <p>Now we are ready to simulate from the renewal model. We do this by iteratively sampling a new <span class="math inline">\(C_t\)</span> and calculating the new force-of-infection term:</p>
-<div id="dcd596ad" class="cell" data-execution_count="6">
+<div id="1d2ae659" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate the force-of-infection</span></span>
@@ -599,14 +599,14 @@ Figure&nbsp;1.3: Simulated epidemic from the renewal model using our chosen valu
 <section id="sec-intro-Rtestimation" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="sec-intro-Rtestimation"><span class="header-section-number">1.2</span> Estimating <span class="math inline">\(R_t\)</span></h2>
 <p><span class="math inline">\(R_t\)</span> is a crucial component in the renewal model thus making the renewal model a natural choice for <span class="math inline">\(R_t\)</span> estimation. In fact, even if your goal is not to estimate <span class="math inline">\(R_t\)</span>, it is helpful to consider this briefly.</p>
-<p>If <span class="math inline">\(C_t\)</span> is large and the model accurately reflects reality, we can use <a href="#eq-intro-poissonrenewal" class="quarto-xref">Equation&nbsp;<span class="quarto-unresolved-ref">eq-intro-poissonrenewal</span></a> to estimate <span class="math inline">\(R_t\)</span> directly. In the Bayesian setting, a prior distribution is placed on <span class="math inline">\(R_t\)</span> and standard methods are used to find <span class="math inline">\(P(R_t | C_{1:t})\)</span>. However, often <span class="math inline">\(C_t\)</span> is small and the data are subject to noise and bias. Estimates from the naive method are thus highly variable.</p>
+<p>If <span class="math inline">\(C_t\)</span> is large and the model accurately reflects reality, we can use <a href="#eq-intro-poissonrenewal" class="quarto-xref">Equation&nbsp;<span>1.2</span></a> to estimate <span class="math inline">\(R_t\)</span> directly. In the Bayesian setting, a prior distribution is placed on <span class="math inline">\(R_t\)</span> and standard methods are used to find <span class="math inline">\(P(R_t | C_{1:t})\)</span>. However, often <span class="math inline">\(C_t\)</span> is small and the data are subject to noise and bias. Estimates from the naive method are thus highly variable.</p>
 <section id="example" class="level3" data-number="1.2.1">
 <h3 data-number="1.2.1" class="anchored" data-anchor-id="example"><span class="header-section-number">1.2.1</span> Example</h3>
-<p>Let’s pretend we don’t know <span class="math inline">\(R_t\)</span> and want to estimate it from the simulated data. Like <span class="citation" data-cites="coriNewFrameworkSoftware2013">Cori et al. (<a href="#ref-coriNewFrameworkSoftware2013" role="doc-biblioref">2013</a>)</span>, we will use a Gamma prior distribution for <span class="math inline">\(R_t\)</span> with shape <span class="math inline">\(a_0 = 1\)</span> and rate <span class="math inline">\(b_0 = 0.2\)</span>. As our likelihood is a Poisson distribution, we have a conjugate prior-likelihood, and thus our posterior distribution for <span class="math inline">\(R_t\)</span> is:</p>
+<p>Let’s pretend we don’t know <span class="math inline">\(R_t\)</span> and want to estimate it from the simulated data. Like <span class="citation" data-cites="coriNewFrameworkSoftware2013">Cori et al. (<a href="references.html#ref-coriNewFrameworkSoftware2013" role="doc-biblioref">2013</a>)</span>, we will use a Gamma prior distribution for <span class="math inline">\(R_t\)</span> with shape <span class="math inline">\(a_0 = 1\)</span> and rate <span class="math inline">\(b_0 = 0.2\)</span>. As our likelihood is a Poisson distribution, we have a conjugate prior-likelihood, and thus our posterior distribution for <span class="math inline">\(R_t\)</span> is:</p>
 <p><span id="eq-intro-simpleposterior"><span class="math display">\[
 R_t | C_{1:t} \sim \text{Gamma}\left(a_0 + C_t, b_0 + \sum_{u=1}^{u_{max}} C_{t-u} \omega_u \right)
 \tag{1.4}\]</span></span></p>
-<div id="d4ecec4e" class="cell" data-execution_count="8">
+<div id="901513e4" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(MeanRt, LowerRt, UpperRt) <span class="op">=</span> (<span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T)) <span class="co"># Pre-allocate results vectors</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>(a0, b0) <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">5</span>) <span class="co"># Set prior parameters</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -625,12 +625,12 @@ R_t | C_{1:t} \sim \text{Gamma}\left(a_0 + C_t, b_0 + \sum_{u=1}^{u_{max}} C_{t-
 <span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We will compare our estimates with those from a popular model, EpiEstim, which smooths the data by assuming <span class="math inline">\(R_t\)</span> is fixed over a <span class="math inline">\(\tau\)</span>-day (typically <span class="math inline">\(\tau = 7\)</span>) trailing window:</p>
-<div id="921ae22f" class="cell" data-execution_count="9">
+<div id="cbe17a8f" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/RtEstimators.jl"</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>EpiEstimPosterior <span class="op">=</span> <span class="fu">EpiEstim</span>(<span class="fl">7</span>, ω, C; a0<span class="op">=</span>a0, b0<span class="op">=</span>b0)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>(EpiEstMean, EpiEstLower, EpiEstUpper) <span class="op">=</span> (<span class="fu">mean</span>.(EpiEstimPosterior), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.025</span>), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Finally we are ready to plot our results:</p>
+<p>Finally, we are ready to plot our results:</p>
 <div id="cell-fig-intro-exampleRt" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
@@ -655,9 +655,9 @@ Figure&nbsp;1.4: Estimates of Rt from the basic (unsmoothed) renewal model (blue
 </section>
 <section id="sec-intro-smoothing" class="level3" data-number="1.2.2">
 <h3 data-number="1.2.2" class="anchored" data-anchor-id="sec-intro-smoothing"><span class="header-section-number">1.2.2</span> The necessity and dangers of smoothing</h3>
-<p><a href="#fig-intro-exampleRt" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-intro-exampleRt</span></a> highlights both the necessity and dangers of smoothing. Our independent daily estimates (blue) are highly variable and the credible intervals are wide. By using smoothed esimates (orange), we reduce this variance and produce much more confident results. However, our results strongly depend on these smoothing assumptions. In the example above, we can clearly see that the credible intervals produced by EpiEstim often do not include the true value of <span class="math inline">\(R_t\)</span>!</p>
-<p>Smoothing works by allowing data from multiple days to inform point-estimates. A variety of approaches have been developed, discussed at length in <a href="#sec-smoothingmethods" class="quarto-xref"><span class="quarto-unresolved-ref">sec-smoothingmethods</span></a>. <strong>In fact, most renewal-model based estimators of <span class="math inline">\(R_t\)</span> differ only in their choice of smoothing method!</strong></p>
-<p>Epidemic renewal models are usually smoothed by placing assumptions on the dynamics of <span class="math inline">\(R_t\)</span>. Examples include assuming <span class="math inline">\(R_t\)</span> is fixed over trailing windows <span class="citation" data-cites="coriNewFrameworkSoftware2013">(<a href="#ref-coriNewFrameworkSoftware2013" role="doc-biblioref">Cori et al. 2013</a>)</span>, modelling it with splines <span class="citation" data-cites="azmonEstimationReproductionNumber2014">(<a href="#ref-azmonEstimationReproductionNumber2014" role="doc-biblioref">Azmon, Faes, and Hens 2014</a>)</span> or Gaussian processes <span class="citation" data-cites="abbottEstimatingTimevaryingReproduction2020">(<a href="#ref-abbottEstimatingTimevaryingReproduction2020" role="doc-biblioref">Abbott et al. 2020</a>)</span>, or assuming it follows a random walk <span class="citation" data-cites="paragImprovedEstimationTimevarying2021">(<a href="#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">Parag 2021</a>)</span>. Piecewise-constant models, where <span class="math inline">\(R_t\)</span> is assumed to be fixed over different time-windows, are also examples of smoothing <span class="citation" data-cites="creswellBayesianNonparametricMethod2023">(<a href="#ref-creswellBayesianNonparametricMethod2023" role="doc-biblioref">Creswell et al. 2023</a>)</span>.</p>
+<p><span class="quarto-unresolved-ref">?fig-intro-exampleRt</span> highlights both the necessity and dangers of smoothing. Our independent daily estimates (blue) are highly variable and the credible intervals are wide. By using smoothed estimates (orange), we reduce this variance and produce much more confident results. However, our results strongly depend on these smoothing assumptions. In the example above, we can clearly see that the credible intervals produced by EpiEstim often do not include the true value of <span class="math inline">\(R_t\)</span>!</p>
+<p>Smoothing works by allowing data from multiple days to inform point-estimates. A variety of approaches have been developed, discussed at length in <a href="smoothingmethods.html" class="quarto-xref"><span>Appendix C</span></a>. <strong>In fact, most renewal-model based estimators of <span class="math inline">\(R_t\)</span> differ only in their choice of smoothing method!</strong></p>
+<p>Epidemic renewal models are usually smoothed by placing assumptions on the dynamics of <span class="math inline">\(R_t\)</span>. Examples include assuming <span class="math inline">\(R_t\)</span> is fixed over trailing windows <span class="citation" data-cites="coriNewFrameworkSoftware2013">(<a href="references.html#ref-coriNewFrameworkSoftware2013" role="doc-biblioref">Cori et al. 2013</a>)</span>, modelling it with splines <span class="citation" data-cites="azmonEstimationReproductionNumber2014">(<a href="references.html#ref-azmonEstimationReproductionNumber2014" role="doc-biblioref">Azmon, Faes, and Hens 2014</a>)</span> or Gaussian processes <span class="citation" data-cites="abbottEstimatingTimevaryingReproduction2020">(<a href="references.html#ref-abbottEstimatingTimevaryingReproduction2020" role="doc-biblioref">Abbott et al. 2020</a>)</span>, or assuming it follows a random walk <span class="citation" data-cites="paragImprovedEstimationTimevarying2021">(<a href="references.html#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">Parag 2021</a>)</span>. Piecewise-constant models, where <span class="math inline">\(R_t\)</span> is assumed to be fixed over different time-windows, are also examples of smoothing <span class="citation" data-cites="creswellBayesianNonparametricMethod2023">(<a href="references.html#ref-creswellBayesianNonparametricMethod2023" role="doc-biblioref">Creswell et al. 2023</a>)</span>.</p>
 <p>So far we have only considered process noise in the epidemic, but epidemic data are often subject to observation noise, a secondary reason why smoothing is so important. We elaborate on this in #TODO.</p>
 <!-- 
 To account for this noise, popular $R_t$ estimators utilise smoothing methods to increase the quantity of data available on each time-step. These smoothing methods typically take the form of a dynamic model on $R_t$. An extensive discussion of existing smoothing methods is included [here](link.link) [\#TODO: Write-up smoothing comparison]. -->
@@ -699,7 +699,7 @@ Statistical noise in reported cases time-series can be separated into two catego
 </section>
 <section id="sec-intro-casesvsinfections" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="sec-intro-casesvsinfections"><span class="header-section-number">1.4</span> Reported cases vs infections</h2>
-<p>The simple renewal model in <a href="#eq-intro-poissonrenewal" class="quarto-xref">Equation&nbsp;<span class="quarto-unresolved-ref">eq-intro-poissonrenewal</span></a> assumes that old reported cases directly cause new reported cases. This leaves little room for observation noise. Instead, we can assume that old (but typically unobeserved) infections cause new infections, writing:</p>
+<p>The simple renewal model in <a href="#eq-intro-poissonrenewal" class="quarto-xref">Equation&nbsp;<span>1.2</span></a> assumes that old reported cases directly cause new reported cases. This leaves little room for observation noise. Instead, we can assume that old (but typically unobserved) infections cause new infections, writing:</p>
 <p><span id="eq-intro-infectionrenewal"><span class="math display">\[
 I_t|R_t, I_{1:t-1} \sim \text{Poisson}\left(R_t \Lambda_t\right)
 \tag{1.5}\]</span></span></p>
@@ -716,7 +716,7 @@ P(C_t | I_{1:t})
 <p>Separating case reporting from transmission allows us to model process noise and observation noise separately. This is one of the key advantages provided by our SMC methods.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-abbottEstimatingTimevaryingReproduction2020" class="csl-entry" role="listitem">
 Abbott, Sam, Joel Hellewell, Robin N. Thompson, Katharine Sherratt, Hamish P. Gibbs, Nikos I. Bosse, James D. Munday, et al. 2020. <span>“Estimating the Time-Varying Reproduction Number of <span>SARS-CoV-2</span> Using National and Subnational Case Counts.”</span> <em>Wellcome Open Research</em> 5 (December): 112. <a href="https://doi.org/10.12688/wellcomeopenres.16006.2">https://doi.org/10.12688/wellcomeopenres.16006.2</a>.
 </div>
@@ -743,7 +743,7 @@ Parag, Kris V., Benjamin J. Cowling, and Christl A. Donnelly. 2021. <span>“Dec
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p>This is a popular serial interval used in early COVID-19 models <span class="citation" data-cites="paragDecipheringEarlywarningSignals2021 fergusonReportImpactNonpharmaceutical2020">(<a href="#ref-paragDecipheringEarlywarningSignals2021" role="doc-biblioref">Parag, Cowling, and Donnelly 2021</a>; <a href="#ref-fergusonReportImpactNonpharmaceutical2020" role="doc-biblioref">Ferguson et al. 2020</a>)</span>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>This is a popular serial interval used in early COVID-19 models <span class="citation" data-cites="paragDecipheringEarlywarningSignals2021 fergusonReportImpactNonpharmaceutical2020">(<a href="references.html#ref-paragDecipheringEarlywarningSignals2021" role="doc-biblioref">Parag, Cowling, and Donnelly 2021</a>; <a href="references.html#ref-fergusonReportImpactNonpharmaceutical2020" role="doc-biblioref">Ferguson et al. 2020</a>)</span>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 

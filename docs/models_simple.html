@@ -459,7 +459,7 @@ window.Quarto = {
 </header>
 
 
-<div id="15e71718" class="cell" data-execution_count="1">
+<div id="494dffd5" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Distributions</span></span>
@@ -467,7 +467,7 @@ window.Quarto = {
 </details>
 </div>
 <p>The reproduction number <span class="math inline">\(R_t\)</span> is a key component in the renewal model, however it is also always unknown. We thus dedicate an entire section to estimating this quantity.</p>
-<p>We start by reproducing the simple example first outlined in <a href="#sec-smc-bootstrapexample" class="quarto-xref"><span class="quarto-unresolved-ref">sec-smc-bootstrapexample</span></a>, using some pre-built functions. A full exposé of these functions is provided in <a href="#sec-structure" class="quarto-xref"><span class="quarto-unresolved-ref">sec-structure</span></a>, but the outline here may be sufficient.</p>
+<p>We start by reproducing the simple example first outlined in <a href="smc-bootstrap.html#sec-smc-bootstrapexample" class="quarto-xref"><span>Section 4.3</span></a>, using some pre-built functions. A full exposé of these functions is provided in <a href="structure.html" class="quarto-xref"><span>Appendix D</span></a>, but the outline here may be sufficient.</p>
 <p>Recall that we model <span class="math inline">\(\log R_t\)</span> with a Gaussian random walk:</p>
 <p><span class="math display">\[\log R_t \sim \text{Normal}(\log R_{t-1}, \sigma) \]</span></p>
 <p>and assume reported cases follow the Poisson renewal model:</p>
@@ -475,15 +475,15 @@ window.Quarto = {
 <section id="defining-the-model" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="defining-the-model"><span class="header-section-number">7.1</span> Defining the model</h2>
 <p>First we define the parameters:</p>
-<div id="c3d5e5d7" class="cell" data-execution_count="2">
+<div id="57955009" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>σ <span class="op">=</span> <span class="fl">0.2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>the data:</p>
-<div id="e9493670" class="cell" data-execution_count="3">
+<div id="78424809" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"NZCOVID"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>and the options dictionary:</p>
-<div id="5f382225" class="cell" data-execution_count="4">
+<div id="ada5f6b0" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>opts <span class="op">=</span> <span class="fu">Dict</span>()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"N"</span>] <span class="op">=</span> <span class="fl">1000</span> <span class="co"># Number of particles (can use fewer as we are starting with parameter inference)</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"T"</span>] <span class="op">=</span> <span class="fu">length</span>(Y.Ct) <span class="co"># Length of data</span></span>
@@ -493,7 +493,7 @@ window.Quarto = {
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"ω"</span>] <span class="op">=</span> ω<span class="op">/</span><span class="fu">sum</span>(ω) <span class="co"># Serial interval</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, all we need to do is write the model as a bootstrap filter:</p>
-<div id="359a2916" class="cell" data-execution_count="5">
+<div id="5a752904" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">simpleModel</span>(σ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract frequently used options</span></span>
@@ -532,7 +532,7 @@ window.Quarto = {
 <section id="estimating-sigma" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="estimating-sigma"><span class="header-section-number">7.2</span> Estimating <span class="math inline">\(\sigma\)</span></h2>
 <p>We use the simple PMMH algorithm to estimate <span class="math inline">\(\sigma\)</span>. We need to specify some additional options for this:</p>
-<div id="720ef4a2" class="cell" data-execution_count="6">
+<div id="d35e1b97" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"nChains"</span>] <span class="op">=</span> <span class="fl">3</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"nPMMHSamples"</span>] <span class="op">=</span> <span class="fl">1000</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -541,24 +541,24 @@ window.Quarto = {
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"initialParamSamplers"</span>] <span class="op">=</span> [<span class="fu">Uniform</span>(<span class="fl">0.05</span>, <span class="fl">0.3</span>)] <span class="co"># A vector of distributions to sample initial parameter values from</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We also want to check that we are using a sufficient number of particles to obtain good estimates of <span class="math inline">\(\ell(\theta|y_{1:T})\)</span>:</p>
-<div id="f82982c3" class="cell" data-execution_count="7">
+<div id="fa82d8b7" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/Likelihood.jl"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>(sd, logliks) <span class="op">=</span> <span class="fu">estimateStdDevLogLik</span>(<span class="fl">100</span>, simpleModel, σ, Y, opts)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Standard deviation of log-lik estimates = </span><span class="sc">$</span>sd<span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Estimating log-likelihood multiple times...   2%|█                                                 |  ETA: 0:01:22Estimating log-likelihood multiple times... 100%|██████████████████████████████████████████████████| Time: 0:00:02</code></pre>
+<pre><code>Estimating log-likelihood multiple times... 100%|██████████████████████████████████████████████████| Time: 0:00:02</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Standard deviation of log-lik estimates = 0.5474458853085407</code></pre>
+<pre><code>Standard deviation of log-lik estimates = 0.5611409956765454</code></pre>
 </div>
 </div>
 <p>Now we are ready to run the PMMH algorithm:</p>
-<div id="27762376" class="cell" data-execution_count="8">
+<div id="02c14082" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/PMMHSimple.jl"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>(θ, diagnostics) <span class="op">=</span> <span class="fu">multipleSimplePMMH</span>(simpleModel, Y, opts; showProgress<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>and analyse it using the MCMCChains package:</p>
-<div id="a7f4c345" class="cell" data-execution_count="9">
+<div id="348885b2" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">MCMCChains</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> <span class="fu">Chains</span>(θ[<span class="fl">100</span><span class="op">:</span><span class="kw">end</span>,<span class="op">:</span>,<span class="op">:</span>], [<span class="st">"σ"</span>]) <span class="co"># Removing the first 100 samples as a windin</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
@@ -571,17 +571,17 @@ parameters        = σ
 Summary Statistics
  <span class="ansi-bold"> parameters </span> <span class="ansi-bold">    mean </span> <span class="ansi-bold">     std </span> <span class="ansi-bold"> naive_se </span> <span class="ansi-bold">    mcse </span> <span class="ansi-bold">      ess </span> <span class="ansi-bold">    rhat </span>
  <span class="ansi-bright-black-fg">     Symbol </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg">  Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg">  Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span>
-           σ    0.2432    0.0463     0.0009    0.0033   135.3774    1.0373
+           σ    0.2382    0.0436     0.0008    0.0029   189.2514    1.0080
 Quantiles
  <span class="ansi-bold"> parameters </span> <span class="ansi-bold">    2.5% </span> <span class="ansi-bold">   25.0% </span> <span class="ansi-bold">   50.0% </span> <span class="ansi-bold">   75.0% </span> <span class="ansi-bold">   97.5% </span>
  <span class="ansi-bright-black-fg">     Symbol </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span>
-           σ    0.1682    0.2094    0.2360    0.2721    0.3447
+           σ    0.1642    0.2063    0.2364    0.2679    0.3248
 </pre>
 </div>
 </div>
 </div>
 <p>so the posterior mean of <span class="math inline">\(\theta\)</span> is approximately 0.17 with a 95% credible interval of <span class="math inline">\((0.10, 0.20)\)</span>. The <span class="math inline">\(\hat{R}\)</span> statistic is less than 1.05, suggesting the chains have converged, although additional samples may be desirable for full confidence. To double check, we can also plot the chains and posterior density estimate:</p>
-<div id="8490bc0d" class="cell" data-execution_count="10">
+<div id="694c577e" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsPlots</span>, <span class="bu">Measures</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(C, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">

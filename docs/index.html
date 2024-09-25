@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Nicholas Steyn">
-<meta name="dcterms.date" content="2024-09-19">
+<meta name="dcterms.date" content="2024-09-24">
 
 <title>SMC and epidemic renewal models</title>
 <style>
@@ -449,10 +449,10 @@ window.Quarto = {
   <ul>
   <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a></li>
   <li><a href="#structure-of-this-book" id="toc-structure-of-this-book" class="nav-link" data-scroll-target="#structure-of-this-book">Structure of this book</a></li>
-  <li><a href="#coding-in-julia" id="toc-coding-in-julia" class="nav-link" data-scroll-target="#coding-in-julia">Coding in Julia</a></li>
+  <li><a href="#using-julia" id="toc-using-julia" class="nav-link" data-scroll-target="#using-julia">Using Julia</a></li>
   <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting started</a>
   <ul class="collapse">
-  <li><a href="#github-layout" id="toc-github-layout" class="nav-link" data-scroll-target="#github-layout">Github layout</a></li>
+  <li><a href="#github-layout" id="toc-github-layout" class="nav-link" data-scroll-target="#github-layout">GitHub layout</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -479,7 +479,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 19, 2024</p>
+      <p class="date">September 24, 2024</p>
     </div>
   </div>
   
@@ -502,6 +502,7 @@ Warning
 </div>
 <div class="callout-body-container callout-body">
 <p>This site is a very early beta version and will change significantly over the coming months. This may continue until I finish my DPhil in October 2025, at which time it will (for better or worse) become relatively static.</p>
+<p>There are some quirks with the current hosting platform. Some website elements, such as links between chapters, are not presenting properly. These will be automatically fixed when the website is made public on GitHub pages.</p>
 </div>
 </div>
 <section id="welcome" class="level2 unnumbered">
@@ -509,7 +510,7 @@ Warning
 <p>Renewal models are popular in statistical epidemiology for their use as a semi-mechanistic model of disease transmission. We demonstrate how sequential Monte Carlo (SMC) methods can be used to perform inference on and forecast with these models.</p>
 <p>With these methods one can:</p>
 <ul>
-<li>Estimate <span class="math inline">\(R_t\)</span> from imperfect data, or from multiple datasources</li>
+<li>Estimate <span class="math inline">\(R_t\)</span> from imperfect data, or from multiple sources of data</li>
 <li>Produce well-calibrated short-term forecasts</li>
 <li>Estimate abrupt change-points in disease transmission</li>
 <li>… and so much more</li>
@@ -526,7 +527,7 @@ Warning
 <figcaption>Reported cases for the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand [CITE]. We will develop methods to estimate the reproduction number from these data.</figcaption>
 </figure>
 </div>
-<p>Renewal models underly many of the most popular methods for reproduction number estimation, including EpiEstim <span class="citation" data-cites="coriNewFrameworkSoftware2013">(<a href="#ref-coriNewFrameworkSoftware2013" role="doc-biblioref">Cori et al. 2013</a>)</span> and EpiNow2 <span class="citation" data-cites="abbottEstimatingTimevaryingReproduction2020">(<a href="#ref-abbottEstimatingTimevaryingReproduction2020" role="doc-biblioref">Abbott et al. 2020</a>)</span>. They have also been used to model elimination probabilities <span class="citation" data-cites="paragDecipheringEarlywarningSignals2021">(<a href="#ref-paragDecipheringEarlywarningSignals2021" role="doc-biblioref">Parag, Cowling, and Donnelly 2021</a>)</span>, estimate the effect of non-pharmaceutical interventions <span class="citation" data-cites="flaxmanEstimatingEffectsNonpharmaceutical2020">(<a href="#ref-flaxmanEstimatingEffectsNonpharmaceutical2020" role="doc-biblioref">Flaxman et al. 2020</a>)</span>, and produce forecasts <span class="citation" data-cites="banholzerComparisonShorttermProbabilistic2023">(<a href="#ref-banholzerComparisonShorttermProbabilistic2023" role="doc-biblioref">Banholzer et al. 2023</a>)</span>, for example.</p>
+<p>Renewal models underlie many of the most popular methods for reproduction number estimation, including EpiEstim <span class="citation" data-cites="coriNewFrameworkSoftware2013">(<a href="references.html#ref-coriNewFrameworkSoftware2013" role="doc-biblioref">Cori et al. 2013</a>)</span> and EpiNow2 <span class="citation" data-cites="abbottEstimatingTimevaryingReproduction2020">(<a href="references.html#ref-abbottEstimatingTimevaryingReproduction2020" role="doc-biblioref">Abbott et al. 2020</a>)</span>. They have also been used to model elimination probabilities <span class="citation" data-cites="paragDecipheringEarlywarningSignals2021">(<a href="references.html#ref-paragDecipheringEarlywarningSignals2021" role="doc-biblioref">Parag, Cowling, and Donnelly 2021</a>)</span>, estimate the effect of non-pharmaceutical interventions <span class="citation" data-cites="flaxmanEstimatingEffectsNonpharmaceutical2020">(<a href="references.html#ref-flaxmanEstimatingEffectsNonpharmaceutical2020" role="doc-biblioref">Flaxman et al. 2020</a>)</span>, and produce forecasts <span class="citation" data-cites="banholzerComparisonShorttermProbabilistic2023">(<a href="references.html#ref-banholzerComparisonShorttermProbabilistic2023" role="doc-biblioref">Banholzer et al. 2023</a>)</span>, for example.</p>
 </section>
 <section id="structure-of-this-book" class="level2">
 <h2 class="anchored" data-anchor-id="structure-of-this-book">Structure of this book</h2>
@@ -541,8 +542,8 @@ Warning
 <li><strong>Other methods:</strong> We compare our methods to popular alternatives in the literature. Where possible, Julia implementations are provided for these.</li>
 </ul>
 </section>
-<section id="coding-in-julia" class="level2">
-<h2 class="anchored" data-anchor-id="coding-in-julia">Coding in Julia</h2>
+<section id="using-julia" class="level2">
+<h2 class="anchored" data-anchor-id="using-julia">Using Julia</h2>
 <p>We recognise that Julia is not widely used in epidemiology. While we would love to implement our methods in R, they would be extremely slow without a C++ backend. Instead, our methods are all natively implemented in Julia and require no external software - making the entire process much simpler!</p>
 <p>Getting started with Julia is easy (see below) and our examples are written for those with no prior knowledge of the language.</p>
 </section>
@@ -558,10 +559,10 @@ Warning
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">"IJulia"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">IJulia</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">notebook</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This will open a Jupyter notebook in your browser. Navigate to the github repository and open <code>main.ipynb</code> to get started.</p>
+<p>This will open a Jupyter notebook in your browser. Navigate to the GitHub repository and open <code>main.ipynb</code> to get started.</p>
 <p><em>Alternatively, you can open the cloned repository in VS Code (or your preferred IDE) and run the notebooks this way. If using VS Code, we recommend installing the <a href="link.link">Julia extension</a>.</em></p>
 <section id="github-layout" class="level3">
-<h3 class="anchored" data-anchor-id="github-layout">Github layout</h3>
+<h3 class="anchored" data-anchor-id="github-layout">GitHub layout</h3>
 <p>The files and folders you should care about:</p>
 <ul>
 <li><code>/notebooks/</code>: Contains the main tutorial notebooks</li>
@@ -578,7 +579,7 @@ Warning
 </ul>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-abbottEstimatingTimevaryingReproduction2020" class="csl-entry" role="listitem">
 Abbott, Sam, Joel Hellewell, Robin N. Thompson, Katharine Sherratt, Hamish P. Gibbs, Nikos I. Bosse, James D. Munday, et al. 2020. <span>“Estimating the Time-Varying Reproduction Number of <span>SARS-CoV-2</span> Using National and Subnational Case Counts.”</span> <em>Wellcome Open Research</em> 5 (December): 112. <a href="https://doi.org/10.12688/wellcomeopenres.16006.2">https://doi.org/10.12688/wellcomeopenres.16006.2</a>.
 </div>

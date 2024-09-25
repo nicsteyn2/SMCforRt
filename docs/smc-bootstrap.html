@@ -482,7 +482,7 @@ window.Quarto = {
 
 <p>In this chapter we introduce the <strong>bootstrap filter</strong>.</p>
 <p>The bootstrap filter generates sample-based approximations to the conditional filtering distribution <span class="math inline">\(P(X_t | y_{1:t}, \theta)\)</span> and conditional smoothing distribution <span class="math inline">\(P(X_t | y_{1:T}, \theta)\)</span>.</p>
-<p><em>This chapter assumes fixed values of the model parameters <span class="math inline">\(\theta\)</span>. <a href="#sec-smc-parameterestimation" class="quarto-xref"><span class="quarto-unresolved-ref">sec-smc-parameterestimation</span></a> handles the estimation of <span class="math inline">\(\theta\)</span>.</em></p>
+<p><em>This chapter assumes fixed values of the model parameters <span class="math inline">\(\theta\)</span>. <a href="smc-pmmh.html" class="quarto-xref"><span>Chapter 5</span></a> handles the estimation of <span class="math inline">\(\theta\)</span>.</em></p>
 <section id="intuition" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="intuition"><span class="header-section-number">4.1</span> Intuition</h2>
 <p>#TODO: write SMC intuition</p>
@@ -497,9 +497,9 @@ window.Quarto = {
 <p><span class="math display">\[\log R_t \sim \text{Normal}(\log R_{t-1}, \sigma) \]</span></p>
 <p>while reported cases are assumed to follow the Poisson renewal model:</p>
 <p><span class="math display">\[ C_t \sim \text{Poisson}\left(R_t \sum_{u=1}^{t-1} C_{t-u} g_u\right) \]</span></p>
-<p>The first equation defines our <em>hidden-state model</em> while the second equation defines our <em>observation model</em>. With only a slight difference<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, this model is almost identical to that employed by EpiFilter <span class="citation" data-cites="paragImprovedEstimationTimevarying2021">(<a href="#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">Parag 2021</a>)</span>.</p>
-<p>Leaving parameter estimation to <a href="#sec-smc-parameterestimation" class="quarto-xref"><span class="quarto-unresolved-ref">sec-smc-parameterestimation</span></a>, we use the following defaults:</p>
-<div id="9038d32b" class="cell" data-execution_count="2">
+<p>The first equation defines our <em>hidden-state model</em> while the second equation defines our <em>observation model</em>. With only a slight difference<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, this model is almost identical to that employed by EpiFilter <span class="citation" data-cites="paragImprovedEstimationTimevarying2021">(<a href="references.html#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">Parag 2021</a>)</span>.</p>
+<p>Leaving parameter estimation to <a href="smc-pmmh.html" class="quarto-xref"><span>Chapter 5</span></a>, we use the following defaults:</p>
+<div id="458427ae" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Serial interval</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> ω<span class="op">/</span><span class="fu">sum</span>(ω)</span>
@@ -513,7 +513,7 @@ window.Quarto = {
 <p>Collectively, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(\{\omega_u\}_{u=1}^{u_{max}}\)</span>, and <span class="math inline">\(P(R_0)\)</span> constitute the model parameters <span class="math inline">\(\theta\)</span>.</p>
 <section id="sec-smc-data" class="level3" data-number="4.3.1">
 <h3 data-number="4.3.1" class="anchored" data-anchor-id="sec-smc-data"><span class="header-section-number">4.3.1</span> Data</h3>
-<p>We use data from the first 100 days of the COVID-19 pandemic in New Zealand. Focusing now on total cases (we leave the critical separation of imported and local cases to <a href="#sec-models-imported" class="quarto-xref"><span class="quarto-unresolved-ref">sec-models-imported</span></a>):</p>
+<p>We use data from the first 100 days of the COVID-19 pandemic in New Zealand. Focusing now on total cases (we leave the critical separation of imported and local cases to <a href="models_imports.html" class="quarto-xref"><span>Chapter 10</span></a>):</p>
 <div id="cell-fig-models-nzdata" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
@@ -538,23 +538,23 @@ Figure&nbsp;4.1: Reported cases from the first 100 days of the COVID-19 pandemic
 <section id="setting-up" class="level3" data-number="4.3.2">
 <h3 data-number="4.3.2" class="anchored" data-anchor-id="setting-up"><span class="header-section-number">4.3.2</span> Setting up</h3>
 <p>We need to specify the number of particles <span class="math inline">\(N\)</span> and resampling window <span class="math inline">\(L\)</span>:</p>
-<div id="f177c28e" class="cell" data-execution_count="4">
+<div id="6d22ad5f" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="fl">10000</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> <span class="fl">50</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>pre-allocate memory for our particles:</p>
-<div id="ebbbe742" class="cell" data-execution_count="5">
+<div id="af0b454a" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>and sample from the initial distribution:</p>
-<div id="275d45b2" class="cell" data-execution_count="6">
+<div id="62a68c80" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>X[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">rand</span>(pR0, N)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="implementation" class="level3" data-number="4.3.3">
 <h3 data-number="4.3.3" class="anchored" data-anchor-id="implementation"><span class="header-section-number">4.3.3</span> Implementation</h3>
 <p>All that’s left to do is run the bootstrap filter:</p>
-<div id="2935afb4" class="cell" data-execution_count="7">
+<div id="87b3d688" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Project according to the state-space model</span></span>
@@ -595,7 +595,7 @@ Figure&nbsp;4.2: Estimated <span class="math inline">\(R_t\)</span> for the firs
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-paragImprovedEstimationTimevarying2021" class="csl-entry" role="listitem">
 Parag, Kris V. 2021. <span>“Improved Estimation of Time-Varying Reproduction Numbers at Low Case Incidence and Between Epidemic Waves.”</span> <em>PLOS Computational Biology</em> 17 (9): e1009347. <a href="https://doi.org/10.1371/journal.pcbi.1009347">https://doi.org/10.1371/journal.pcbi.1009347</a>.
 </div>
@@ -605,7 +605,7 @@ Parag, Kris V. 2021. <span>“Improved Estimation of Time-Varying Reproduction N
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p><span class="citation" data-cites="paragImprovedEstimationTimevarying2021">Parag (<a href="#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">2021</a>)</span> assumes <span class="math inline">\(R_t\)</span> (rather than <span class="math inline">\(\log R_t\)</span>) follows a Gaussian random walk. The standard deviation of this random walk is multiplied by <span class="math inline">\(\sqrt{R_t}\)</span> to allow <span class="math inline">\(R_t\)</span> to take larger “jumps” when it is larger, achieving the same outcome as our log-model. We discuss this further in <a href="#sec-other-epifilter" class="quarto-xref"><span class="quarto-unresolved-ref">sec-other-epifilter</span></a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p><span class="citation" data-cites="paragImprovedEstimationTimevarying2021">Parag (<a href="references.html#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">2021</a>)</span> assumes <span class="math inline">\(R_t\)</span> (rather than <span class="math inline">\(\log R_t\)</span>) follows a Gaussian random walk. The standard deviation of this random walk is multiplied by <span class="math inline">\(\sqrt{R_t}\)</span> to allow <span class="math inline">\(R_t\)</span> to take larger “jumps” when it is larger, achieving the same outcome as our log-model. We discuss this further in <a href="othermethods_epifilter.html" class="quarto-xref"><span>Chapter 19</span></a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 

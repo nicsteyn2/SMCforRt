@@ -1,0 +1,579 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "SMC and epidemic renewal models",
+    "section": "",
+    "text": "Welcome\nRenewal models are popular in statistical epidemiology for their use as a semi-mechanistic model of disease transmission. We demonstrate how sequential Monte Carlo (SMC) methods can be used to perform inference on and forecast with these models.\nWith these methods one can:\nOur approach:\nRenewal models underlie many of the most popular methods for reproduction number estimation, including EpiEstim (Cori et al. 2013) and EpiNow2 (Abbott et al. 2020). They have also been used to model elimination probabilities (Parag, Cowling, and Donnelly 2021), estimate the effect of non-pharmaceutical interventions (Flaxman et al. 2020), and produce forecasts (Banholzer et al. 2023), for example.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "index.html#welcome",
+    "href": "index.html#welcome",
+    "title": "SMC and epidemic renewal models",
+    "section": "",
+    "text": "Estimate \\(R_t\\) from imperfect data, or from multiple sources of data\nProduce well-calibrated short-term forecasts\nEstimate abrupt change-points in disease transmission\n… and so much more\n\n\n\nIs simple, intuitive, and flexible\nProduces valid credible intervals on quantities of interest\nCan simultaneously account for reporting biases, aggregated/missing data, imported cases, multiple data sources, and more.\n\n\n\n\nReported cases for the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand [CITE]. We will develop methods to estimate the reproduction number from these data.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "index.html#structure-of-this-book",
+    "href": "index.html#structure-of-this-book",
+    "title": "SMC and epidemic renewal models",
+    "section": "Structure of this book",
+    "text": "Structure of this book\nThis book is made up of a collection of Jupyter-style notebooks. All code is implemented in Julia, a programming language with the speed of C++ and simplicity of R and Python. The notebooks are organised into chapters:\n\nIntroduction: We introduce key concepts such as the renewal model or hidden-state models. Those already familiar with these concepts can safely skip these pages.\nSequential Monte Carlo: We introduce specific SMC methods. This includes defining the bootstrap filter and particle marginal Metropolis Hastings.\nEvaluation: We introduce key metrics for model evaluation, including scoring rules, KL-divergence, and ???.\nReproduction number estimation: A collection of \\(R_t\\) estimators, accounting for various statistical artefacts, are introduced.\nAdditional models: We demonstrate how these methods can be used for epidemic forecasting, inference, and elimination probabilities.\nCase studies:\nOther methods: We compare our methods to popular alternatives in the literature. Where possible, Julia implementations are provided for these.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "index.html#using-julia",
+    "href": "index.html#using-julia",
+    "title": "SMC and epidemic renewal models",
+    "section": "Using Julia",
+    "text": "Using Julia\nWe recognise that Julia is not widely used in epidemiology. While we would love to implement our methods in R, they would be extremely slow without a C++ backend. Instead, our methods are all natively implemented in Julia and require no external software - making the entire process much simpler!\nGetting started with Julia is easy (see below) and our examples are written for those with no prior knowledge of the language.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "index.html#getting-started",
+    "href": "index.html#getting-started",
+    "title": "SMC and epidemic renewal models",
+    "section": "Getting started",
+    "text": "Getting started\nWe do not use any external dependencies, so you can run all code in this repository with a standard Julia installation. To get started, all you need to do is:\n\nInstall Julia from julialang.org\nClone this repository\nStart Julia in your terminal and run:\n\nusing Pkg\nPkg.add(\"IJulia\")\nusing IJulia\nnotebook()\nThis will open a Jupyter notebook in your browser. Navigate to the GitHub repository and open main.ipynb to get started.\nAlternatively, you can open the cloned repository in VS Code (or your preferred IDE) and run the notebooks this way. If using VS Code, we recommend installing the Julia extension.\n\nGitHub layout\nThe files and folders you should care about:\n\n/notebooks/: Contains the main tutorial notebooks\n/src/: Contains important source code\n/data/: Contains all example data used in the tutorial\n\nYou can ignore (but feel free to explore):\n\n/paper/: Scripts and outputs associated with the accompanying paper\n/docs/: Contains the rendered tutorial\n/site/: Contains the quarto website files (these are rendered to /docs/)\n/assets/: Contains images and other assets used in the tutorials and readme files\nand files like .gitignore and .nojekyll which are for repo management\n\n\n\n\n\nAbbott, Sam, Joel Hellewell, Robin N. Thompson, Katharine Sherratt, Hamish P. Gibbs, Nikos I. Bosse, James D. Munday, et al. 2020. “Estimating the Time-Varying Reproduction Number of SARS-CoV-2 Using National and Subnational Case Counts.” Wellcome Open Research 5 (December): 112. https://doi.org/10.12688/wellcomeopenres.16006.2.\n\n\nBanholzer, Nicolas, Thomas Mellan, H. Juliette T. Unwin, Stefan Feuerriegel, Swapnil Mishra, and Samir Bhatt. 2023. “A Comparison of Short-Term Probabilistic Forecasts for the Incidence of COVID-19 Using Mechanistic and Statistical Time Series Models.” arXiv. https://doi.org/10.48550/arXiv.2305.00933.\n\n\nCori, Anne, Neil M. Ferguson, Christophe Fraser, and Simon Cauchemez. 2013. “A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics.” American Journal of Epidemiology 178 (9): 1505–12. https://doi.org/10.1093/aje/kwt133.\n\n\nFlaxman, Seth, Swapnil Mishra, Axel Gandy, H. Juliette T. Unwin, Thomas A. Mellan, Helen Coupland, Charles Whittaker, et al. 2020. “Estimating the Effects of Non-Pharmaceutical Interventions on COVID-19 in Europe.” Nature 584 (7820): 257–61. https://doi.org/10.1038/s41586-020-2405-7.\n\n\nParag, Kris V., Benjamin J. Cowling, and Christl A. Donnelly. 2021. “Deciphering Early-Warning Signals of SARS-CoV-2 Elimination and Resurgence from Limited Data at Multiple Scales.” Journal of The Royal Society Interface 18 (185): 20210569. https://doi.org/10.1098/rsif.2021.0569.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "introduction.html",
+    "href": "introduction.html",
+    "title": "1  The renewal model",
+    "section": "",
+    "text": "1.1 Simulating the renewal model\nCode\n#TODO: Re-label \"Code\" to \"Setup code\"\n\n# Some setting up code!\nusing Distributions\nT = 100 # Number of days we will later simulate\nTo understand how the renewal model works, let’s start by simulating \\(T = 100\\) days of reported cases from it. To do this, we need three components:\nC = zeros(T) \nC[1] = 50\nR = 1.0 .+ 0.5 * sin.((2*π/50) .* (1:T))\nω = pdf.(Gamma(2.36, 2.74), 1:T)\nω = ω/sum(ω) # Ensure it is normalised!\nPlotting our chosen \\(R_t\\) and serial interval:\nCode\n# Visualise Rt and the serial interval\nusing Plots, Measures\nplotR = plot(R, label=false, xlabel=\"Time (days)\", ylabel=\"Reproduction number\", color=:darkgreen)\nplotω = bar(1:21, ω[1:21], label=false, xlabel=\"Day\", ylabel=\"Serial interval probability\", color=:darkorange)\ndisplay(plot(plotR, plotω, layout=(1,2), size=(800,300), margins=3mm))\n\n\n\n\n\n\n\n\nFigure 1.2: Assumed time-varying reproduction number and serial intervals.\nNow we are ready to simulate from the renewal model. We do this by iteratively sampling a new \\(C_t\\) and calculating the new force-of-infection term:\nfor tt = 2:T\n\n    # Calculate the force-of-infection\n    Λ = sum(C[tt-1:-1:1] .* ω[1:tt-1])/sum(ω[1:tt-1])\n\n    # And sample from the appropriate Poisson distribution\n    C[tt] = rand(Poisson(R[tt] * Λ))\n\nend\nFinally letting us plot our simulated cases:\nCode\ndisplay(bar(C, label=false, xlabel=\"Time (days)\", ylabel=\"Simulated cases\", size=(800,300), margins=3mm, color=:darkblue))\n\n\n\n\n\n\n\n\nFigure 1.3: Simulated epidemic from the renewal model using our chosen values of Rt and ω.",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The renewal model</span>"
+    ]
+  },
+  {
+    "objectID": "introduction.html#simulating-the-renewal-model",
+    "href": "introduction.html#simulating-the-renewal-model",
+    "title": "1  The renewal model",
+    "section": "",
+    "text": "Initial cases \\(C_1\\). Let’s start with \\(C_1 = 50\\).\n\n\n\nThe reproduction number over time. We will use a sin-curve for this example:\n\n\n\nA serial interval. We use a discretised Gamma(2.36, 2.74)1 distribution:",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The renewal model</span>"
+    ]
+  },
+  {
+    "objectID": "introduction.html#sec-intro-Rtestimation",
+    "href": "introduction.html#sec-intro-Rtestimation",
+    "title": "1  The renewal model",
+    "section": "1.2 Estimating \\(R_t\\)",
+    "text": "1.2 Estimating \\(R_t\\)\n\\(R_t\\) is a crucial component in the renewal model thus making the renewal model a natural choice for \\(R_t\\) estimation. In fact, even if your goal is not to estimate \\(R_t\\), it is helpful to consider this briefly.\nIf \\(C_t\\) is large and the model accurately reflects reality, we can use Equation 1.2 to estimate \\(R_t\\) directly. In the Bayesian setting, a prior distribution is placed on \\(R_t\\) and standard methods are used to find \\(P(R_t | C_{1:t})\\). However, often \\(C_t\\) is small and the data are subject to noise and bias. Estimates from the naive method are thus highly variable.\n\n1.2.1 Example\nLet’s pretend we don’t know \\(R_t\\) and want to estimate it from the simulated data. Like Cori et al. (2013), we will use a Gamma prior distribution for \\(R_t\\) with shape \\(a_0 = 1\\) and rate \\(b_0 = 0.2\\). As our likelihood is a Poisson distribution, we have a conjugate prior-likelihood, and thus our posterior distribution for \\(R_t\\) is:\n\\[\nR_t | C_{1:t} \\sim \\text{Gamma}\\left(a_0 + C_t, b_0 + \\sum_{u=1}^{u_{max}} C_{t-u} \\omega_u \\right)\n\\tag{1.4}\\]\n\n(MeanRt, LowerRt, UpperRt) = (zeros(T), zeros(T), zeros(T)) # Pre-allocate results vectors\n(a0, b0) = (1, 1/5) # Set prior parameters\n\nfor tt = 2:T\n\n    # Find the posterior distribution on day t\n    a = a0 + C[tt]\n    b = b0 + sum(C[tt-1:-1:1] .* ω[1:tt-1])/sum(ω[1:tt-1])\n    PosteriorDist = Gamma(a, 1/b)\n\n    # Save the results\n    MeanRt[tt] = mean(PosteriorDist)\n    LowerRt[tt] = quantile(PosteriorDist, 0.025)\n    UpperRt[tt] = quantile(PosteriorDist, 0.975)\n\nend\n\nWe will compare our estimates with those from a popular model, EpiEstim, which smooths the data by assuming \\(R_t\\) is fixed over a \\(\\tau\\)-day (typically \\(\\tau = 7\\)) trailing window:\n\ninclude(\"../src/RtEstimators.jl\")\nEpiEstimPosterior = EpiEstim(7, ω, C; a0=a0, b0=b0)\n(EpiEstMean, EpiEstLower, EpiEstUpper) = (mean.(EpiEstimPosterior), quantile.(EpiEstimPosterior, 0.025), quantile.(EpiEstimPosterior, 0.975))\n\nFinally, we are ready to plot our results:\n\n\nCode\nplot(xlabel=\"Time (days)\", ylabel=\"Reproduction number\", size=(800,350), left_margin=3mm, bottom_margin=3mm)\nplot!(2:T, MeanRt[2:T], ribbon=(MeanRt[2:T]-LowerRt[2:T], UpperRt[2:T]-MeanRt[2:T]), fillalpha=0.4, label=\"Unsmoothed posterior\")\nplot!(2:T, EpiEstMean[2:T], ribbon=(EpiEstMean[2:T]-EpiEstLower[2:T], EpiEstUpper[2:T]-EpiEstMean[2:T]), fillalpha=0.4, label=\"EpiEstim (smoothed) posterior\")\nplot!(1:T, R, label=\"True Rt\", color=:black)\n\n\n\n\n\n\n\n\nFigure 1.4: Estimates of Rt from the basic (unsmoothed) renewal model (blue) and from a smoothed model (EpiEstim, orange).\n\n\n\n\n\n\n\n1.2.2 The necessity and dangers of smoothing\n?fig-intro-exampleRt highlights both the necessity and dangers of smoothing. Our independent daily estimates (blue) are highly variable and the credible intervals are wide. By using smoothed estimates (orange), we reduce this variance and produce much more confident results. However, our results strongly depend on these smoothing assumptions. In the example above, we can clearly see that the credible intervals produced by EpiEstim often do not include the true value of \\(R_t\\)!\nSmoothing works by allowing data from multiple days to inform point-estimates. A variety of approaches have been developed, discussed at length in Appendix C. In fact, most renewal-model based estimators of \\(R_t\\) differ only in their choice of smoothing method!\nEpidemic renewal models are usually smoothed by placing assumptions on the dynamics of \\(R_t\\). Examples include assuming \\(R_t\\) is fixed over trailing windows (Cori et al. 2013), modelling it with splines (Azmon, Faes, and Hens 2014) or Gaussian processes (Abbott et al. 2020), or assuming it follows a random walk (Parag 2021). Piecewise-constant models, where \\(R_t\\) is assumed to be fixed over different time-windows, are also examples of smoothing (Creswell et al. 2023).\nSo far we have only considered process noise in the epidemic, but epidemic data are often subject to observation noise, a secondary reason why smoothing is so important. We elaborate on this in #TODO.",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The renewal model</span>"
+    ]
+  },
+  {
+    "objectID": "introduction.html#the-serial-interval",
+    "href": "introduction.html#the-serial-interval",
+    "title": "1  The renewal model",
+    "section": "1.3 The serial interval",
+    "text": "1.3 The serial interval\nThe other key component in the renewal model is the serial interval \\(\\omega\\). This parameter is typically not identifiable from reported case data (at least at the same time as \\(R_t\\)), so it often receives less attention. When fitting renewal models, researchers usually use estimates of the serial interval from other data.\nExternal estimates of \\(\\omega\\).",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The renewal model</span>"
+    ]
+  },
+  {
+    "objectID": "introduction.html#sec-intro-casesvsinfections",
+    "href": "introduction.html#sec-intro-casesvsinfections",
+    "title": "1  The renewal model",
+    "section": "1.4 Reported cases vs infections",
+    "text": "1.4 Reported cases vs infections\nThe simple renewal model in Equation 1.2 assumes that old reported cases directly cause new reported cases. This leaves little room for observation noise. Instead, we can assume that old (but typically unobserved) infections cause new infections, writing:\n\\[\nI_t|R_t, I_{1:t-1} \\sim \\text{Poisson}\\left(R_t \\Lambda_t\\right)\n\\tag{1.5}\\]\nThe force-of-infection becomes:\n\\[\n\\Lambda_t = \\sum_{u=1}^{u_{max}} I_{t-u} g_u\n\\tag{1.6}\\]\nWhere we have replaced the serial interval \\(\\omega_u\\) with a generation time distribution \\(g_u\\), reflecting that we are modelling the delay between infection events instead of reporting events.\nExplicitly modelling infections allows us to define an observation distribution:\n\\[\nP(C_t | I_{1:t})\n\\tag{1.7}\\]\nwhich explicitly links our hidden (a.k.a latent) infections to our reported cases. A plethora of methods exist that can estimate \\(I_{1:T}\\) given \\(C_{1:T}\\).\nSeparating case reporting from transmission allows us to model process noise and observation noise separately. This is one of the key advantages provided by our SMC methods.\n\n\n\n\nAbbott, Sam, Joel Hellewell, Robin N. Thompson, Katharine Sherratt, Hamish P. Gibbs, Nikos I. Bosse, James D. Munday, et al. 2020. “Estimating the Time-Varying Reproduction Number of SARS-CoV-2 Using National and Subnational Case Counts.” Wellcome Open Research 5 (December): 112. https://doi.org/10.12688/wellcomeopenres.16006.2.\n\n\nAzmon, Amin, Christel Faes, and Niel Hens. 2014. “On the Estimation of the Reproduction Number Based on Misreported Epidemic Data.” Statistics in Medicine 33 (7): 1176–92. https://doi.org/10.1002/sim.6015.\n\n\nCori, Anne, Neil M. Ferguson, Christophe Fraser, and Simon Cauchemez. 2013. “A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics.” American Journal of Epidemiology 178 (9): 1505–12. https://doi.org/10.1093/aje/kwt133.\n\n\nCreswell, Richard, Martin Robinson, David Gavaghan, Kris V. Parag, Chon Lok Lei, and Ben Lambert. 2023. “A Bayesian Nonparametric Method for Detecting Rapid Changes in Disease Transmission.” Journal of Theoretical Biology 558 (February): 111351. https://doi.org/10.1016/j.jtbi.2022.111351.\n\n\nFerguson, N, D Laydon, G Nedjati Gilani, N Imai, K Ainslie, M Baguelin, S Bhatia, et al. 2020. “Report 9: Impact of Non-Pharmaceutical Interventions (NPIs) to Reduce COVID19 Mortality and Healthcare Demand.” Imperial College London. https://doi.org/10.25561/77482.\n\n\nParag, Kris V. 2021. “Improved Estimation of Time-Varying Reproduction Numbers at Low Case Incidence and Between Epidemic Waves.” PLOS Computational Biology 17 (9): e1009347. https://doi.org/10.1371/journal.pcbi.1009347.\n\n\nParag, Kris V., Benjamin J. Cowling, and Christl A. Donnelly. 2021. “Deciphering Early-Warning Signals of SARS-CoV-2 Elimination and Resurgence from Limited Data at Multiple Scales.” Journal of The Royal Society Interface 18 (185): 20210569. https://doi.org/10.1098/rsif.2021.0569.",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The renewal model</span>"
+    ]
+  },
+  {
+    "objectID": "introduction.html#footnotes",
+    "href": "introduction.html#footnotes",
+    "title": "1  The renewal model",
+    "section": "",
+    "text": "This is a popular serial interval used in early COVID-19 models (Parag, Cowling, and Donnelly 2021; Ferguson et al. 2020).↩︎",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The renewal model</span>"
+    ]
+  },
+  {
+    "objectID": "intro_Rtestimation.html",
+    "href": "intro_Rtestimation.html",
+    "title": "2  Background of \\(R_t\\) estimation",
+    "section": "",
+    "text": "There exist a wide range of approaches to reproduction number estimation spanning different statistical philosophies, model structures, estimation methods, data sources, and computational techniques. We provide a brief overview of these here.\n\n\n\n\n\n\nNote\n\n\n\nThis section provides general context and can be safely skipped if you just want to fit a model! We first outline \\(R_t\\) estimation in Section 1.2.\n\n\nWith perfect knowledge we could calculate \\(R_t\\) by counting the number of secondary cases generated by each primary case. In practice this is impossible, so we must use data to estimate this quantity. Cori and Kucharski (2024) highlight that \\(R_t\\) can be estimated by multiplying estimates of contact rates and transmission probabilities, or empirically from contact tracing data. However, in practice, we typically use time-series data such as reported case counts to estimate \\(R_t\\).\nMost \\(R_t\\) estimators are statistical: they seek to estimate \\(R_t\\) and the associated uncertainty using a statistical model [#TODO: CITE]. Purely mathematical methods, i.e. those that do not provide uncertainty estimates, also exist (typically coupling a mathematical model of disease transmission with an optimisation routine to fit the model to data) [#TODO: CITE]. Robust uncertainty quantification is a key focus of this work, thus our methods fall into the statistical category.\nStatistical estimators of \\(R_t\\) can generally be categorised as either Bayesian (where \\(R_t\\) and other parameters are treated as random variables with associated prior distributions) or frequentist (where \\(R_t\\) is treated as a fixed quantity). Bayesian methods are currently more popular than frequentist methods, as they provide a natural way to quantify uncertainty in \\(R_t\\) estimates (whereas frequentist methods typically rely upon bootstrapping or large-sample arguments), and highly effective simulation-based methods exist for Bayesian methods. SMC (in our context) is an example of a Bayesian simulation-based method.\nBayesian estimators are constructed by assuming a data generating process (inducing a model likelihood) and a prior distribution over the parameters of this process. The likelihood and prior distribution are together termed the model. Alongside the model, a method is required to find the posterior distribution, which can be analytical (in the case of a conjugate prior and likelihood) or computational (such as MCMC and ABC). While some methods are better suited to certain models, we encourage a clear separation of the two, a distinction that is often blurred in the literature.\nA multitude of data generating processes have been proposed for \\(R_t\\) estimation, including renewal models, compartmental differential equation models, network models, and agent-based models. Renewal models target \\(R_t\\) directly, requiring the fewest assumptions about the underlying disease dynamics of this list.\nWhile the renewal model can be employed as-is, daily data are typically noisy and incomplete, so some smoothing assumptions must be made. EpiEstim uses a trailing window over which \\(R_t\\) is assumed to be fixed, EpiFilter assumes \\(R_t\\) follows a Gaussian random walk, while EpiNow2 assumes \\(R_t\\) follows a Gaussian process. In addition to the renewal model itself, the smoothing method also forms part of the statistical model.\nFinally, once the model has been set, a method must be chosen to estimate \\(R_t\\) and other parameters. For example, EpiEstim uses a Gamma-prior distribution for \\(R_t\\) that is conjugate to the likelihood function, thus producing an analytical posterior distribution. EpiFilter uses a grid-based approximation to the Bayesian filtering and smoothing equations, while EpiNow2 fits an approximation to the assumed Gaussian process using MCMC methods.\n\n\n\n\nCori, Anne, and Adam Kucharski. 2024. “Inference of Epidemic Dynamics in the COVID-19 Era and Beyond.” Epidemics 48 (September): 100784. https://doi.org/10.1016/j.epidem.2024.100784.",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Background of $R_t$ estimation</span>"
+    ]
+  },
+  {
+    "objectID": "intro-hiddenstatemodels.html",
+    "href": "intro-hiddenstatemodels.html",
+    "title": "3  Hidden-state models",
+    "section": "",
+    "text": "3.1 Definition\nA (sequential) hidden-state model is composed of two parts:\nA state-space model:\n\\[\nP(X_t | X_{1:t-1}, \\theta)\n\\tag{3.1}\\]\nwhich dictates how the hidden-states vary over time.\nAn observation model: \\[\nP(y_t | X_{1:t-1}, y_{1:t-1}, \\theta)\n\\tag{3.2}\\]\nwhich relates the observed data to the hidden-states.\nThese two distributions wholly define the model.\nThis structure makes it clear why hidden-state models are so popular in epidemiology. The underlying epidemic is often unobserved, often corresponding to the state-space model, while reported cases (or other data) are generated through some observation process.\nWe note that we make no Markov-type assumption, although Markovian models (a.k.a Hidden Markov Models) can be viewed as a special-case of these hidden-state models.",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Hidden-state models</span>"
+    ]
+  },
+  {
+    "objectID": "intro-hiddenstatemodels.html#purpose",
+    "href": "intro-hiddenstatemodels.html#purpose",
+    "title": "3  Hidden-state models",
+    "section": "3.2 Purpose",
+    "text": "3.2 Purpose\nThe purpose of hidden-state models is to learn about the hidden-states \\(X_t\\) and/or model parameters \\(\\theta\\). If the hidden-states are a means-to-an-end, then you might want to find the posterior distribution of \\(\\theta\\):\n\\[\nP(\\theta|y_{1:T})\n\\tag{3.3}\\]\nOr perhaps you want to make inferences about the hidden-states in real-time:\n\\[\nP(X_t | y_{1:t})\n\\tag{3.4}\\]\nThis last distribution is called the marginal filtering distribution. We detail why in Section 3.4.1 below.",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Hidden-state models</span>"
+    ]
+  },
+  {
+    "objectID": "intro-hiddenstatemodels.html#example-1-the-unsmoothed-model",
+    "href": "intro-hiddenstatemodels.html#example-1-the-unsmoothed-model",
+    "title": "3  Hidden-state models",
+    "section": "3.3 Example 1: the unsmoothed model",
+    "text": "3.3 Example 1: the unsmoothed model\nIn Section 1.2 we introduced a simple model for \\(R_t\\) estimation. While it’s overkill, we can write this as hidden-state model.\n[Diagram here]\nWe first placed a Gamma\\((a_0, b_0)\\) prior distribution on \\(R_t\\) and made no further assumptions about the dynamics. This is the state-space model:\n\\[\nR_t | a_0, b_0 \\sim \\text{Gamma}(a_0, b_0)\n\\tag{3.5}\\]\nThen we assumed that cases today were Poisson distributed with mean \\(R_t \\Lambda_t\\). This is the observation model:\n\\[\nC_t | R_t, C_{1:t-1} \\sim \\text{Poisson}(R_t \\Lambda_t^c)\n\\tag{3.6}\\]\nThe hidden-states are the collection of \\(R_t\\) values, observed data are reported cases \\(C_{1:T}\\), and model parameters are \\(a_0\\), \\(b_0\\), and \\(\\{\\omega_u\\}_{u=1}^{u_{max}}\\). Altogether this forms our hidden-state model.\nWe previously solved this hidden-state model in Section 1.2 by leveraging the conjugacy of the state-space model with the observation model. This conjugacy is rare, and often we need to make unrealistic assumptions to obtain it, hence state-space models are often solved using SMC (or other simulation-based methods).",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Hidden-state models</span>"
+    ]
+  },
+  {
+    "objectID": "intro-hiddenstatemodels.html#example-2-epifilter",
+    "href": "intro-hiddenstatemodels.html#example-2-epifilter",
+    "title": "3  Hidden-state models",
+    "section": "3.4 Example 2: EpiFilter",
+    "text": "3.4 Example 2: EpiFilter\n[Diagram here]\nEpiFilter (Parag 2021) is an example of a typical state-space model. Autocorrelation in \\(R_t\\) is modelled using a Gaussian random-walk, defining the state-space model as:\n\\[\nR_t | R_{t-1} \\sim \\text{Normal}\\left(R_{t-1}, \\eta \\sqrt{R_{t-1}}\\right)\n\\tag{3.7}\\]\nwith initial condition \\(R_0 \\sim P(R_0)\\). The gaussian random walk acts to smooth \\(R_t\\) (see Section 1.2.2). Like Example 1 above, EpiFilter also uses the Poisson renewal model as the observation distribution:\n\\[\nC_t | R_t, C_{1:t-1} \\sim \\text{Poisson}(R_t \\Lambda_t^c)\n\\tag{3.8}\\]\nAs before, the hidden-states are the collection of \\(R_t\\) values, and the observed data are reported cases \\(C_{1:T}\\). Model parameters are now \\(\\eta\\) (which controls the smoothness of \\(R_t\\)), \\(\\{\\omega_u\\}_{u=1}^{u_{max}}\\), and \\(P(R_0)\\).\nNo analytical solution to the posterior distribution for \\(R_t\\) exists, however Parag (2021) avoid the need for simulation-based methods through the use of grid-based approximations.\n\n3.4.1 Filtering and smoothing distributions\nBorrowing language from signal processing, we highlight two different posterior distributions for \\(R_t\\) that we may be interested in.\n[DIAGRAM HERE]\nThe conditional2 filtering distribution is defined as:\n\\[\nP(X_t | y_{1:t}, \\theta)\n\\tag{3.9}\\]\nwhile the conditional smoothing distribution is defined as:\n\\[\nP(X_t | y_{1:T}, \\theta)\n\\tag{3.10}\\]\nThe filtering distribution uses only past observations to estimate the hidden-states, whereas the smoothing distribution uses both past and future observations.\nOne of the strengths of EpiFilter is its ability to find the smoothing distribution, allowing more data to inform \\(R_t\\) estiamtes, particularly improving inference in low-incidence scenarios.\nWe develop SMC methods suitable for finding both distributions.",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Hidden-state models</span>"
+    ]
+  },
+  {
+    "objectID": "intro-hiddenstatemodels.html#example-3-modelling-infection-incidence",
+    "href": "intro-hiddenstatemodels.html#example-3-modelling-infection-incidence",
+    "title": "3  Hidden-state models",
+    "section": "3.5 Example 3: Modelling infection incidence",
+    "text": "3.5 Example 3: Modelling infection incidence\nIn Section 1.4 we highlighted that the renewal model can be placed on either reported cases (as in the examples so far) or infection incidence.\nWhen the renewal model is placed on infections it forms part of the hidden-state model, rather than the observation model. We then need to specify some observation mechanism. For this example we assume that each infection has an indepdendent \\(p = 0.5\\) chance of",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Hidden-state models</span>"
+    ]
+  },
+  {
+    "objectID": "intro-hiddenstatemodels.html#concluding-remarks",
+    "href": "intro-hiddenstatemodels.html#concluding-remarks",
+    "title": "3  Hidden-state models",
+    "section": "3.6 Concluding remarks",
+    "text": "3.6 Concluding remarks\nAll three examples are focussed on \\(R_t\\) estimation. This is simply a consequence of the popularity of renewal models for this purpose. In all three cases we have constructed an epidemic model that could equally be used for forecasting or inference about model parameters.\n\n\n\n\nParag, Kris V. 2021. “Improved Estimation of Time-Varying Reproduction Numbers at Low Case Incidence and Between Epidemic Waves.” PLOS Computational Biology 17 (9): e1009347. https://doi.org/10.1371/journal.pcbi.1009347.",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Hidden-state models</span>"
+    ]
+  },
+  {
+    "objectID": "intro-hiddenstatemodels.html#footnotes",
+    "href": "intro-hiddenstatemodels.html#footnotes",
+    "title": "3  Hidden-state models",
+    "section": "",
+    "text": "SMC methods can also be used to solve more standard parameter-estimation problems, but this isn’t the focus of this book.↩︎\nThe specification of a conditional filtering/smoothing distribution is used to highlight that model parameters have been chosen instead of estimated. We later demonstrate how to find the marginal filtering/smoothing distribution which we denote with \\(P(X_t|y_{1:t})\\), to highlight that model parameters have been marginalised out.↩︎",
+    "crumbs": [
+      "Introduction",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Hidden-state models</span>"
+    ]
+  },
+  {
+    "objectID": "smc-bootstrap.html",
+    "href": "smc-bootstrap.html",
+    "title": "4  The bootstrap filter",
+    "section": "",
+    "text": "4.1 Intuition\n#TODO: write SMC intuition",
+    "crumbs": [
+      "Sequential Monte Carlo",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>The bootstrap filter</span>"
+    ]
+  },
+  {
+    "objectID": "smc-bootstrap.html#algorithm",
+    "href": "smc-bootstrap.html#algorithm",
+    "title": "4  The bootstrap filter",
+    "section": "4.2 Algorithm",
+    "text": "4.2 Algorithm\n#TODO: write SMC algorithm",
+    "crumbs": [
+      "Sequential Monte Carlo",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>The bootstrap filter</span>"
+    ]
+  },
+  {
+    "objectID": "smc-bootstrap.html#sec-smc-bootstrapexample",
+    "href": "smc-bootstrap.html#sec-smc-bootstrapexample",
+    "title": "4  The bootstrap filter",
+    "section": "4.3 Example",
+    "text": "4.3 Example\nFor demonstration, we consider a simple reproduction number estimator. First assume that \\(\\log R_t\\) follows a Gaussian random walk:\n\\[\\log R_t \\sim \\text{Normal}(\\log R_{t-1}, \\sigma) \\]\nwhile reported cases are assumed to follow the Poisson renewal model:\n\\[ C_t \\sim \\text{Poisson}\\left(R_t \\sum_{u=1}^{t-1} C_{t-u} g_u\\right) \\]\nThe first equation defines our hidden-state model while the second equation defines our observation model. With only a slight difference1, this model is almost identical to that employed by EpiFilter (Parag 2021).\nLeaving parameter estimation to Chapter 5, we use the following defaults:\n\n# Serial interval\nω = pdf.(Gamma(2.36, 2.74), 1:100)\nω = ω/sum(ω)\n\n# Smoothing parameter\nσ = 0.15\n\n# Initial distribution for Rt\npR0 = Uniform(0, 10) \n\nCollectively, \\(\\sigma\\), \\(\\{\\omega_u\\}_{u=1}^{u_{max}}\\), and \\(P(R_0)\\) constitute the model parameters \\(\\theta\\).\n\n4.3.1 Data\nWe use data from the first 100 days of the COVID-19 pandemic in New Zealand. Focusing now on total cases (we leave the critical separation of imported and local cases to Chapter 10):\n\n\nCode\nnzdata = loadData(\"NZCOVID\")\nT = length(nzdata.Ct)\nbar(nzdata.date, nzdata.Ct, label=false, xlabel=\"Date\", ylabel=\"Reported cases\", size=(800,300), margins=3mm, color=:darkblue)\n\n\n\n\n\n\n\n\nFigure 4.1: Reported cases from the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand.\n\n\n\n\n\n\n\n4.3.2 Setting up\nWe need to specify the number of particles \\(N\\) and resampling window \\(L\\):\n\nN = 10000\nL = 50\n\npre-allocate memory for our particles:\n\nX = zeros(N, T)\n\nand sample from the initial distribution:\n\nX[:,1] = rand(pR0, N)\n\n\n\n4.3.3 Implementation\nAll that’s left to do is run the bootstrap filter:\n\nfor tt = 2:T\n\n    # Project according to the state-space model\n    X[:,tt] = exp.(rand.(Normal.(log.(X[:,tt-1]), σ)))\n\n    # Weight according to the observation model\n    Λ = sum(nzdata.Ct[tt-1:-1:1] .* ω[1:tt-1])\n    W = pdf.(Poisson.(X[:,tt] .* Λ), nzdata.Ct[tt])\n\n    # Resample\n    inds = wsample(1:N, W, N; replace=true)\n    X[:, max(tt - L, 1):tt] = X[inds, max(tt - L, 1):tt]\n\nend\n\n\n\n4.3.4 Results\nThe \\(t^{th}\\) column of \\(X\\) is a set of samples from \\(P(X_t | C_{1:t+L})\\). The mean and quantiles of this posterior distribution are found using:\n\nm = [mean(X[:,tt]) for tt in 1:T]\nl = [quantile(X[:,tt], 0.025) for tt in 1:T]\nu = [quantile(X[:,tt], 0.975) for tt in 1:T]\nplot(m, ribbon=(m-l, u-m), color=:darkgreen, label=false, xlabel=\"Date\", ylabel=\"Reproduction number\", size=(800,300), margins=3mm)\nhline!([1], label=false, color=:black, line=:dash)\n\n\n\n\n\n\n\nFigure 4.2: Estimated \\(R_t\\) for the first 100 days of the COVID-19 pandemic. The dashed horizontal line indicates \\(R_t = 1\\). The green line shows the posterior mean and the green shading shows the 95% credible interval.\n\n\n\n\n\n\n\n\n\nParag, Kris V. 2021. “Improved Estimation of Time-Varying Reproduction Numbers at Low Case Incidence and Between Epidemic Waves.” PLOS Computational Biology 17 (9): e1009347. https://doi.org/10.1371/journal.pcbi.1009347.",
+    "crumbs": [
+      "Sequential Monte Carlo",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>The bootstrap filter</span>"
+    ]
+  },
+  {
+    "objectID": "smc-bootstrap.html#footnotes",
+    "href": "smc-bootstrap.html#footnotes",
+    "title": "4  The bootstrap filter",
+    "section": "",
+    "text": "Parag (2021) assumes \\(R_t\\) (rather than \\(\\log R_t\\)) follows a Gaussian random walk. The standard deviation of this random walk is multiplied by \\(\\sqrt{R_t}\\) to allow \\(R_t\\) to take larger “jumps” when it is larger, achieving the same outcome as our log-model. We discuss this further in Chapter 19.↩︎",
+    "crumbs": [
+      "Sequential Monte Carlo",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>The bootstrap filter</span>"
+    ]
+  },
+  {
+    "objectID": "smc-pmmh.html",
+    "href": "smc-pmmh.html",
+    "title": "5  Parameter estimation",
+    "section": "",
+    "text": "5.1 Likelihood estimation\nThe log-likelihood of \\(\\theta\\) is defined as:\n\\[\n\\ell(\\theta|y_{1:T}) = \\log P(y_{1:T}|\\theta) = \\sum_{t=1}^T \\log P(y_t| y_{1:t-1}, \\theta)\n\\tag{5.1}\\]\nThe second equality in Equation 5.1 is called the predictive decomposition of the likelihood, which decomposes the likelihood into one-step-ahead predictions.\nWe draw attention to the fact that our hidden-states \\(X_t\\) do not feature in Equation 5.1, whereas our model (the state-space and observation distributions) depend heavily on these variables. This is where the predictive decomposition is useful, as the bootstrap filter produces a convenient way of estimating \\(P(y_t| y_{1:t-1}, \\theta)\\), at no extra cost.\nFirst we write the predictive distribution as an expectation of the observation distribution \\(P(y_t|X_{1:t}, y_{1:t-1}, \\theta)\\): \\[\n\\begin{align}\nP(y_t | y_{1:t-1}, \\theta) &= \\int P(y_t | X_{1:t}, y_{1:t-1}, \\theta) P(X_{1:t} | y_{1:t-1}, \\theta) \\ dX_{1:t}\\\\\n&= E_{X_{1:t}|y_{1:t-1}, \\theta}\\left[P(y_t|X_{1:t}, y_{1:t-1}, \\theta)\\right]\n\\end{align}\n\\tag{5.2}\\]\nThis expectation is taken with respect to \\(X_{1:t}\\), conditional on \\(y_{1:t-1}\\) and \\(\\theta\\). The bootstrap filter generates samples of these \\(X_{1:t}\\) in the projection step (?eq-smc-bootstrapprojection), denoted \\(\\tilde{x}_{1:t}^{(i)}\\). Thus, we can approximate the expectation (and thus the predictive likelihood) using: \\[\nP(y_t | y_{1:t-1}, \\theta) \\approx \\frac{1}{N} \\sum_{i=1}^N P\\left(y_t | \\tilde{x}_{1:t}^{(i)}, y_{1:t-1}, \\theta\\right)\n\\tag{5.3}\\]\nFinally, we highlight that \\(P\\left(y_t | \\tilde{x}_{1:t}^{(i)}, y_{1:t-1}, \\theta\\right)\\) is precisely the weight of the \\(i^{th}\\) particle at time-step \\(t\\), and thus:\n\\[\nP(y_t |y_{1:t-1}, \\theta) \\approx \\frac{1}{N} \\sum_{i=1}^N w_t^{(i)} = \\bar{w}_t\n\\tag{5.4}\\]\nCombining equations Equation 5.1 and Equation 5.4 we find:\n\\[\n\\hat{\\ell}(\\theta|y_{1:T}) = \\sum_{t=1}^T \\log \\bar{w}_t\n\\tag{5.5}\\]\nThese weights are calculated within the bootstrap filter, so approximating the log-likelihood simply requires us to calculate and store the average weights at each step. Compared to the core bootstrap filter, this computation is trivial.",
+    "crumbs": [
+      "Sequential Monte Carlo",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Parameter estimation</span>"
+    ]
+  },
+  {
+    "objectID": "smc-pmmh.html#sec-smc-likelihoodest",
+    "href": "smc-pmmh.html#sec-smc-likelihoodest",
+    "title": "5  Parameter estimation",
+    "section": "",
+    "text": "5.1.1 Example\nWe continue with the example from Section 4.3. For simplicity, we package up the bootstrap into a single function that returns a matrix of hidden-state samples \\(X\\) and a same-sized matrix of weights \\(W\\) (click on the arrow to expand code).\n\n\nCode\nusing Distributions, Plots, Measures\ninclude(\"../src/loadData.jl\")\nnzdata = loadData(\"NZCOVID\")\n\n# Specify the serial interval and initial distribution for Rt\nω = pdf.(Gamma(2.36, 2.74), 1:100)\nω = ω/sum(ω)\npR0 = Uniform(0, 10)\n\n# Create the function to run the boostrap-filter\nfunction runBootstrapFilter(σ, nzdata; N=10000, L=50)\n\n    # Initialise output matrices\n    T = length(nzdata.Ct)\n    X = zeros(N, T)\n    W = zeros(N, T)\n\n    # Sample from initial distribution\n    X[:,1] = rand.(pR0, N)\n\n    # Run the filter\n    for tt = 2:T\n\n        # Project according to the state-space model\n        X[:,tt] = exp.(rand.(Normal.(log.(X[:,tt-1]), σ)))\n\n        # Weight according to the observation model\n        Λ = sum(nzdata.Ct[tt-1:-1:1] .* ω[1:tt-1])\n        W[:,tt] = pdf.(Poisson.(X[:,tt] .* Λ), nzdata.Ct[tt])\n\n        # Resample\n        inds = wsample(1:N, W[:,tt], N; replace=true)\n        X[:, max(tt - L, 1):tt] = X[inds, max(tt - L, 1):tt]\n\n    end\n\n    return(X, W)\n\nend\n\n\nrunBootstrapFilter (generic function with 1 method)\n\n\nThe log-likelihood of \\(\\sigma\\) is estimated by summing the logarithm of the columnwise means of \\(W\\), ignoring the first column as we do not calculate weights for this time-step (the renewal model requires at least one day of past data to calculate \\(\\Lambda_t^c\\)):\n\nσ = 0.1\n(X, W) = runBootstrapFilter(σ, nzdata)\nloglik = sum(log.(mean(W, dims=1)[2:end]))\nprintln(\"Estimated log-likelihood = $loglik\")\n\nEstimated log-likelihood = -220.99965753952665\n\n\n\n\n5.1.2 Variance of log-likelihood estimates\nWe use \\(\\hat{\\ell}\\) to emphasise that Equation 5.5 is an estimate of the likelihood \\(\\ell\\). Practically speaking, the variance of this estimator depends on:\n\nHow well the model fits: if the projection-step places particles in more plausible regions of the support of the observation-distribution the variance of the log-weights decreases.\nThe dimensionality of the observations: higher dimenionsal observation-distributions spread probability mass over a wider area, increasing the variance of log-weights.\nThe length of data: the likelihood estimator is a sum of stochastic terms, so the variance scales approximately linearly with \\(T\\).\nThe number of particles used: more particles increases the effective sample size at each time-step, decreasing the variance of the log-likelihood estimator.\n\nWe will demonstrate this variability in section Section 5.2, although highlight that the PMMH algorithm outlined in Section 5.3 is somewhat robust to this variability.\nThe bootstrap filter outlined above used \\(N = 10000\\) particles for \\(T = 100\\) days. The standard deviation of the log-likelihood estimator can itself be (crudely) estimated by:\n\nlogliks = zeros(100)\nThreads.@threads for ii = 1:100 # The Threads macro is used to leverage multiple cores\n    (X, W) = runBootstrapFilter(σ, nzdata)\n    logliks[ii] = sum(log.(mean(W, dims=1)[2:end]))\nend\nprintln(\"Sample variance of log-lik estimates = $(std(logliks))\")\n\nSample variance of log-lik estimates = 0.3639208837868308",
+    "crumbs": [
+      "Sequential Monte Carlo",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Parameter estimation</span>"
+    ]
+  },
+  {
+    "objectID": "smc-pmmh.html#sec-smc-gridbased",
+    "href": "smc-pmmh.html#sec-smc-gridbased",
+    "title": "5  Parameter estimation",
+    "section": "5.2 Grid-based posterior distribution",
+    "text": "5.2 Grid-based posterior distribution\nIn the simplest case, where \\(\\theta\\) is 1-D and discrete (with a sufficiently small range), we can simply estimate \\(\\ell(\\theta|y_{1:T})\\) on all values of \\(\\theta\\). If \\(\\theta\\) is 1-D and continuous, then we can estimate it on a grid of values. Given prior distribution \\(P(\\theta)\\), Bayes’ formula can be used to estimate \\(P(\\theta|y_{1:T})\\).\nIn the grid-based case, if we assume a discrete prior distribution over the grid, then our posterior distribution is exact. If we approximate our prior distribution with a discretised prior distribution, then our posterior distribution is also an approximation - although the difference is purely philosophical.\n\n5.2.1 Example (continued)\nWe can run the bootstrap filter on a range of values of \\(\\sigma\\). We also store the values of all particles so we can later visualise \\(P(R_t|y_{1:T}, \\sigma)\\) for each value of \\(\\sigma\\):\n\nN = 100000 # We use additional particles so the algorithm works well even when using poor choices of σ\nσvalues = 0.06:0.01:0.4\nlogliks = zeros(length(σvalues))\nX = zeros(N, length(nzdata.Ct), length(σvalues))\nfor (ii, σ) in enumerate(σvalues)\n    (Xi, W) = runBootstrapFilter(σ, nzdata; N=N)\n    logliks[ii] = sum(log.(mean(W, dims=1)[2:end]))\n    X[:,:,ii] = Xi\nend\n\nIf we assume a discrete uniform prior distribution for σvalues, we can calculate the posterior distribution as follows:\n\nσposterior  = exp.(logliks .- maximum(logliks))\nσposterior = σposterior/sum(σposterior)\n\nPlotting the log-likelihood of \\(\\sigma\\) alongside the filtering distribution for \\(R_t\\) highlights that \\(\\sigma = 0.1\\) is probably too low, and results in substantially different estimates of \\(R_t\\) relative to estimates using more likely values of \\(\\sigma\\).\n\n\nCode\n# # Make animated plot of filtering values\n# σvalues_str = string.(σvalues)\n# (σvalues_str[3], σvalues_str[8], σvalues_str[13], σvalues_str[18]) = (\"0.10\", \"0.20\", \"0.30\", \"0.40\")\n\nanim = @animate for (ii, σ) in enumerate(σvalues)\n\n    animPlot = plot(layout=grid(2,1, heights=[0.5, 0.5]), size=(600, 400), left_margin=3mm, bottom_margin=3mm)\n    \n    # Plot log-lik\n    barcolors = repeat([:darkorange], length(σvalues))\n    barcolors[ii] = :darkgreen\n    bar!(animPlot[1], σvalues, σposterior, label=false, fill=barcolors, linewidth=3)\n    # vline!(animPlot[1], [σ], label=false)\n    # ylims!(animPlot[1], (-220, -209))\n    xlabel!(animPlot[1], \"σ\")\n    ylabel!(animPlot[1],\"P(σ|y_{1:T})\")\n    \n    # Plot Rt estimates\n    T = size(X)[2]\n    m = [mean(X[:,tt,ii]) for tt in 1:T]\n    l = [quantile(X[:,tt,ii], 0.025) for tt in 1:T]\n    u = [quantile(X[:,tt,ii], 0.975) for tt in 1:T]\n    plot!(animPlot[2], nzdata.date, m, ribbon=(m-l, u-m), label=false, color=:darkgreen)\n    hline!(animPlot[2], [1], label=false, color=:black)\n    ylims!(animPlot[2], (0, 9))\n    xlabel!(animPlot[2], \"Date\")\n    # ylabel!(animPlot[2], \"Filtering Rt | σ = $(σvalues_str[ii])\")\n    \nend\n\ngif(anim, fps=5, verbose=false, show_msg=false)\n\n\n\n\n\n\n\nFigure 5.1: Estimates of the log-likelihood of sigma (upper) and the corresponding estimates of Rt for the first 100 days of the COVID-19 pandemic.",
+    "crumbs": [
+      "Sequential Monte Carlo",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Parameter estimation</span>"
+    ]
+  },
+  {
+    "objectID": "smc-pmmh.html#sec-smc-pmmh",
+    "href": "smc-pmmh.html#sec-smc-pmmh",
+    "title": "5  Parameter estimation",
+    "section": "5.3 Particle marginal Metropolis Hastings",
+    "text": "5.3 Particle marginal Metropolis Hastings\n\n5.3.1 Algorithm\n\n\n5.3.2 Example (continued)",
+    "crumbs": [
+      "Sequential Monte Carlo",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Parameter estimation</span>"
+    ]
+  },
+  {
+    "objectID": "smc-pmmh.html#concluding-remarks",
+    "href": "smc-pmmh.html#concluding-remarks",
+    "title": "5  Parameter estimation",
+    "section": "5.4 Concluding remarks",
+    "text": "5.4 Concluding remarks\nThe estimates of \\(\\theta\\) as presented here assume that the model is correctly specified, however this almost certainly is not the case.\nIn the context of the example, we highlight the presence of unmodelled observation noise as a particular concern here: any noise in the data beyond that implied by the Poisson observation distribution is attributed to changes in \\(R_t\\) (that is, is incorporated in estimates of \\(\\sigma\\)). There are almost certainly additional sources of noise, so we are likely over-estimating \\(\\sigma\\). This is dicscussed further in Chapter 8.",
+    "crumbs": [
+      "Sequential Monte Carlo",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Parameter estimation</span>"
+    ]
+  },
+  {
+    "objectID": "smc-combining.html",
+    "href": "smc-combining.html",
+    "title": "6  Putting it together",
+    "section": "",
+    "text": "#TODO: Write page.",
+    "crumbs": [
+      "Sequential Monte Carlo",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Putting it together</span>"
+    ]
+  },
+  {
+    "objectID": "models_simple.html",
+    "href": "models_simple.html",
+    "title": "7  A simple Rt estimator",
+    "section": "",
+    "text": "7.1 Defining the model\nFirst we define the parameters:\nσ = 0.2\nthe data:\nY = loadData(\"NZCOVID\")\nand the options dictionary:\nopts = Dict()\nopts[\"N\"] = 1000 # Number of particles (can use fewer as we are starting with parameter inference)\nopts[\"T\"] = length(Y.Ct) # Length of data\nopts[\"L\"] = 50 # Resampling window\nopts[\"pR0\"] = Uniform(0,10) # Initial distribution for Rt\nω = pdf.(Gamma(2.36, 2.74), 1:100) # (Unnormalised) serial interval\nopts[\"ω\"] = ω/sum(ω) # Serial interval\nNow, all we need to do is write the model as a bootstrap filter:\nfunction simpleModel(σ, Y::DataFrame, opts::Dict)\n\n    # Extract frequently used options\n    T = opts[\"T\"]\n    N = opts[\"N\"]\n    L = opts[\"L\"]\n\n    # Initialise output matrices\n    R = zeros(N, T) # Using R instead of X to highlight we're estimating Rt\n    W = zeros(N, T)\n\n    # Sample from initial distribution\n    R[:,1] = rand.(opts[\"pR0\"], N)\n\n    # Run the filter\n    for tt = 2:T\n\n        # Project according to the state-space model\n        R[:,tt] = exp.(rand.(Normal.(log.(R[:,tt-1]), σ)))\n\n        # Weight according to the observation model\n        Λ = sum(Y.Ct[tt-1:-1:1] .* ω[1:tt-1])\n        W[:,tt] = pdf.(Poisson.(R[:,tt] .* Λ), Y.Ct[tt])\n\n        # Resample\n        inds = wsample(1:N, W[:,tt], N; replace=true)\n        R[:, max(tt - L, 1):tt] = R[inds, max(tt - L, 1):tt]\n\n    end\n\n    return(R, W)\n\nend",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>A simple Rt estimator</span>"
+    ]
+  },
+  {
+    "objectID": "models_simple.html#estimating-sigma",
+    "href": "models_simple.html#estimating-sigma",
+    "title": "7  A simple Rt estimator",
+    "section": "7.2 Estimating \\(\\sigma\\)",
+    "text": "7.2 Estimating \\(\\sigma\\)\nWe use the simple PMMH algorithm to estimate \\(\\sigma\\). We need to specify some additional options for this:\n\nopts[\"nChains\"] = 3\nopts[\"nPMMHSamples\"] = 1000\n\nopts[\"paramPriors\"] = [Uniform(0, 1.0)] # A vector of prior distributions for the parameter(s)\nopts[\"proposalDists\"] = [(x) -&gt; Truncated(Normal(x, 0.03), 0, 1.0)] # A vector of proposal distributions for the parameter(s)\nopts[\"initialParamSamplers\"] = [Uniform(0.05, 0.3)] # A vector of distributions to sample initial parameter values from\n\nWe also want to check that we are using a sufficient number of particles to obtain good estimates of \\(\\ell(\\theta|y_{1:T})\\):\n\ninclude(\"../src/Likelihood.jl\")\n(sd, logliks) = estimateStdDevLogLik(100, simpleModel, σ, Y, opts)\nprintln(\"Standard deviation of log-lik estimates = $sd\")\n\nEstimating log-likelihood multiple times... 100%|██████████████████████████████████████████████████| Time: 0:00:02\n\n\nStandard deviation of log-lik estimates = 0.5611409956765454\n\n\nNow we are ready to run the PMMH algorithm:\n\ninclude(\"../src/PMMHSimple.jl\")\n(θ, diagnostics) = multipleSimplePMMH(simpleModel, Y, opts; showProgress=false)\n\nand analyse it using the MCMCChains package:\n\nusing MCMCChains\nC = Chains(θ[100:end,:,:], [\"σ\"]) # Removing the first 100 samples as a windin\n\n\nChains MCMC chain (901×1×3 Array{Float64, 3}):\nIterations        = 1:1:901\nNumber of chains  = 3\nSamples per chain = 901\nparameters        = σ\nSummary Statistics\n  parameters      mean       std   naive_se      mcse        ess      rhat \n      Symbol   Float64   Float64    Float64   Float64    Float64   Float64 \n           σ    0.2382    0.0436     0.0008    0.0029   189.2514    1.0080\nQuantiles\n  parameters      2.5%     25.0%     50.0%     75.0%     97.5% \n      Symbol   Float64   Float64   Float64   Float64   Float64 \n           σ    0.1642    0.2063    0.2364    0.2679    0.3248\n\n\n\n\nso the posterior mean of \\(\\theta\\) is approximately 0.17 with a 95% credible interval of \\((0.10, 0.20)\\). The \\(\\hat{R}\\) statistic is less than 1.05, suggesting the chains have converged, although additional samples may be desirable for full confidence. To double check, we can also plot the chains and posterior density estimate:\n\nusing StatsPlots, Measures\nplot(C, size=(800,300), margins=3mm)\n\n\n\n\n\n\n\n\n\n7.2.1 Marginalising out \\(\\sigma\\)\n#TODO: Write full posterior code",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>A simple Rt estimator</span>"
+    ]
+  },
+  {
+    "objectID": "models_obsnoise.html",
+    "href": "models_obsnoise.html",
+    "title": "8  Modelling observation noise",
+    "section": "",
+    "text": "8.1 Underreporting\nIf we assume that each case has an independent probability of being reported, we can model \\(C_t\\) using a Binomial distributon: \\[\nC_t | I_t \\sim \\text{Binomial}\\left(I_t, \\ \\rho\\right)\n\\tag{8.2}\\]\nThe reporting rate \\(\\rho\\) is not identifiable from reported case data alone1, so must be set by the user. We use \\(\\rho = 0.5\\) below as an example. This model thus has the same number of parameters as the basic model (one parameter, \\(\\sigma\\)).",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Modelling observation noise</span>"
+    ]
+  },
+  {
+    "objectID": "models_obsnoise.html#sec-models-obsnoise-underreportandover",
+    "href": "models_obsnoise.html#sec-models-obsnoise-underreportandover",
+    "title": "8  Modelling observation noise",
+    "section": "8.2 Underreporting and overdispersion",
+    "text": "8.2 Underreporting and overdispersion\nCase reporting can often be over-dispersed, exhibiting greater variance than implied by the binomial observation distribution above. Instead, we can use a beta-binomial distribution:\n\\[\nC_t | I_t \\sim \\text{Beta-binomial}\\left(I_t, \\alpha_t, \\beta_t\\right)\n\\tag{8.3}\\]\nwhere:\n\\[\n\\alpha_t = \\rho n^*, \\ \\ \\beta_t = (1-\\rho) n^*\n\\tag{8.4}\\]\nThis model also assumes a reporting rate of \\(\\rho\\), but allows for additional variance through parameter \\(n^*\\)2. We now must estimate two parameters: \\(\\sigma\\) and \\(n^*\\).",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Modelling observation noise</span>"
+    ]
+  },
+  {
+    "objectID": "models_obsnoise.html#observation-noise-without-underreporting-assumptions",
+    "href": "models_obsnoise.html#observation-noise-without-underreporting-assumptions",
+    "title": "8  Modelling observation noise",
+    "section": "8.3 Observation noise without underreporting assumptions",
+    "text": "8.3 Observation noise without underreporting assumptions\nIn Section 8.1 and Section 8.2, we assumed a pre-determined reporting rate \\(\\rho\\). Without additional information this parameter is not (typically) identifiable. A popular distribution for modelling (potentially) overdispersed data is the negative binomial:\n\\[\nC_t | I_t \\sim \\text{Negative binomial}\\left(r = \\frac{I_t}{k}, p=\\frac{1}{1 + k} \\right)\n\\]\nwhich has mean \\(I_t\\) and variance \\((1+k) I_t\\), where \\(k\\) is a dispersion parameter. This results in two parameters to be estimated: \\(\\sigma\\) and \\(k\\).",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Modelling observation noise</span>"
+    ]
+  },
+  {
+    "objectID": "models_obsnoise.html#day-of-the-week-effects",
+    "href": "models_obsnoise.html#day-of-the-week-effects",
+    "title": "8  Modelling observation noise",
+    "section": "8.4 Day-of-the-week effects",
+    "text": "8.4 Day-of-the-week effects",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Modelling observation noise</span>"
+    ]
+  },
+  {
+    "objectID": "models_obsnoise.html#reporting-delays",
+    "href": "models_obsnoise.html#reporting-delays",
+    "title": "8  Modelling observation noise",
+    "section": "8.5 Reporting delays",
+    "text": "8.5 Reporting delays",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Modelling observation noise</span>"
+    ]
+  },
+  {
+    "objectID": "models_obsnoise.html#concluding-remarks",
+    "href": "models_obsnoise.html#concluding-remarks",
+    "title": "8  Modelling observation noise",
+    "section": "8.6 Concluding remarks",
+    "text": "8.6 Concluding remarks\nModels involving reporting delays or day-of-the-week effects without stochasticity (that is, where \\(C_t = f(I_{1:t})\\) for some deterministic function \\(f\\)) will be highly inefficient. The observation distribution in such as a case takes values \\(1\\) (where \\(C_t = f(I_{1:t})\\)) or \\(0\\) (where \\(C_t \\neq f(I_{1:t})\\)).",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Modelling observation noise</span>"
+    ]
+  },
+  {
+    "objectID": "models_obsnoise.html#footnotes",
+    "href": "models_obsnoise.html#footnotes",
+    "title": "8  Modelling observation noise",
+    "section": "",
+    "text": "#TODO: See if we can still estiamte it purely from a allow-for-variance standpoint↩︎\nThe beta-binomial explicitly assumes that \\(I_t\\) are binomially distributed with random probability \\(\\rho \\sim Beta(\\alpha_t, \\beta_t)\\). Under this interpretation, \\(n^*\\) can be thought of as the number of “prior trials”, and \\(\\alpha_t\\) the number of “prior successes”.↩︎",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Modelling observation noise</span>"
+    ]
+  },
+  {
+    "objectID": "models_tempagg.html",
+    "href": "models_tempagg.html",
+    "title": "9  Temporally aggregated data",
+    "section": "",
+    "text": "9.1 Modelling temporally aggregated data\nWe can use any model which separates latent infections \\(I_t\\) from reported cases \\(C_t\\), for example, the model introduced in Section 8.1 (where subscript \\(t\\) still denotes time in days):\n\\[\n\\begin{align}\n\\log R_t | \\log R_{t-1} &\\sim \\text{Normal}(\\log R_{t-1}, \\sigma) \\\\\nI_t | R_t, I_{1:t-1} &\\sim \\text{Poisson}(R_t \\Lambda_t)\n\\end{align}\n\\tag{9.1}\\]\nand the observation model is modified slightly to reflect the assumed aggregation (using weekly as an example):\n\\[\nC_t | I_{1:t} \\sim \\text{Binomial}\\left(\\sum_{s=0}^6 I_{t-s}, \\ \\rho\\right) \\text{if} \\ \\text{mod}(t, 7) = 0\n\\]\nAlgorithmically, this is equivalent to skipping the weighting and resampling steps on the time-steps for which we have no observations.\nWe highlight the flexibility of this method, even irregular reporting can be accounted for by summing over the relevant indices.",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Temporally aggregated data</span>"
+    ]
+  },
+  {
+    "objectID": "models_tempagg.html#concluding-remarks",
+    "href": "models_tempagg.html#concluding-remarks",
+    "title": "9  Temporally aggregated data",
+    "section": "9.2 Concluding remarks",
+    "text": "9.2 Concluding remarks\n\n9.2.1 Benefits to modelling temporally aggregated data\nIf reporting biases are significant\n\n\n\n\nAbbott, Sam, Joel Hellewell, Robin N. Thompson, Katharine Sherratt, Hamish P. Gibbs, Nikos I. Bosse, James D. Munday, et al. 2020. “Estimating the Time-Varying Reproduction Number of SARS-CoV-2 Using National and Subnational Case Counts.” Wellcome Open Research 5 (December): 112. https://doi.org/10.12688/wellcomeopenres.16006.2.\n\n\nNash, Rebecca K., Samir Bhatt, Anne Cori, and Pierre Nouvellet. 2023. “Estimating the Epidemic Reproduction Number from Temporally Aggregated Incidence Data: A Statistical Modelling Approach and Software Tool.” Edited by Eric Hy Lau. PLOS Computational Biology 19 (8): e1011439. https://doi.org/10.1371/journal.pcbi.1011439.\n\n\nOgi-Gittins, I., W. S. Hart, J. Song, R. K. Nash, J. Polonsky, A. Cori, E. M. Hill, and R. N. Thompson. 2024. “A Simulation-Based Approach for Estimating the Time-Dependent Reproduction Number from Temporally Aggregated Disease Incidence Time Series Data.” Epidemics 47 (June): 100773. https://doi.org/10.1016/j.epidem.2024.100773.",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Temporally aggregated data</span>"
+    ]
+  },
+  {
+    "objectID": "models_imports.html",
+    "href": "models_imports.html",
+    "title": "10  Imported cases",
+    "section": "",
+    "text": "10.1 Without quarantine\nWe retain the hidden-state model from Chapter 7:\n\\[\n\\log R_t \\sim \\text{Normal}(\\log R_{t-1}, \\sigma)\n\\tag{10.1}\\]\nand now assume that only local cases \\(L_t\\) are infected by past local and imported \\(M_t\\) cases:\n\\[\nL_t | R_t \\sim \\text{Poisson}\\left(R_t \\Lambda_t^{(m)}\\right)\n\\tag{10.2}\\]\nwhere\n\\[\n\\Lambda_t^{(m)} = \\sum_{u=1}^{u_{max}} \\omega_u \\left(L_{t-u} + M_{t-u}\\right)\n\\tag{10.3}\\]\nThe bootstrap filter for this model is nearly identical to the simple model, we simply change one line (#TODO: install highlight extension and highlight):\nCode\nfunction importedModel(σ, Y::DataFrame, opts::Dict)\n\n    # Extract frequently used options\n    T = opts[\"T\"]\n    N = opts[\"N\"]\n    L = opts[\"L\"]\n\n    # Initialise output matrices\n    R = zeros(N, T) # Using R instead of X to highlight we're estimating Rt\n    W = zeros(N, T)\n\n    # Sample from initial distribution\n    R[:,1] = rand.(opts[\"pR0\"], N)\n\n    # Run the filter\n    for tt = 2:T\n\n        # Project according to the state-space model\n        R[:,tt] = exp.(rand.(Normal.(log.(R[:,tt-1]), σ)))\n\n        # Weight according to the observation model\n        Λ = sum(Y.Ct[tt-1:-1:1] .* ω[1:tt-1])\n        W[:,tt] = pdf.(Poisson.(R[:,tt] .* Λ), Y.local[tt]) # &lt;- This line is the only line that has changed!\n\n        # Resample\n        inds = wsample(1:N, W[:,tt], N; replace=true)\n        R[:, max(tt - L, 1):tt] = R[inds, max(tt - L, 1):tt]\n\n    end\n\n    return(R, W)\n\nend\nFitting the model and plotting \\(R_t\\) against our original estmiates reveals substantial differences:\n[Single figure to go here]",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Imported cases</span>"
+    ]
+  },
+  {
+    "objectID": "models_imports.html#with-quarantine",
+    "href": "models_imports.html#with-quarantine",
+    "title": "10  Imported cases",
+    "section": "10.2 With quarantine",
+    "text": "10.2 With quarantine\nThe model above assumed that imported cases are just as infectious as local cases. In",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Imported cases</span>"
+    ]
+  },
+  {
+    "objectID": "models_imports.html#concluding-remarks",
+    "href": "models_imports.html#concluding-remarks",
+    "title": "10  Imported cases",
+    "section": "10.3 Concluding remarks",
+    "text": "10.3 Concluding remarks\n\n\n\n\nThompson, R. N., J. E. Stockwin, R. D. van Gaalen, J. A. Polonsky, Z. N. Kamvar, P. A. Demarsh, E. Dahlqwist, et al. 2019. “Improved Inference of Time-Varying Reproduction Numbers During Infectious Disease Outbreaks.” Epidemics 29 (December): 100356. https://doi.org/10.1016/j.epidem.2019.100356.",
+    "crumbs": [
+      "The reproducton number",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Imported cases</span>"
+    ]
+  },
+  {
+    "objectID": "othermethods_epiestim.html",
+    "href": "othermethods_epiestim.html",
+    "title": "18  EpiEstim",
+    "section": "",
+    "text": "We present Julia implementations of EpiEstim (this chapter), EpiFilter (Chapter 19), and a heavily simplified version of (Chapter 20). The (approximate) EpiNow2 implementation also requires the installation of Stan, while EpiEstim and EpiFilter are implemented natively. Much of the code for these two methods has been copied from previous work [CITE PAPER WITH KRIS].",
+    "crumbs": [
+      "Other methods",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>EpiEstim</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Abbott, Sam, Joel Hellewell, Robin N. Thompson, Katharine Sherratt,\nHamish P. Gibbs, Nikos I. Bosse, James D. Munday, et al. 2020.\n“Estimating the Time-Varying Reproduction Number of\nSARS-CoV-2 Using National and Subnational Case\nCounts.” Wellcome Open Research 5 (December): 112. https://doi.org/10.12688/wellcomeopenres.16006.2.\n\n\nAzmon, Amin, Christel Faes, and Niel Hens. 2014. “On the\nEstimation of the Reproduction Number Based on Misreported Epidemic\nData.” Statistics in Medicine 33 (7): 1176–92. https://doi.org/10.1002/sim.6015.\n\n\nBanholzer, Nicolas, Thomas Mellan, H. Juliette T. Unwin, Stefan\nFeuerriegel, Swapnil Mishra, and Samir Bhatt. 2023. “A Comparison\nof Short-Term Probabilistic Forecasts for the Incidence of\nCOVID-19 Using Mechanistic and Statistical Time Series\nModels.” arXiv. https://doi.org/10.48550/arXiv.2305.00933.\n\n\nCori, Anne, Neil M. Ferguson, Christophe Fraser, and Simon Cauchemez.\n2013. “A New Framework and Software to\nEstimate Time-Varying Reproduction Numbers During\nEpidemics.” American Journal of Epidemiology 178\n(9): 1505–12. https://doi.org/10.1093/aje/kwt133.\n\n\nCori, Anne, and Adam Kucharski. 2024. “Inference of Epidemic\nDynamics in the COVID-19 Era and Beyond.”\nEpidemics 48 (September): 100784. https://doi.org/10.1016/j.epidem.2024.100784.\n\n\nCreswell, Richard, Martin Robinson, David Gavaghan, Kris V. Parag, Chon\nLok Lei, and Ben Lambert. 2023. “A Bayesian\nNonparametric Method for Detecting Rapid Changes in Disease\nTransmission.” Journal of Theoretical Biology 558\n(February): 111351. https://doi.org/10.1016/j.jtbi.2022.111351.\n\n\nFerguson, N, D Laydon, G Nedjati Gilani, N Imai, K Ainslie, M Baguelin,\nS Bhatia, et al. 2020. “Report 9: Impact of\nNon-Pharmaceutical Interventions (NPIs) to Reduce\nCOVID19 Mortality and Healthcare Demand.” Imperial\nCollege London. https://doi.org/10.25561/77482.\n\n\nFlaxman, Seth, Swapnil Mishra, Axel Gandy, H. Juliette T. Unwin, Thomas\nA. Mellan, Helen Coupland, Charles Whittaker, et al. 2020.\n“Estimating the Effects of Non-Pharmaceutical Interventions on\nCOVID-19 in Europe.” Nature\n584 (7820): 257–61. https://doi.org/10.1038/s41586-020-2405-7.\n\n\nNash, Rebecca K., Samir Bhatt, Anne Cori, and Pierre Nouvellet. 2023.\n“Estimating the Epidemic Reproduction Number from Temporally\nAggregated Incidence Data: A Statistical Modelling Approach\nand Software Tool.” Edited by Eric Hy Lau. PLOS Computational\nBiology 19 (8): e1011439. https://doi.org/10.1371/journal.pcbi.1011439.\n\n\nOgi-Gittins, I., W. S. Hart, J. Song, R. K. Nash, J. Polonsky, A. Cori,\nE. M. Hill, and R. N. Thompson. 2024. “A Simulation-Based Approach\nfor Estimating the Time-Dependent Reproduction Number from Temporally\nAggregated Disease Incidence Time Series Data.”\nEpidemics 47 (June): 100773. https://doi.org/10.1016/j.epidem.2024.100773.\n\n\nParag, Kris V. 2021. “Improved Estimation of Time-Varying\nReproduction Numbers at Low Case Incidence and Between Epidemic\nWaves.” PLOS Computational Biology 17 (9): e1009347. https://doi.org/10.1371/journal.pcbi.1009347.\n\n\nParag, Kris V., Benjamin J. Cowling, and Christl A. Donnelly. 2021.\n“Deciphering Early-Warning Signals of SARS-CoV-2\nElimination and Resurgence from Limited Data at Multiple Scales.”\nJournal of The Royal Society Interface 18 (185): 20210569. https://doi.org/10.1098/rsif.2021.0569.\n\n\nThompson, R. N., J. E. Stockwin, R. D. van Gaalen, J. A. Polonsky, Z. N.\nKamvar, P. A. Demarsh, E. Dahlqwist, et al. 2019. “Improved\nInference of Time-Varying Reproduction Numbers During Infectious Disease\nOutbreaks.” Epidemics 29 (December): 100356. https://doi.org/10.1016/j.epidem.2019.100356.",
+    "crumbs": [
+      "References"
+    ]
+  },
+  {
+    "objectID": "terminology.html",
+    "href": "terminology.html",
+    "title": "Appendix A — Terminology",
+    "section": "",
+    "text": "Terms are presented in the order they are introduced, except where it makes sense to place similar terms near each other.\n\n\n\n\n\n\n\nTerm\nDefinition\n\n\n\n\nFiltering distribution\nThe posterior distribution of hidden state \\(x_t\\) given observed data until time \\(t\\). Written \\(P(x_t | y_{1:t})\\).\n\n\nSmoothing distribution\nThe posterior distribution of hidden state \\(x_t\\) given all observed data. Written \\(P(x_t|y_{1:T})\\).\n\n\n\n\n\n\nSymbol\nDefinition\n\n\n\n\nIntroduction\n\n\n\n\\(E[\\cdot]\\)\nThe expectation operator.\n\n\n\\(C_t\\)\nReported cases on time-step \\(t\\).\n\n\n\\(I_t\\)\nInfection incidence on time-step \\(t\\).\n\n\n\\(R_t\\)\nThe instantaneous reproduction number at time-step \\(t\\).\n\n\n\\(\\omega_u\\)\nThe serial interval distribution. The probability that a secondary case was reported \\(u\\) days after the primary case.\n\n\n\\(g_u\\)\nThe generation time distribution. The probability that a secondary case was infected \\(u\\) days after the primary case.\n\n\n\\(\\Lambda_t^c\\)\nThe force-of-infection derived from reported cases. Equals \\(\\sum_{u=1}^{u_{max}} C_{t-u} \\omega_u\\).\n\n\n\\(\\Lambda_t\\)\nThe force-of-infection derived from infection incidence. Equals \\(\\sum_{u=1}^{u_{max}} I_{t-u} g_u\\).\n\n\n\\(s:t\\)\nUsed as a subscript, refers to all indices between \\(s\\) and \\(t\\) (inclusive).",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Terminology</span>"
+    ]
+  },
+  {
+    "objectID": "simulateddata.html",
+    "href": "simulateddata.html",
+    "title": "Appendix B — Simulated data",
+    "section": "",
+    "text": "B.1 Simulating the underlying epidemic\nAll our simulations leverage the Poisson renewal model:\n\\[ I_t \\sim \\text{Poisson}(R_t \\Lambda_t) \\]\nwhere the force-of-infection is defined as:\n\\[ \\Lambda_t = \\sum_{u = 0}^{t-1} I_{t-u} g_u \\]\nfor some generation time distriubtion \\(g_u\\).\nUnless otherwise stated, we assume a Gaussian random walk for \\(\\log R_t\\):\n\\[ \\log R_t \\sim \\text{Normal}(\\log R_{t-1}, \\sigma) \\]\nwhere \\(\\sigma\\) determines how quickly \\(R_t\\) varies. This matches the state-space model assumed by our default methods.\nSimulations are initialised with \\(I_1\\) infections (default 10) and an initial value of \\(R_1\\) (default 2). We then iteratively sample \\(R_t\\) and \\(I_t\\) from the above model for \\(t = 2, ..., T\\) (default \\(T = 100\\)). The core script looks like:\nAlthough additional code is included to ensure that total infections are between 100 and 100,000 (by default) and that \\(R_t\\) is between 0.2 and 5 (by default). The resulting function simulateSimpleEpidemic() is provided in /src/Simulations.jl. We call it here:\n# using Random, Plots\n# Random.seed!(42)\n\n# include(\"../src/Simulations.jl\")\n\n# Y = simulateSimpleEpidemic()\n\n# plot(plot(Y.Rt, ylabel=\"Reproduction number\", label=false), plot(Y.It, ylabel=\"Infections\", label=false), layout=(2,1))\nThis is also the script that was used to generate “simulated_simple.csv”. We save it instead of calling it each time as the Random seed is not consistent between environments.",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Simulated data</span>"
+    ]
+  },
+  {
+    "objectID": "simulateddata.html#simulating-the-underlying-epidemic",
+    "href": "simulateddata.html#simulating-the-underlying-epidemic",
+    "title": "Appendix B — Simulated data",
+    "section": "",
+    "text": "# Initialise vectors\nlogRt = zeros(T)\nlogRt[1] = log(R1)\nIt = zeros(T)\nIt[1] = log(I1)\n\nfor tt = 2:T\n    # Sample logRt from a normal distribution\n    logRt[tt] = rand(Normal(logRt[tt], σ))\n\n    # Calculate the force of infection\n    Λt = sum(It[tt-1:-1:1] .* g[1:tt-1]) \n\n    # Sample the number of new infections\n    It[tt] = rand(Poisson(exp(logRt[tt]) * Λt))\nend\n\n# Combine into a single dataframe\nY = DataFrame(t=1:T, It=It, Rt=Rt)",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Simulated data</span>"
+    ]
+  },
+  {
+    "objectID": "simulateddata.html#simulating-the-observation-process",
+    "href": "simulateddata.html#simulating-the-observation-process",
+    "title": "Appendix B — Simulated data",
+    "section": "B.2 Simulating the observation process",
+    "text": "B.2 Simulating the observation process\nIf we are simulating the simple model then we set \\(C_t = I_t\\) (reported cases = infections) and we are done. Or we can simulate from any number of observation processes. We outline some here.\nAll functions created here are included in src/Simulations.jl.\n\nB.2.1 Binomial reporting\nIn the simple underreporting case, we might have: \\[ C_t \\sim \\text{Binomial}(I_t, \\rho) \\]\nfor some underreporting fraction \\(\\rho\\). We can implement this as:\n\nusing Distributions\n\n# function simulateBinomialReporting(It, ρ)\n\n#     Ct = rand.(Binomial.(It, ρ))\n#     return(Ct)\n\n# end\n\n# Y.Ct = simulateBinomialReporting(Y.It, 0.5)\n\n# plot(Y.It, ylabel=\"Infections\", label=\"True infections\", title=\"Binomial reporting example\", size=(800,400), dpi=300)\n# plot!(Y.Ct, label=\"Reported cases\")\n\n\n\nB.2.2 Delayed reporting\nOr we might assume that cases are underreported and delayed: \\[ C_t \\sim \\text{Binomial}\\left(\\sum_{u=0}^{u_{max}} I_{t-u} d_u, \\ \\rho\\right) \\]\nIf we assume \\(\\rho = 80\\%\\) of cases are reported, and the delay distribution is negative binomial with mean 5.6 and standard deviation 3.2, we can implement:\n\n# function simulateBinomialUnderreportNegBinDelay(It, ρ, r, p)\n\n#     d = pdf.(NegativeBinomial(r, p), 0:length(It))\n#     DelayedIt = round.([sum(It[tt:-1:1] .* d[1:tt]) for tt = 1:length(It)])\n#     Ct = rand.(Binomial.(DelayedIt, ρ))\n#     return(Ct)\n\n# end\n\n# Y.Ct = simulateBinomialUnderreportNegBinDelay(Y.It, 0.8, 7, 5/9)\n\n# plot(Y.It, ylabel=\"Infections\", label=\"True infections\", title=\"Binomial reporting and negative binomial delay\", size=(800,400), dpi=300)\n# plot!(Y.Ct, label=\"Reported cases\")",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Simulated data</span>"
+    ]
+  },
+  {
+    "objectID": "simulateddata.html#extensions",
+    "href": "simulateddata.html#extensions",
+    "title": "Appendix B — Simulated data",
+    "section": "B.3 Extensions",
+    "text": "B.3 Extensions\n\nB.3.1 Including imported cases",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Simulated data</span>"
+    ]
+  },
+  {
+    "objectID": "structure.html",
+    "href": "structure.html",
+    "title": "Appendix D — Structure of pre-built functions",
+    "section": "",
+    "text": "D.1 Primary function\nThe provided code is built around a user-written function, denoted here bootstrapFilter(θ, Y, opts) . This function should encode the user’s entire state-space model by implementing a bootstrap filter, including initialisation and the projection-weighting-resampling steps.\nThis function should accept:\nand should return a tuple of the form (X, W), where:",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>D</span>  <span class='chapter-title'>Structure of pre-built functions</span>"
+    ]
+  },
+  {
+    "objectID": "structure.html#primary-function",
+    "href": "structure.html#primary-function",
+    "title": "Appendix D — Structure of pre-built functions",
+    "section": "",
+    "text": "A parameter vector θ\nSorted dataframe of data Y\nOptions dictionary opts\n\n\n\nX contains the particle values (typically in the form of an \\(N \\times T \\times S\\) vector where \\(S\\) is the number of hidden-states)\nW is a \\(N \\times T\\) matrix of observation weights\n\n\nD.1.1 Example\nOnly minor modifications need to be made to the example in Section 5.1.1 in order to satisfy these requirements:\n\n\nCode\nσ = 0.1 # Model parameters\nnzdata = loadData(\"NZCOVID\") # Dataframe containing model data\nopts = Dict() # A dictionary of parameter values\nopts[\"T\"] = length(nzdata.Ct)\nopts[\"N\"] = 10000\nopts[\"pR0\"] = Uniform(0, 10)\n\nfunction runSimpleModel(σ, nzdata::DataFrame, opts::Dict)\n\n    # Extract frequently used options\n    T = opts[\"T\"]\n    N = opts[\"N\"]\n\n    # Initialise output matrices\n    X = zeros(N, T)\n    W = zeros(N, T)\n\n    # Sample from initial distribution\n    X[:,1] = rand.(opts[\"pR0\"], N)\n\n    # Run the filter\n    for tt = 2:T\n\n        # Project according to the state-space model\n        X[:,tt] = exp.(rand.(Normal.(log.(X[:,tt-1]), σ)))\n\n        # Weight according to the observation model\n        Λ = sum(nzdata.Ct[tt-1:-1:1] .* ω[1:tt-1])\n        W[:,tt] = pdf.(Poisson.(X[:,tt] .* Λ), nzdata.Ct[tt])\n\n        # Resample\n        inds = wsample(1:N, W[:,tt], N; replace=true)\n        X[:, max(tt - L, 1):tt] = X[inds, max(tt - L, 1):tt]\n\n    end\n\n    return(X, W)\n\nend",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>D</span>  <span class='chapter-title'>Structure of pre-built functions</span>"
+    ]
+  },
+  {
+    "objectID": "structure.html#pre-built-functions",
+    "href": "structure.html#pre-built-functions",
+    "title": "Appendix D — Structure of pre-built functions",
+    "section": "D.2 Pre-built functions",
+    "text": "D.2 Pre-built functions\nWe provide a collection of functions that accept bootstrapFilter (and also θ, Y, and opts, depending on the function) as an argument:\n\n\n\n\n\n\n\nFunction\nDescription\n\n\n\n\nestimateLoglik()\nCalculates and returns the log-likelihood estimate (Equation 5.5). Includes optional argument ignoreerror (default false), that returns \\(-\\infty\\) if the model returns an error.\n\n\nsimplePMMH()\nA simple implementation of the PMMH algorithm. Returns a matrix of accepted values C and a matrix of sampled values with the corresponding likelihood estimate and accept/reject decision OUT.\n\n\nsimplePMMHMulti()\nA multithreaded wrapper of simplePMMH().\n\n\nPMMH()\nA (slightly) more comprehensive and adaptive implementation of the PMMH algorithm. Returns the same arguments, as well as a diagnostics dataframe.\n\n\nPMMHMulti()\nA multithreaded wrapper of PMMH().",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>D</span>  <span class='chapter-title'>Structure of pre-built functions</span>"
+    ]
+  }
+]

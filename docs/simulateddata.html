@@ -498,7 +498,7 @@ window.Quarto = {
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine into a single dataframe</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> <span class="fu">DataFrame</span>(t<span class="op">=</span><span class="fl">1</span><span class="op">:</span>T, It<span class="op">=</span>It, Rt<span class="op">=</span>Rt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Although additional code is included to ensure that total infections are between 100 and 100,000 (by default) and that <span class="math inline">\(R_t\)</span> is between 0.2 and 5 (by default). The resulting function <code>simulateSimpleEpidemic()</code> is provided in <code>/src/Simulations.jl</code>. We call it here:</p>
-<div id="e57f1f79" class="cell" data-execution_count="1">
+<div id="6a6a8a5c" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># using Random, Plots</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Random.seed!(42)</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -518,7 +518,7 @@ window.Quarto = {
 <h3 data-number="B.2.1" class="anchored" data-anchor-id="binomial-reporting"><span class="header-section-number">B.2.1</span> Binomial reporting</h3>
 <p>In the simple underreporting case, we might have: <span class="math display">\[ C_t \sim \text{Binomial}(I_t, \rho) \]</span></p>
 <p>for some underreporting fraction <span class="math inline">\(\rho\)</span>. We can implement this as:</p>
-<div id="3b08757c" class="cell" data-execution_count="2">
+<div id="5a1bbaf8" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Distributions</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># function simulateBinomialReporting(It, ρ)</span></span>
@@ -538,7 +538,7 @@ window.Quarto = {
 <h3 data-number="B.2.2" class="anchored" data-anchor-id="delayed-reporting"><span class="header-section-number">B.2.2</span> Delayed reporting</h3>
 <p>Or we might assume that cases are underreported and delayed: <span class="math display">\[ C_t \sim \text{Binomial}\left(\sum_{u=0}^{u_{max}} I_{t-u} d_u, \ \rho\right) \]</span></p>
 <p>If we assume <span class="math inline">\(\rho = 80\%\)</span> of cases are reported, and the delay distribution is negative binomial with mean 5.6 and standard deviation 3.2, we can implement:</p>
-<div id="448806fe" class="cell" data-execution_count="3">
+<div id="9aa5d2b8" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># function simulateBinomialUnderreportNegBinDelay(It, ρ, r, p)</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     d = pdf.(NegativeBinomial(r, p), 0:length(It))</span></span>
