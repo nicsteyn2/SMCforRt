@@ -1,0 +1,76 @@
+project:
+  type: book
+  output-dir: docs
+  preview:
+    host: "localhost"
+    port: 7634
+
+book:
+  title: "SMC and epidemic renewal models"
+  sidebar:
+    logo: logo.png
+  author: "Nicholas Steyn"
+  date: "9/24/2024"
+  chapters:
+    - index.qmd
+    - part: "Introduction"
+      chapters:
+        - introduction.qmd
+        - intro_Rtestimation.qmd
+        - intro-hiddenstatemodels.qmd
+
+    - part: "Sequential Monte Carlo"
+      chapters:
+        - smc-bootstrap.qmd
+        - smc-pmmh.qmd
+        - smc-combining.qmd
+
+    - part: "The reproducton number"
+      chapters:
+        - models_simple.qmd
+        - models_obsnoise.qmd
+        - models_tempagg.qmd
+        - models_imports.qmd
+        - models_multipledata.qmd
+
+    - part: "Evaluation"
+      chapters:
+        - evaluation_predcov.qmd
+        - evaluation_crps.qmd
+
+    - part: "Extensions"
+      chapters:
+        - extensions_nowcasting.qmd
+        - extensions_forecasting.qmd
+        - extensions_elimination.qmd
+
+    - part: "Case studies"
+      chapters:
+        - casestudies_nzcovid.qmd
+      
+    - part: "Other methods"
+      chapters:
+        - othermethods_epiestim.qmd
+        - othermethods_epifilter.qmd
+        - othermethods_epinow2.qmd
+
+    - references.qmd
+
+  appendices:
+    - terminology.qmd
+    - simulateddata.qmd
+    - smoothingmethods.qmd
+    - structure.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+
+jupyter: julia-_n-threads_-1.8
+
+execute:
+  julia:
+    launchArgs: ["-t", "4"]
+  freeze: auto

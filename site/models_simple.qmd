@@ -1,0 +1,137 @@
+# A simple Rt estimator  {#sec-models-simple}
+
+```{julia}
+#| code-fold: true
+#| output: false
+using Distributions
+include("../src/loadData.jl")
+```
+
+The reproduction number $R_t$ is a key component in the renewal model, however it is also always unknown. We thus dedicate an entire section to estimating this quantity.
+
+We start by reproducing the simple example first outlined in @sec-smc-bootstrapexample, using some pre-built functions. A full exposé of these functions is provided in @sec-structure, but the outline here may be sufficient.
+
+Recall that we model $\log R_t$ with a Gaussian random walk:
+
+$$\log R_t \sim \text{Normal}(\log R_{t-1}, \sigma) $$
+
+and assume reported cases follow the Poisson renewal model:
+
+$$ C_t | R_t, C_{1:t}, \theta \sim \text{Poisson}\left(R_t \sum_{u=1}^{t-1} C_{t-u} g_u\right) $$
+
+
+## Defining the model
+
+First we define the parameters:
+```{julia}
+#| output: false
+σ = 0.2
+```
+
+the data:
+```{julia}
+#| output: false
+Y = loadData("NZCOVID")
+```
+
+and the options dictionary:
+
+```{julia}
+#| output: false
+opts = Dict()
+opts["N"] = 1000 # Number of particles (can use fewer as we are starting with parameter inference)
+opts["T"] = length(Y.Ct) # Length of data
+opts["L"] = 50 # Resampling window
+opts["pR0"] = Uniform(0,10) # Initial distribution for Rt
+ω = pdf.(Gamma(2.36, 2.74), 1:100) # (Unnormalised) serial interval
+opts["ω"] = ω/sum(ω) # Serial interval
+```
+
+Now, all we need to do is write the model as a bootstrap filter:
+
+```{julia}
+#| output: false
+
+function simpleModel(σ, Y::DataFrame, opts::Dict)
+
+    # Extract frequently used options
+    T = opts["T"]
+    N = opts["N"]
+    L = opts["L"]
+
+    # Initialise output matrices
+    R = zeros(N, T) # Using R instead of X to highlight we're estimating Rt
+    W = zeros(N, T)
+
+    # Sample from initial distribution
+    R[:,1] = rand.(opts["pR0"], N)
+
+    # Run the filter
+    for tt = 2:T
+
+        # Project according to the state-space model
+        R[:,tt] = exp.(rand.(Normal.(log.(R[:,tt-1]), σ)))
+
+        # Weight according to the observation model
+        Λ = sum(Y.Ct[tt-1:-1:1] .* ω[1:tt-1])
+        W[:,tt] = pdf.(Poisson.(R[:,tt] .* Λ), Y.Ct[tt])
+
+        # Resample
+        inds = wsample(1:N, W[:,tt], N; replace=true)
+        R[:, max(tt - L, 1):tt] = R[inds, max(tt - L, 1):tt]
+
+    end
+
+    return(R, W)
+
+end
+
+```
+
+## Estimating $\sigma$
+
+We use the simple PMMH algorithm to estimate $\sigma$. We need to specify some additional options for this:
+
+```{julia}
+#| output: false
+opts["nChains"] = 3
+opts["nPMMHSamples"] = 1000
+
+opts["paramPriors"] = [Uniform(0, 1.0)] # A vector of prior distributions for the parameter(s)
+opts["proposalDists"] = [(x) -> Truncated(Normal(x, 0.03), 0, 1.0)] # A vector of proposal distributions for the parameter(s)
+opts["initialParamSamplers"] = [Uniform(0.05, 0.3)] # A vector of distributions to sample initial parameter values from
+```
+
+We also want to check that we are using a sufficient number of particles to obtain good estimates of $\ell(\theta|y_{1:T})$:
+
+```{julia}
+include("../src/Likelihood.jl")
+(sd, logliks) = estimateStdDevLogLik(100, simpleModel, σ, Y, opts)
+println("Standard deviation of log-lik estimates = $sd")
+```
+
+Now we are ready to run the PMMH algorithm:
+
+```{julia}
+#| output: false
+include("../src/PMMHSimple.jl")
+(θ, diagnostics) = multipleSimplePMMH(simpleModel, Y, opts; showProgress=false)
+```
+
+and analyse it using the MCMCChains package:
+
+```{julia}
+using MCMCChains
+C = Chains(θ[100:end,:,:], ["σ"]) # Removing the first 100 samples as a windin
+```
+
+so the posterior mean of $\theta$ is approximately 0.17 with a 95\% credible interval of $(0.10, 0.20)$. The $\hat{R}$ statistic is less than 1.05, suggesting the chains have converged, although additional samples may be desirable for full confidence. To double check, we can also plot the chains and posterior density estimate:
+
+```{julia}
+using StatsPlots, Measures
+plot(C, size=(800,300), margins=3mm)
+```
+
+### Marginalising out $\sigma$
+
+#TODO: Write full posterior code

@@ -1,0 +1,232 @@
+# Parameter estimation {#sec-smc-parameterestimation}
+
+In @sec-smc-bootstrap we introduced the bootstrap filter, an algorithm which returns a particle approximation to $P(X_t | y_{1:T}, \theta)$. Critically, this posterior distribution depends on parameter(s) $\theta$. This chapter is dedicated to performing inference on $\theta$ itself.
+
+We start by showing how the bootstrap filter can be used to estimate the log-likelihood of $\theta$. We then use this log-likelihood (and a corresponding prior distribution) to develop a posterior distribution for $\theta$. Two approaches for this are demonstrated:
+
+- A grid-based approach, useful for simple 1-dimensional cases
+- Particle marginal Metropolis Hastings (PMMH), useful for more complicated cases, and in @sec-smc-combining where we use the output to find the marginal posterior of $X_t$.
+
+If your goal is to perform inference on $\theta$, then you are done! In the frequentist setting, you have access to a likelihood upon which you can base your inferences. In the Bayesian setting you have the desired posterior distribution.
+
+If your goal is to perform inference on $X_t$ after accounting for uncertainty in $\theta$, then you can use the posterior distribution to marginalise out $\theta$. This is demonstrated in @sec-smc-combining.
+
+## Likelihood estimation {#sec-smc-likelihoodest}
+
+The log-likelihood of $\theta$ is defined as:
+
+$$
+\ell(\theta|y_{1:T}) = \log P(y_{1:T}|\theta) = \sum_{t=1}^T \log P(y_t| y_{1:t-1}, \theta) 
+$$ {#eq-smc-loglikdefn}
+
+The second equality in @eq-smc-loglikdefn is called the *predictive decomposition of the likelihood*, which decomposes the likelihood into one-step-ahead predictions.
+
+We draw attention to the fact that our hidden-states $X_t$ do not feature in @eq-smc-loglikdefn, whereas our model (the state-space and observation distributions) depend heavily on these variables. This is where the predictive decomposition is useful, as the bootstrap filter produces a convenient way of estimating $P(y_t| y_{1:t-1}, \theta)$, at no extra cost.
+
+First we write the predictive distribution as an expectation of the observation distribution $P(y_t|X_{1:t}, y_{1:t-1}, \theta)$:
+$$
+\begin{align}
+P(y_t | y_{1:t-1}, \theta) &= \int P(y_t | X_{1:t}, y_{1:t-1}, \theta) P(X_{1:t} | y_{1:t-1}, \theta) \ dX_{1:t}\\
+&= E_{X_{1:t}|y_{1:t-1}, \theta}\left[P(y_t|X_{1:t}, y_{1:t-1}, \theta)\right]
+\end{align}
+$$ {#eq-smc-predictivedist}
+
+This expectation is taken with respect to $X_{1:t}$, conditional on $y_{1:t-1}$ and $\theta$. The bootstrap filter generates samples of these $X_{1:t}$ in the projection step (@eq-smc-bootstrapprojection), denoted $\tilde{x}_{1:t}^{(i)}$. Thus, we can approximate the expectation (and thus the predictive likelihood) using:
+$$
+P(y_t | y_{1:t-1}, \theta) \approx \frac{1}{N} \sum_{i=1}^N P\left(y_t | \tilde{x}_{1:t}^{(i)}, y_{1:t-1}, \theta\right)
+$$ {#eq-smc-bootstrapapproxtopredictive}
+
+Finally, we highlight that $P\left(y_t | \tilde{x}_{1:t}^{(i)}, y_{1:t-1}, \theta\right)$ is precisely the weight of the $i^{th}$ particle at time-step $t$, and thus:
+
+$$
+P(y_t |y_{1:t-1}, \theta) \approx \frac{1}{N} \sum_{i=1}^N w_t^{(i)} = \bar{w}_t
+$$ {#eq-smc-meanweight}
+
+Combining equations @eq-smc-loglikdefn and @eq-smc-meanweight we find:
+
+$$
+\hat{\ell}(\theta|y_{1:T}) = \sum_{t=1}^T \log \bar{w}_t
+$$ {#eq-smc-likelihoodest}
+
+These weights are calculated within the bootstrap filter, so approximating the log-likelihood simply requires us to calculate and store the average weights at each step. Compared to the core bootstrap filter, this computation is trivial.
+
+
+### Example {#sec-smc-pmmhexamplefunc}
+
+We continue with the example from @sec-smc-bootstrapexample. For simplicity, we package up the bootstrap into a single function that returns a matrix of hidden-state samples $X$ and a same-sized matrix of weights $W$ (click on the arrow to expand code).
+
+```{julia}
+#| code-fold: true
+
+using Distributions, Plots, Measures
+include("../src/loadData.jl")
+nzdata = loadData("NZCOVID")
+
+# Specify the serial interval and initial distribution for Rt
+ω = pdf.(Gamma(2.36, 2.74), 1:100)
+ω = ω/sum(ω)
+pR0 = Uniform(0, 10)
+
+# Create the function to run the boostrap-filter
+function runBootstrapFilter(σ, nzdata; N=10000, L=50)
+
+    # Initialise output matrices
+    T = length(nzdata.Ct)
+    X = zeros(N, T)
+    W = zeros(N, T)
+
+    # Sample from initial distribution
+    X[:,1] = rand.(pR0, N)
+
+    # Run the filter
+    for tt = 2:T
+
+        # Project according to the state-space model
+        X[:,tt] = exp.(rand.(Normal.(log.(X[:,tt-1]), σ)))
+
+        # Weight according to the observation model
+        Λ = sum(nzdata.Ct[tt-1:-1:1] .* ω[1:tt-1])
+        W[:,tt] = pdf.(Poisson.(X[:,tt] .* Λ), nzdata.Ct[tt])
+
+        # Resample
+        inds = wsample(1:N, W[:,tt], N; replace=true)
+        X[:, max(tt - L, 1):tt] = X[inds, max(tt - L, 1):tt]
+
+    end
+
+    return(X, W)
+
+end
+
+```
+
+The log-likelihood of $\sigma$ is estimated by summing the logarithm of the columnwise means of $W$, ignoring the first column as we do not calculate weights for this time-step (the renewal model requires at least one day of past data to calculate $\Lambda_t^c$):
+
+```{julia}
+
+σ = 0.1
+(X, W) = runBootstrapFilter(σ, nzdata)
+loglik = sum(log.(mean(W, dims=1)[2:end]))
+println("Estimated log-likelihood = $loglik")
+
+```
+
+
+
+
+### Variance of log-likelihood estimates
+
+We use $\hat{\ell}$ to emphasise that @eq-smc-likelihoodest is an estimate of the likelihood $\ell$. Practically speaking, the variance of this estimator depends on:
+
+- How well the model fits: if the projection-step places particles in more plausible regions of the support of the observation-distribution the variance of the log-weights decreases.
+- The dimensionality of the observations: higher dimenionsal observation-distributions spread probability mass over a wider area, increasing the variance of log-weights.
+- The length of data: the likelihood estimator is a sum of stochastic terms, so the variance scales approximately linearly with $T$.
+- The number of particles used: more particles increases the effective sample size at each time-step, decreasing the variance of the log-likelihood estimator.
+
+We will demonstrate this variability in section @sec-smc-gridbased, although highlight that the PMMH algorithm outlined in @sec-smc-pmmh is somewhat robust to this variability.
+
+The bootstrap filter outlined above used $N = 10000$ particles for $T = 100$ days. The standard deviation of the log-likelihood estimator can itself be (crudely) estimated by:
+
+```{julia}
+logliks = zeros(100)
+Threads.@threads for ii = 1:100 # The Threads macro is used to leverage multiple cores
+    (X, W) = runBootstrapFilter(σ, nzdata)
+    logliks[ii] = sum(log.(mean(W, dims=1)[2:end]))
+end
+println("Sample variance of log-lik estimates = $(std(logliks))")
+```
+
+
+
+## Grid-based posterior distribution {#sec-smc-gridbased}
+
+In the simplest case, where $\theta$ is 1-D and discrete (with a sufficiently small range), we can simply estimate $\ell(\theta|y_{1:T})$ on all values of $\theta$. If $\theta$ is 1-D and continuous, then we can estimate it on a grid of values. Given prior distribution $P(\theta)$, Bayes' formula can be used to estimate $P(\theta|y_{1:T})$.
+
+*In the grid-based case, if we assume a discrete prior distribution over the grid, then our posterior distribution is exact. If we approximate our prior distribution with a discretised prior distribution, then our posterior distribution is also an approximation - although the difference is purely philosophical.*
+
+### Example (continued)
+
+We can run the bootstrap filter on a range of values of $\sigma$. We also store the values of all particles so we can later visualise $P(R_t|y_{1:T}, \sigma)$ for each value of $\sigma$:
+
+```{julia}
+#| output: false
+
+N = 100000 # We use additional particles so the algorithm works well even when using poor choices of σ
+σvalues = 0.06:0.01:0.4
+logliks = zeros(length(σvalues))
+X = zeros(N, length(nzdata.Ct), length(σvalues))
+for (ii, σ) in enumerate(σvalues)
+    (Xi, W) = runBootstrapFilter(σ, nzdata; N=N)
+    logliks[ii] = sum(log.(mean(W, dims=1)[2:end]))
+    X[:,:,ii] = Xi
+end
+```
+
+If we assume a discrete uniform prior distribution for ```σvalues```, we can calculate the posterior distribution as follows:
+
+```{julia}
+#| output: false
+
+σposterior  = exp.(logliks .- maximum(logliks))
+σposterior = σposterior/sum(σposterior)
+```
+
+
+Plotting the log-likelihood of $\sigma$ alongside the filtering distribution for $R_t$ highlights that $\sigma = 0.1$ is *probably* too low, and results in substantially different estimates of $R_t$ relative to estimates using more likely values of $\sigma$.
+
+```{julia}
+#| code-fold: true
+#| fig-cap: "Estimates of the log-likelihood of sigma (upper) and the corresponding estimates of Rt for the first 100 days of the COVID-19 pandemic."
+#| label: fig-models-varyingsigma
+
+# # Make animated plot of filtering values
+# σvalues_str = string.(σvalues)
+# (σvalues_str[3], σvalues_str[8], σvalues_str[13], σvalues_str[18]) = ("0.10", "0.20", "0.30", "0.40")
+
+anim = @animate for (ii, σ) in enumerate(σvalues)
+
+    animPlot = plot(layout=grid(2,1, heights=[0.5, 0.5]), size=(600, 400), left_margin=3mm, bottom_margin=3mm)
+    
+    # Plot log-lik
+    barcolors = repeat([:darkorange], length(σvalues))
+    barcolors[ii] = :darkgreen
+    bar!(animPlot[1], σvalues, σposterior, label=false, fill=barcolors, linewidth=3)
+    # vline!(animPlot[1], [σ], label=false)
+    # ylims!(animPlot[1], (-220, -209))
+    xlabel!(animPlot[1], "σ")
+    ylabel!(animPlot[1],"P(σ|y_{1:T})")
+    
+    # Plot Rt estimates
+    T = size(X)[2]
+    m = [mean(X[:,tt,ii]) for tt in 1:T]
+    l = [quantile(X[:,tt,ii], 0.025) for tt in 1:T]
+    u = [quantile(X[:,tt,ii], 0.975) for tt in 1:T]
+    plot!(animPlot[2], nzdata.date, m, ribbon=(m-l, u-m), label=false, color=:darkgreen)
+    hline!(animPlot[2], [1], label=false, color=:black)
+    ylims!(animPlot[2], (0, 9))
+    xlabel!(animPlot[2], "Date")
+    # ylabel!(animPlot[2], "Filtering Rt | σ = $(σvalues_str[ii])")
+    
+end
+
+gif(anim, fps=5, verbose=false, show_msg=false)
+
+```
+
+
+
+## Particle marginal Metropolis Hastings {#sec-smc-pmmh}
+
+
+
+### Algorithm
+
+
+### Example (continued)
+
+
+## Concluding remarks
+
+The estimates of $\theta$ as presented here assume that the model is correctly specified, however this almost certainly is not the case.
+
+In the context of the example, we highlight the presence of unmodelled observation noise as a particular concern here: any noise in the data beyond that implied by the Poisson observation distribution is attributed to changes in $R_t$ (that is, is incorporated in estimates of $\sigma$). There are almost certainly additional sources of noise, so we are likely over-estimating $\sigma$. This is dicscussed further in @sec-models-obsnoise.

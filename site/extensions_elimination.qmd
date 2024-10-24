@@ -1,0 +1,3 @@
+# Probability of elimination
+
+After observing consecutive time-steps of zero-cases, it is often natural to ask: what is the probability that the pathogen has been eliminated?

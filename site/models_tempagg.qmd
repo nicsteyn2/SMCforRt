@@ -1,0 +1,41 @@
+# Temporally aggregated data {#sec-models-tempagg}
+
+Temporally aggregated incidence data (such as weekly instead of daily reported cases) can make $R_t$ estimation using tools like EpiEstim and EpiFilter difficult, particularly when the durtion of the aggregation period exceeds the scale at which transmission occurs. The fundamental issue is methods like EpiEstim and EpiFilter assume that reported cases at the current time-step are caused only by reported cases on previous time-steps, whereas in aggregated data, we must also account for within-period transmission.
+
+Existing approaches to estimating $R_t$ from temporally aggregated data all reconstruct finer-grained incidence data from the aggregated data, before applying more standard methods. For example, @nashEstimatingEpidemicReproduction2023 use an Expectation-Maximisation algorithm to infer daily incidence and then apply an EpiEstim-type method, while @ogi-gittinsSimulationbasedApproachEstimating2024 pair an exact form of approximate Bayesian computation with a simulation based approach to infer sub-daily incidence. One method that does not require substantial adaption is EpiNow2 @abbottEstimatingTimevaryingReproduction2020, which models the latent infections already.
+
+The approach demonstrated below can also be viewed as a generalisation of [Ogi-Gittins, Steyn, et al's recent paper].... #TODO: Write rest of this paragraph.
+
+Given an appropriate inference method, there are also cases in which it makes sense to model temporally aggregated data. If day-of-the-week effects are present, large, and inconsistent, then modelling weekly-aggregated data can decrease observation variance. From a practical modelling perspective, in the SMC context, aggregated data feature fewer observations, thus requiring fewer particles to estimate the model log-likelihood with the same precision.
+
+## Modelling temporally aggregated data
+
+We can use any model which separates latent infections $I_t$ from reported cases $C_t$, for example, the model introduced in @sec-models-obsnoise-underreport (where subscript $t$ still denotes time in days):
+
+$$
+\begin{align}
+\log R_t | \log R_{t-1} &\sim \text{Normal}(\log R_{t-1}, \sigma) \\
+I_t | R_t, I_{1:t-1} &\sim \text{Poisson}(R_t \Lambda_t)
+\end{align}
+$$ {#eq-models-tempaggstatespace}
+
+and the observation model is modified slightly to reflect the assumed aggregation (using weekly as an example):
+
+$$
+C_t | I_{1:t} \sim \text{Binomial}\left(\sum_{s=0}^6 I_{t-s}, \ \rho\right) \text{if} \ \text{mod}(t, 7) = 0
+$$
+
+Algorithmically, this is equivalent to skipping the weighting and resampling steps on the time-steps for which we have no observations.
+
+We highlight the flexibility of this method, even irregular reporting can be accounted for by summing over the relevant indices.
+
+
+
+
+
+## Concluding remarks
+
+
+### Benefits to modelling temporally aggregated data
+
+If reporting biases are significant

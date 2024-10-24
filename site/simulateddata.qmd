@@ -1,0 +1,125 @@
+
+# Simulated data
+
+It is useful to test our models on simulated data where we know what the true value of $R_t$ is. Our simulations are broken into two stages:
+
+1. Simulating the underlying epidemic
+2. Simulating the observation process
+
+Unsurprisingly, these correspond to the state-space model and observation model in the SMC algorithm.
+
+## Simulating the underlying epidemic
+
+All our simulations leverage the *Poisson renewal model*:
+
+$$ I_t \sim \text{Poisson}(R_t \Lambda_t) $$
+
+where the *force-of-infection* is defined as:
+
+$$ \Lambda_t = \sum_{u = 0}^{t-1} I_{t-u} g_u $$
+
+for some generation time distriubtion $g_u$.
+
+Unless otherwise stated, we assume a Gaussian random walk for $\log R_t$:
+
+$$ \log R_t \sim \text{Normal}(\log R_{t-1}, \sigma) $$
+
+where $\sigma$ determines how quickly $R_t$ varies. This matches the state-space model assumed by our default methods.
+
+Simulations are initialised with $I_1$ infections (default 10) and an initial value of $R_1$ (default 2). We then iteratively sample $R_t$ and $I_t$ from the above model for $t = 2, ..., T$ (default $T = 100$). The core script looks like:
+
+```julia
+# Initialise vectors
+logRt = zeros(T)
+logRt[1] = log(R1)
+It = zeros(T)
+It[1] = log(I1)
+
+for tt = 2:T
+    # Sample logRt from a normal distribution
+    logRt[tt] = rand(Normal(logRt[tt], σ))
+
+    # Calculate the force of infection
+    Λt = sum(It[tt-1:-1:1] .* g[1:tt-1]) 
+
+    # Sample the number of new infections
+    It[tt] = rand(Poisson(exp(logRt[tt]) * Λt))
+end
+
+# Combine into a single dataframe
+Y = DataFrame(t=1:T, It=It, Rt=Rt)
+```
+
+Although additional code is included to ensure that total infections are between 100 and 100,000 (by default) and that $R_t$ is between 0.2 and 5 (by default). The resulting function ```simulateSimpleEpidemic()``` is provided in ```/src/Simulations.jl```. We call it here:
+
+```{julia}
+
+# using Random, Plots
+# Random.seed!(42)
+
+# include("../src/Simulations.jl")
+
+# Y = simulateSimpleEpidemic()
+
+# plot(plot(Y.Rt, ylabel="Reproduction number", label=false), plot(Y.It, ylabel="Infections", label=false), layout=(2,1))
+```
+
+*This is also the script that was used to generate "simulated_simple.csv". We save it instead of calling it each time as the Random seed is not consistent between environments.*
+
+
+## Simulating the observation process
+
+If we are simulating the simple model then we set $C_t = I_t$ (reported cases = infections) and we are done. Or we can simulate from any number of observation processes. We outline some here.
+
+*All functions created here are included in ```src/Simulations.jl```.*
+
+### Binomial reporting
+
+In the simple underreporting case, we might have:
+$$ C_t \sim \text{Binomial}(I_t, \rho) $$
+
+for some underreporting fraction $\rho$. We can implement this as:
+
+```{julia}
+using Distributions
+
+# function simulateBinomialReporting(It, ρ)
+
+#     Ct = rand.(Binomial.(It, ρ))
+#     return(Ct)
+
+# end
+
+# Y.Ct = simulateBinomialReporting(Y.It, 0.5)
+
+# plot(Y.It, ylabel="Infections", label="True infections", title="Binomial reporting example", size=(800,400), dpi=300)
+# plot!(Y.Ct, label="Reported cases")
+```
+
+### Delayed reporting
+
+Or we might assume that cases are underreported and delayed:
+$$ C_t \sim \text{Binomial}\left(\sum_{u=0}^{u_{max}} I_{t-u} d_u, \ \rho\right) $$
+
+If we assume $\rho = 80\%$ of cases are reported, and the delay distribution is negative binomial with mean 5.6 and standard deviation 3.2, we can implement:
+
+```{julia}
+# function simulateBinomialUnderreportNegBinDelay(It, ρ, r, p)
+
+#     d = pdf.(NegativeBinomial(r, p), 0:length(It))
+#     DelayedIt = round.([sum(It[tt:-1:1] .* d[1:tt]) for tt = 1:length(It)])
+#     Ct = rand.(Binomial.(DelayedIt, ρ))
+#     return(Ct)
+
+# end
+
+# Y.Ct = simulateBinomialUnderreportNegBinDelay(Y.It, 0.8, 7, 5/9)
+
+# plot(Y.It, ylabel="Infections", label="True infections", title="Binomial reporting and negative binomial delay", size=(800,400), dpi=300)
+# plot!(Y.Ct, label="Reported cases")
+```
+
+## Extensions
+
+### Including imported cases
+
