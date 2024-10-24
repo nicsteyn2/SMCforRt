@@ -1,2 +1,3 @@
 *.ipynb linguist-document
 site/* linguist-vendored
+docs/* linguist-vendored
