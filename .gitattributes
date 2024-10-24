@@ -1,3 +1,4 @@
 *.ipynb linguist-document
-site/* linguist-vendored
-docs/* linguist-vendored
+*.html linguist-document
+*.js linguist-document
+*.tex linguist-document
