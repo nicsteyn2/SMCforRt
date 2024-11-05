@@ -14,10 +14,10 @@ function multipleSimplePMMH(bootstrapFilter::Function, Y::DataFrame, opts::Dict;
     end
 
     # Pre-allocate output
-    θall = zeros(opts["nPMMHSamples"], length(opts["paramPriors"]), opts["nChains"])
+    θall = zeros(opts["nSamples"], length(opts["paramPriors"]), opts["nChains"])
     diagnosticsAll = Array{Dict}(undef, opts["nChains"])
 
-    ProgBar = Progress((opts["nPMMHSamples"]-1)*opts["nChains"], dt=1, desc="Running multiple PMMH...", barlen=50, enabled=showProgress)
+    ProgBar = Progress((opts["nSamples"]-1)*opts["nChains"], dt=1, desc="Running multiple PMMH...", barlen=50, enabled=showProgress)
     Threads.@threads for ii = 1:opts["nChains"]
         (θall[:,:,ii], diagnosticsAll[ii]) = simplePMMH(bootstrapFilter, Y, opts, ProgBar=ProgBar, chainNum=ii)
     end
@@ -30,7 +30,7 @@ end
 function simplePMMH(bootstrapFilter::Function, Y::DataFrame, opts::Dict; ProgBar=missing, chainNum=0, showProgress=true)
 
     # Extract options that are frequently used
-    nSamples = opts["nPMMHSamples"]
+    nSamples = opts["nSamples"]
     nParams = length(opts["paramPriors"])
 
     # Pre-allocate outputs

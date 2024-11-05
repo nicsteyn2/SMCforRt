@@ -33,9 +33,9 @@ function PMMH(bootstrapFilter::Function, Y::DataFrame, opts::Dict; verbose=false
         lastInd = ii*chunkSize
         inds = firstInd:lastInd
         
-        # Run a single epoch of PMMH for each chain
+        # Run a single chunk of PMMH for each chain
         nAcceptAll = zeros(nChains)
-        ProgBar = Progress(nChains*(chunkSize-1), dt=1, desc="Running epoch $ii", barlen=50, enabled=verbose)
+        ProgBar = Progress(nChains*(chunkSize-1), dt=1, desc="Running chunk $ii", barlen=50, enabled=verbose)
         Threads.@threads for jj = 1:nChains
             initialValues = missing
             if ii > 1
@@ -56,7 +56,7 @@ function PMMH(bootstrapFilter::Function, Y::DataFrame, opts::Dict; verbose=false
             
             # Save diagnostics
             diag_tmp = DataFrame()
-            diag_tmp.epoch = repeat([ii], nParams)
+            diag_tmp.chunk = repeat([ii], nParams)
             diag_tmp.pAccept = repeat([sum(nAcceptAll)/(nChains * (chunkSize - 1))],  nParams)
             diag_tmp.Rhat = dfc.rhat
             diag_tmp.ESS = dfc.ess
@@ -70,7 +70,7 @@ function PMMH(bootstrapFilter::Function, Y::DataFrame, opts::Dict; verbose=false
             
         end
         
-        # Increment the number of epochs
+        # Increment the number of chunks
         ii = ii + 1
         
     end
@@ -109,7 +109,7 @@ function runSingleEpochPMMH(bootstrapFilter::Function, covEst, Y::DataFrame, opt
     
     # Setup progress bar if one is not provided
     if ismissing(ProgBar)
-        ProgBar = Progress(chunkSize-1, dt=1, desc="Running single epoch...", barlen=50, enabled=opts["showEpochProgress"])
+        ProgBar = Progress(chunkSize-1, dt=1, desc="Running single chunk...", barlen=50, enabled=opts["showEpochProgress"])
     end
     
     # Run PMMH

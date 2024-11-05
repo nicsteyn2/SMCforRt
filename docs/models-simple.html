@@ -424,6 +424,7 @@ window.Quarto = {
   <li><a href="#estimating-sigma" id="toc-estimating-sigma" class="nav-link" data-scroll-target="#estimating-sigma"><span class="header-section-number">8.2</span> Estimating <span class="math inline">\(\sigma\)</span></a></li>
   <li><a href="#marginalising-out-sigma" id="toc-marginalising-out-sigma" class="nav-link" data-scroll-target="#marginalising-out-sigma"><span class="header-section-number">8.3</span> Marginalising out <span class="math inline">\(\sigma\)</span></a></li>
   <li><a href="#model-comparison" id="toc-model-comparison" class="nav-link" data-scroll-target="#model-comparison"><span class="header-section-number">8.4</span> Model comparison</a></li>
+  <li><a href="#a-very-very-simple-model" id="toc-a-very-very-simple-model" class="nav-link" data-scroll-target="#a-very-very-simple-model"><span class="header-section-number">8.5</span> A very very simple model</a></li>
   </ul>
 </nav>
     </div>
@@ -464,7 +465,7 @@ window.Quarto = {
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">Measures</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">bar</span>(Y.date, Y.Ct, color<span class="op">=:</span>darkblue, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">400</span>), xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reported cases"</span>, label<span class="op">=</span><span class="cn">false</span>, margins<span class="op">=</span><span class="fl">3</span>mm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="14">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div id="fig-models-simple-cases" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-models-simple-cases-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -478,7 +479,7 @@ Figure&nbsp;8.1: Reported cases for the first 100 days of the COVID-19 pandemic 
 </div>
 </div>
 <p>and write the model as a bootstrap filter:</p>
-<div id="a0c00e40" class="cell" data-execution_count="2">
+<div id="cb6d7c0e" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">simpleModel</span>(σ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract frequently used options</span></span>
@@ -531,7 +532,7 @@ Figure&nbsp;8.1: Reported cases for the first 100 days of the COVID-19 pandemic 
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>(meanRt, medianRt, lowerRt, upperRt) <span class="op">=</span> <span class="fu">processResults</span>(R)</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>pltR <span class="op">=</span> <span class="fu">plot</span>(Y.date, meanRt, ribbon<span class="op">=</span>(meanRt<span class="op">-</span>lowerRt, upperRt<span class="op">-</span>meanRt), color<span class="op">=:</span>darkorange, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">400</span>), xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, margins<span class="op">=</span><span class="fl">3</span>mm, label<span class="op">=</span><span class="st">"Rt | σ = 0.2"</span>)</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">hline!</span>([<span class="fl">1</span>], color<span class="op">=:</span>black, linestyle<span class="op">=:</span>dash, label<span class="op">=</span><span class="st">"Rt = 1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="16">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <div id="fig-models-simple-rtcond" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-models-simple-rtcond-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -548,7 +549,7 @@ Figure&nbsp;8.2: Reproduction number estimates from the simple model fit to data
 <section id="estimating-sigma" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="estimating-sigma"><span class="header-section-number">8.2</span> Estimating <span class="math inline">\(\sigma\)</span></h2>
 <p>We use the simple PMMH algorithm to estimate <span class="math inline">\(\sigma\)</span>. We need to specify some additional options for this:</p>
-<div id="7c39a675" class="cell" data-execution_count="4">
+<div id="3ad50f12" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"N"</span>] <span class="op">=</span> <span class="fl">500</span> <span class="co"># We don't need as many particles when running PMMH</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"nChains"</span>] <span class="op">=</span> <span class="fl">4</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"nSamples"</span>] <span class="op">=</span> <span class="fl">1000</span></span>
@@ -558,24 +559,24 @@ Figure&nbsp;8.2: Reproduction number estimates from the simple model fit to data
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"initialParamSamplers"</span>] <span class="op">=</span> [<span class="fu">Uniform</span>(<span class="fl">0.05</span>, <span class="fl">0.3</span>)] <span class="co"># A vector of distributions to sample initial parameter values from</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We also want to check that we are using a sufficient number of particles to obtain good estimates of <span class="math inline">\(\ell(\theta|y_{1:T})\)</span>:</p>
-<div id="c3e8cf18" class="cell" data-execution_count="5">
+<div id="83731bd4" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/Likelihood.jl"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(sd, logliks) <span class="op">=</span> <span class="fu">estimateStdDevLogLik</span>(<span class="fl">100</span>, simpleModel, σ, Y, opts; showProgress<span class="op">=</span><span class="cn">false</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Standard deviation of log-lik estimates = </span><span class="sc">$</span>sd<span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Standard deviation of log-lik estimates = 0.8172988908358179</code></pre>
+<pre><code>Standard deviation of log-lik estimates = 0.7999741554449409</code></pre>
 </div>
 </div>
 <p>Now we are ready to run the PMMH algorithm:</p>
-<div id="a782cd67" class="cell" data-execution_count="6">
+<div id="995ce1cd" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/PMMHSimple.jl"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>(θ, diagnostics) <span class="op">=</span> <span class="fu">multipleSimplePMMH</span>(simpleModel, Y, opts; showProgress<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>and analyse it using the MCMCChains package:</p>
-<div id="6dfde955" class="cell" data-execution_count="7">
+<div id="9b8368fe" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">MCMCChains</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> <span class="fu">Chains</span>(θ[<span class="fl">100</span><span class="op">:</span><span class="kw">end</span>,<span class="op">:</span>,<span class="op">:</span>], [<span class="st">"σ"</span>]) <span class="co"># Removing the first 100 samples as a windin</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="20">
+<div class="cell-output cell-output-display" data-execution_count="8">
 <div class="ansi-escaped-output">
 <pre>Chains MCMC chain (901×1×4 Array{Float64, 3}):
 Iterations        = 1:1:901
@@ -585,11 +586,11 @@ parameters        = σ
 Summary Statistics
  <span class="ansi-bold"> parameters </span> <span class="ansi-bold">    mean </span> <span class="ansi-bold">     std </span> <span class="ansi-bold"> naive_se </span> <span class="ansi-bold">    mcse </span> <span class="ansi-bold">      ess </span> <span class="ansi-bold">    rhat </span>
  <span class="ansi-bright-black-fg">     Symbol </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg">  Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg">  Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span>
-           σ    0.2395    0.0459     0.0008    0.0029   246.1704    1.0116
+           σ    0.2454    0.0458     0.0008    0.0031   174.4910    1.0244
 Quantiles
  <span class="ansi-bold"> parameters </span> <span class="ansi-bold">    2.5% </span> <span class="ansi-bold">   25.0% </span> <span class="ansi-bold">   50.0% </span> <span class="ansi-bold">   75.0% </span> <span class="ansi-bold">   97.5% </span>
  <span class="ansi-bright-black-fg">     Symbol </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span>
-           σ    0.1618    0.2054    0.2328    0.2707    0.3425
+           σ    0.1701    0.2123    0.2409    0.2754    0.3471
 </pre>
 </div>
 </div>
@@ -598,7 +599,7 @@ Quantiles
 <div id="cell-fig-models-simple-pmmhplots" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsPlots</span>, <span class="bu">Measures</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(C, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="21">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <div id="fig-models-simple-pmmhplots" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-models-simple-pmmhplots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -625,7 +626,7 @@ Figure&nbsp;8.3: Trace plots (left) and kernel density estimate (right) from sam
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>(meanRt, medianRt, lowerRt, upperRt) <span class="op">=</span> <span class="fu">processResults</span>(R)</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(pltR, Y.date, meanRt, ribbon<span class="op">=</span>(meanRt<span class="op">-</span>lowerRt, upperRt<span class="op">-</span>meanRt), label<span class="op">=</span><span class="st">"Marginal Rt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="22">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div id="fig-models-simple-rtmarg" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-models-simple-rtmarg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -653,7 +654,7 @@ Figure&nbsp;8.4: Reproduction number estimates from the simple model fit to data
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">zeros</span>(N, T, <span class="fl">2</span>)</span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>X[<span class="op">:</span>,<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> R</span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>X[<span class="op">:</span>,<span class="op">:</span>,<span class="fl">2</span>] <span class="op">=</span> C</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="30413c58" class="cell" data-execution_count="10">
+<div id="c04ea961" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">simpleModel</span>(σ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
@@ -707,6 +708,23 @@ Figure&nbsp;8.4: Reproduction number estimates from the simple model fit to data
 <span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
+<section id="a-very-very-simple-model" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="a-very-very-simple-model"><span class="header-section-number">8.5</span> A very very simple model</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup:</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="fl">100000</span> <span class="co"># Number of particles</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>) <span class="co"># Serial interval</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"NZCOVID"</span>) <span class="co"># Load data</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> <span class="fu">zeros</span>(N, <span class="fl">100</span>) <span class="co"># Matrix to store particle values (of log Rt)</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the bootstrap filter:</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>R[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">log</span>.(<span class="fu">rand</span>(<span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">10</span>), N)) <span class="co"># Sample initial values</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">100</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    R[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">rand</span>.(<span class="fu">Normal</span>.(R[<span class="op">:</span>,tt<span class="op">-</span><span class="fl">1</span>], <span class="fl">0.2</span>)) <span class="co"># Project (log) Rt</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    Λ <span class="op">=</span> <span class="fu">sum</span>(Y.Ct[(tt<span class="op">-</span><span class="fl">1</span>)<span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>(tt<span class="op">-</span><span class="fl">1</span>)]) <span class="co"># Calculate the force of infection</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    W <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Poisson</span>.(Λ <span class="op">*</span> <span class="fu">exp</span>.(R[<span class="op">:</span>,tt])), Y.Ct[tt]) <span class="co"># Calculate weights</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    R[<span class="fl">1</span><span class="op">:</span>N, <span class="fu">max</span>(tt<span class="op">-</span><span class="fl">40</span>, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="op">=</span> R[<span class="fu">wsample</span>(<span class="fl">1</span><span class="op">:</span>N, W, N), <span class="fu">max</span>(tt<span class="op">-</span><span class="fl">40</span>, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="co"># Resample</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">

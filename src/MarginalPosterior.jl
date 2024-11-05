@@ -1,7 +1,7 @@
 
 using ProgressMeter
 
-function marginalPosterior(bootstrapFilter::Function, θ, Y::DataFrame, opts::Dict; predictiveValues=missing, showProgress=false) #TOOD: Include predcitve values fucnctionality
+function marginalPosterior(bootstrapFilter::Function, θ, Y::DataFrame, opts::Dict; showProgress=false) #TOOD: Include predcitve values fucnctionality
     
     # Make a copy of the options dictionary so we can edit
     optsIn = deepcopy(opts)

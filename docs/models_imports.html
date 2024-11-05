@@ -448,7 +448,7 @@ window.Quarto = {
 </header>
 
 
-<div id="79259337" class="cell" data-execution_count="1">
+<div id="f14ae9ba" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting up</span></span>
@@ -495,7 +495,7 @@ L_t | R_t \sim \text{Poisson}\left(R_t \Lambda_t^{(m)}\right)
 \Lambda_t^{(m)} = \sum_{u=1}^{u_{max}} \omega_u \left(L_{t-u} + M_{t-u}\right)
 \tag{11.3}\]</span></span></p>
 <p>The bootstrap filter for this model is nearly identical to the simple model, we simply change one line (#TODO: install highlight extension and highlight):</p>
-<div id="6d5b1122" class="cell" data-execution_count="3">
+<div id="c3905bce" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">importedModel</span>(σ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>

@@ -7,11 +7,11 @@ Estimation of the instantaneous reproduction number is a well-researched problem
 👍 Produces valid credible intervals  
 👍 Can accommodate underreporting, missing/incomplete data, imported cases, uncertain serial intervals, temporally aggregated data, multiple data sources, etc - all at the same time!
 
-This repository contains all data, scripts, and notebooks required to follow along with the [tutorial](todo.link).
+This repository contains all data, scripts, and notebooks required to follow along with the [primer](https://github.com/nicsteyn2/SMCforRt/blob/main/workingpaper.pdf).
 
 This tutorial is designed for researchers with a basic understanding of statistical inference. We walk through the steps of constructing an SMC model to build a gold-standard $R_t$ estimator, fine-tuned for your purposes, from scratch. This balances the convenience of an off-the-shelf method, with the flexibility and deep understanding that comes with constructing a model from first principles.
 
-We also highlight the accompanying paper, [An introduction to sequential Monte Carlo methods for reproduction number estimation](link.link).
+We also highlight the accompanying paper, [An introduction to sequential Monte Carlo methods for reproduction number estimation](https://nicsteyn2.github.io/SMCforRt/).
 
 ![Figure showing unknown Rt and reported cases in NZ](assets/root_readme_data.png)
 
@@ -32,7 +32,7 @@ notebook()
 
 This will open a Jupyter notebook in your browser. Navigate to the github repository and open `main.ipynb` to get started.
 
-*Alternatively, you can open the cloned repository in VS Code (or your preferred IDE) and run the notebooks this way. If using VS Code, we recommend installing the [Julia extension](link.link).*
+*Alternatively, you can open the cloned repository in VS Code (or your preferred IDE) and run the notebooks this way.*
 
 ## Structure of this repository
 

@@ -1,5 +1,5 @@
 
-using DataFrames, CSV, Dates
+using DataFrames, CSV, Dates, Distributions
 
 
 # Loads various data-sources.

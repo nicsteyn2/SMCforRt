@@ -484,46 +484,39 @@ C_t|R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \om
 <p>where <span class="math inline">\(\Lambda_t^c\)</span> is called the <strong>force-of-infection</strong> at time <span class="math inline">\(t\)</span>. The superscript <span class="math inline">\(c\)</span> denotes that <span class="math inline">\(\Lambda_t^c\)</span> is calculated using past reported cases, to differentiate it from <span class="math inline">\(\Lambda_t\)</span>, which we use when modelling <em>infections</em>.</p>
 <section id="simulating-the-renewal-model" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="simulating-the-renewal-model"><span class="header-section-number">1.1</span> Simulating the renewal model</h2>
-<div id="b0f12612" class="cell" data-execution_count="1">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#TODO: Re-label "Code" to "Setup code"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Some setting up code!</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Distributions</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="fl">100</span> <span class="co"># Number of days we will later simulate</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
 <p>To understand how the renewal model works, let’s start by simulating <span class="math inline">\(T = 100\)</span> days of reported cases from it. To do this, we need <strong>three components</strong>:</p>
 <ol type="1">
 <li><strong>Initial cases</strong> <span class="math inline">\(C_1\)</span>. Let’s start with <span class="math inline">\(C_1 = 50\)</span>.</li>
 </ol>
-<div id="099f65db" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> <span class="fu">zeros</span>(T) </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>C[<span class="fl">1</span>] <span class="op">=</span> <span class="fl">50</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="e70d1a3d" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="fl">100</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> <span class="fu">zeros</span>(T) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>C[<span class="fl">1</span>] <span class="op">=</span> <span class="fl">50</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="2" type="1">
 <li>The <strong>reproduction number</strong> over time. We will use a sin-curve for this example:</li>
 </ol>
-<div id="f201a067" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> <span class="fl">1.0</span> <span class="op">.+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu">sin</span>.((<span class="fl">2</span><span class="op">*</span><span class="cn">π</span><span class="op">/</span><span class="fl">50</span>) <span class="op">.*</span> (<span class="fl">1</span><span class="op">:</span>T))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cac0e404" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> <span class="fl">1.0</span> <span class="op">.+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu">sin</span>.((<span class="fl">2</span><span class="op">*</span><span class="cn">π</span><span class="op">/</span><span class="fl">50</span>) <span class="op">.*</span> (<span class="fl">1</span><span class="op">:</span>T))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="3" type="1">
 <li>A <strong>serial interval</strong>. We use a discretised Gamma(2.36, 2.74)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> distribution:</li>
 </ol>
-<div id="266207db" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span>T)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> ω<span class="op">/</span><span class="fu">sum</span>(ω) <span class="co"># Ensure it is normalised!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="f0ce567a" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Distributions</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span>T)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> ω<span class="op">/</span><span class="fu">sum</span>(ω) <span class="co"># Ensure it is normalised!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Plotting our chosen <span class="math inline">\(R_t\)</span> and serial interval:</p>
-<div id="cell-fig-intro-simulatedRtSerial" class="cell" data-execution_count="5">
+<div id="cell-fig-intro-simulatedRtSerial" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualise Rt and the serial interval</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">Measures</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>plotR <span class="op">=</span> <span class="fu">plot</span>(R, label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Time (days)"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, color<span class="op">=:</span>darkgreen)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>plotω <span class="op">=</span> <span class="fu">bar</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">21</span>, ω[<span class="fl">1</span><span class="op">:</span><span class="fl">21</span>], label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Day"</span>, ylabel<span class="op">=</span><span class="st">"Serial interval probability"</span>, color<span class="op">=:</span>darkorange)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="fu">plot</span>(plotR, plotω, layout<span class="op">=</span>(<span class="fl">1</span>,<span class="fl">2</span>), size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualise Rt and the serial interval</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">Measures</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plotR <span class="op">=</span> <span class="fu">plot</span>(R, label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Time (days)"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, color<span class="op">=:</span>darkgreen)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>plotω <span class="op">=</span> <span class="fu">bar</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">21</span>, ω[<span class="fl">1</span><span class="op">:</span><span class="fl">21</span>], label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Day"</span>, ylabel<span class="op">=</span><span class="st">"Serial interval probability"</span>, color<span class="op">=:</span>darkorange)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="fu">plot</span>(plotR, plotω, layout<span class="op">=</span>(<span class="fl">1</span>,<span class="fl">2</span>), size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-intro-simulatedrtserial" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -539,22 +532,22 @@ Figure&nbsp;1.2: Assumed time-varying reproduction number and serial intervals.
 </div>
 </div>
 <p>Now we are ready to simulate from the renewal model. We do this by iteratively sampling a new <span class="math inline">\(C_t\)</span> and calculating the new force-of-infection term:</p>
-<div id="7d0b9898" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate the force-of-infection</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    Λ <span class="op">=</span> <span class="fu">sum</span>(C[tt<span class="op">-</span><span class="fl">1</span><span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])<span class="op">/</span><span class="fu">sum</span>(ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># And sample from the appropriate Poisson distribution</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    C[tt] <span class="op">=</span> <span class="fu">rand</span>(<span class="fu">Poisson</span>(R[tt] <span class="op">*</span> Λ))</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="f06aebc7" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate the force-of-infection</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    Λ <span class="op">=</span> <span class="fu">sum</span>(C[tt<span class="op">-</span><span class="fl">1</span><span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])<span class="op">/</span><span class="fu">sum</span>(ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># And sample from the appropriate Poisson distribution</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    C[tt] <span class="op">=</span> <span class="fu">rand</span>(<span class="fu">Poisson</span>(R[tt] <span class="op">*</span> Λ))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finally letting us plot our simulated cases:</p>
-<div id="cell-fig-intro-simulatedcases" class="cell" data-execution_count="7">
+<div id="cell-fig-intro-simulatedcases" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="fu">bar</span>(C, label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Time (days)"</span>, ylabel<span class="op">=</span><span class="st">"Simulated cases"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm, color<span class="op">=:</span>darkblue))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="fu">bar</span>(C, label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Time (days)"</span>, ylabel<span class="op">=</span><span class="st">"Simulated cases"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm, color<span class="op">=:</span>darkblue))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-intro-simulatedcases" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -580,40 +573,40 @@ Figure&nbsp;1.3: Simulated epidemic from the renewal model using our chosen valu
 <p><span id="eq-intro-simpleposterior"><span class="math display">\[
 R_t | C_{1:t} \sim \text{Gamma}\left(a_0 + C_t, b_0 + \sum_{u=1}^{u_{max}} C_{t-u} \omega_u \right)
 \tag{1.4}\]</span></span></p>
-<div id="107fc405" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(MeanRt, LowerRt, UpperRt) <span class="op">=</span> (<span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T)) <span class="co"># Pre-allocate results vectors</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>(a0, b0) <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">5</span>) <span class="co"># Set prior parameters</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the posterior distribution on day t</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> a0 <span class="op">+</span> C[tt]</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> b0 <span class="op">+</span> <span class="fu">sum</span>(C[tt<span class="op">-</span><span class="fl">1</span><span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])<span class="op">/</span><span class="fu">sum</span>(ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    PosteriorDist <span class="op">=</span> <span class="fu">Gamma</span>(a, <span class="fl">1</span><span class="op">/</span>b)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Save the results</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    MeanRt[tt] <span class="op">=</span> <span class="fu">mean</span>(PosteriorDist)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    LowerRt[tt] <span class="op">=</span> <span class="fu">quantile</span>(PosteriorDist, <span class="fl">0.025</span>)</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    UpperRt[tt] <span class="op">=</span> <span class="fu">quantile</span>(PosteriorDist, <span class="fl">0.975</span>)</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="5f2665c3" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(MeanRt, LowerRt, UpperRt) <span class="op">=</span> (<span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T)) <span class="co"># Pre-allocate results vectors</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>(a0, b0) <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">5</span>) <span class="co"># Set prior parameters</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the posterior distribution on day t</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> a0 <span class="op">+</span> C[tt]</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> b0 <span class="op">+</span> <span class="fu">sum</span>(C[tt<span class="op">-</span><span class="fl">1</span><span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])<span class="op">/</span><span class="fu">sum</span>(ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    PosteriorDist <span class="op">=</span> <span class="fu">Gamma</span>(a, <span class="fl">1</span><span class="op">/</span>b)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Save the results</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    MeanRt[tt] <span class="op">=</span> <span class="fu">mean</span>(PosteriorDist)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    LowerRt[tt] <span class="op">=</span> <span class="fu">quantile</span>(PosteriorDist, <span class="fl">0.025</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    UpperRt[tt] <span class="op">=</span> <span class="fu">quantile</span>(PosteriorDist, <span class="fl">0.975</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We will compare our estimates with those from a popular model, EpiEstim, which smooths the data by assuming <span class="math inline">\(R_t\)</span> is fixed over a <span class="math inline">\(\tau\)</span>-day (typically <span class="math inline">\(\tau = 7\)</span>) trailing window:</p>
-<div id="0b05e516" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/RtEstimators.jl"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>EpiEstimPosterior <span class="op">=</span> <span class="fu">EpiEstim</span>(<span class="fl">7</span>, ω, C; a0<span class="op">=</span>a0, b0<span class="op">=</span>b0)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>(EpiEstMean, EpiEstLower, EpiEstUpper) <span class="op">=</span> (<span class="fu">mean</span>.(EpiEstimPosterior), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.025</span>), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="8918b54a" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/RtEstimators.jl"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>EpiEstimPosterior <span class="op">=</span> <span class="fu">EpiEstim</span>(<span class="fl">7</span>, ω, C; a0<span class="op">=</span>a0, b0<span class="op">=</span>b0)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>(EpiEstMean, EpiEstLower, EpiEstUpper) <span class="op">=</span> (<span class="fu">mean</span>.(EpiEstimPosterior), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.025</span>), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finally, we are ready to plot our results:</p>
-<div id="cell-fig-intro-exampleRt" class="cell" data-execution_count="10">
+<div id="cell-fig-intro-exampleRt" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xlabel<span class="op">=</span><span class="st">"Time (days)"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">350</span>), left_margin<span class="op">=</span><span class="fl">3</span>mm, bottom_margin<span class="op">=</span><span class="fl">3</span>mm)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">2</span><span class="op">:</span>T, MeanRt[<span class="fl">2</span><span class="op">:</span>T], ribbon<span class="op">=</span>(MeanRt[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>LowerRt[<span class="fl">2</span><span class="op">:</span>T], UpperRt[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>MeanRt[<span class="fl">2</span><span class="op">:</span>T]), fillalpha<span class="op">=</span><span class="fl">0.4</span>, label<span class="op">=</span><span class="st">"Unsmoothed posterior"</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">2</span><span class="op">:</span>T, EpiEstMean[<span class="fl">2</span><span class="op">:</span>T], ribbon<span class="op">=</span>(EpiEstMean[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>EpiEstLower[<span class="fl">2</span><span class="op">:</span>T], EpiEstUpper[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>EpiEstMean[<span class="fl">2</span><span class="op">:</span>T]), fillalpha<span class="op">=</span><span class="fl">0.4</span>, label<span class="op">=</span><span class="st">"EpiEstim (smoothed) posterior"</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">1</span><span class="op">:</span>T, R, label<span class="op">=</span><span class="st">"True Rt"</span>, color<span class="op">=:</span>black)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xlabel<span class="op">=</span><span class="st">"Time (days)"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">350</span>), left_margin<span class="op">=</span><span class="fl">3</span>mm, bottom_margin<span class="op">=</span><span class="fl">3</span>mm)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">2</span><span class="op">:</span>T, MeanRt[<span class="fl">2</span><span class="op">:</span>T], ribbon<span class="op">=</span>(MeanRt[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>LowerRt[<span class="fl">2</span><span class="op">:</span>T], UpperRt[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>MeanRt[<span class="fl">2</span><span class="op">:</span>T]), fillalpha<span class="op">=</span><span class="fl">0.4</span>, label<span class="op">=</span><span class="st">"Unsmoothed posterior"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">2</span><span class="op">:</span>T, EpiEstMean[<span class="fl">2</span><span class="op">:</span>T], ribbon<span class="op">=</span>(EpiEstMean[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>EpiEstLower[<span class="fl">2</span><span class="op">:</span>T], EpiEstUpper[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>EpiEstMean[<span class="fl">2</span><span class="op">:</span>T]), fillalpha<span class="op">=</span><span class="fl">0.4</span>, label<span class="op">=</span><span class="st">"EpiEstim (smoothed) posterior"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">1</span><span class="op">:</span>T, R, label<span class="op">=</span><span class="st">"True Rt"</span>, color<span class="op">=:</span>black)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div id="fig-intro-examplert" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-intro-examplert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">

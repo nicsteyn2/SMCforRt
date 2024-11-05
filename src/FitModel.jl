@@ -58,7 +58,7 @@ function fitModel(bootstrapFilter::Function, Y::DataFrame, opts::Dict; skipResam
     df_params.ess = DataFrame(summarize(chains)).ess
     
     # Fetch samples from the marginal posterior distribution
-    X = marginalPosterior(bootstrapFilter, θ, Y, opts; predictiveValues=predictiveValues)
+    X = marginalPosterior(bootstrapFilter, θ, Y, opts)
     
     # Extract dimensions
     nStates = missing
