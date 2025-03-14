@@ -333,6 +333,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">EpiNow2</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./othermethods_pomp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Iterated filtering and POMP</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item">
@@ -386,7 +392,8 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#temfack-and-wyse" id="toc-temfack-and-wyse" class="nav-link active" data-scroll-target="#temfack-and-wyse"><span class="header-section-number">7.1</span> Temfack and Wyse</a></li>
+  <li><a href="#temfack-and-wyse-2024" id="toc-temfack-and-wyse-2024" class="nav-link active" data-scroll-target="#temfack-and-wyse-2024"><span class="header-section-number">7.1</span> Temfack and Wyse (2024)</a></li>
+  <li><a href="#endo-van-leeuwen-and-baguelin-2019" id="toc-endo-van-leeuwen-and-baguelin-2019" class="nav-link" data-scroll-target="#endo-van-leeuwen-and-baguelin-2019"><span class="header-section-number">7.2</span> Endo, van Leeuwen, and Baguelin (2019)</a></li>
   </ul>
 </nav>
     </div>
@@ -412,13 +419,48 @@ window.Quarto = {
 </header>
 
 
-<section id="temfack-and-wyse" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="temfack-and-wyse"><span class="header-section-number">7.1</span> Temfack and Wyse</h2>
-<p><span class="citation" data-cites="temfackReviewSequentialMonte2024b">Temfack and Wyse (<a href="references.html#ref-temfackReviewSequentialMonte2024b" role="doc-biblioref">2024</a>)</span> provide an excellent introduction to SMC methods in epidemiology, albeit with a focus on SIR-type compartmental models. Many considerations in their paper are useful in our context too. To assist with interpretation, we contextualise and compare their work here.</p>
-<p>#TODO: Write section-by-section explainer of similarities and differences</p>
+<p>We have outlined additional resources at the end of relevant sections. This chapter is specifically dedicated to papers presenting an overall framework in the style of a primer or tutorial.</p>
+<section id="temfack-and-wyse-2024" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="temfack-and-wyse-2024"><span class="header-section-number">7.1</span> Temfack and Wyse (2024)</h2>
+<p><span class="citation" data-cites="temfackReviewSequentialMonte2024b">Temfack and Wyse (<a href="references.html#ref-temfackReviewSequentialMonte2024b" role="doc-biblioref">2024</a>)</span> provide an excellent introduction to SMC methods in epidemiology, albeit with a focus on SEIR-type compartmental models rather than the renewal model. They also target the filtering posterior distribution rather than the smoothing posterior distribuon. Despite these differences, many considerations in their paper are useful in our context too. To assist with interpretation, we contextualise and compare their work here.</p>
+<p>After providing a useful background of SMC methods in epidemiology (section 2), and an introduction to the discrete-time stochastic SEIR model (section 3), they describe a general state-space model (abbreviated as SSM) in section 3.1 as:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp; x_0 \sim f(x_0|\theta) &amp; \text{Initial state} \\
+&amp; x_t | x_{t-1} \sim f(x_t|x_{t-1}, \theta) &amp; \text{State process} \\
+&amp; y_t | x_t \sim g(y_t | x_t, \theta) &amp; \text{Observation process}
+\end{aligned}
+\]</span></p>
+<p>Their state process corresponds to our state-space transition distribution, while their observation process corresponds to our observation distribution.</p>
+<p>This construction is a special case of ours for two reasons:</p>
+<ol type="1">
+<li>Their state process is explicitly Markovian: <span class="math inline">\(f\)</span> depends only on <span class="math inline">\(x_{t-1}\)</span>, whereas our state-space transition distribution can depend on all past values <span class="math inline">\(x_{1:t-1}\)</span>.</li>
+<li>Their observation process depends only on the current hidden state <span class="math inline">\(x_t\)</span>. Our observation distribution can depend on past values of both the hidden state <span class="math inline">\(x_{1:t}\)</span> and the observed data <span class="math inline">\(y_{1:t-1}\)</span>.</li>
+</ol>
+<p>The Markovian structure allows for a much wider range of SMC-type methods (often more efficient than ours) to be used, at the cost of a restricted range of models that can be fit. The renewal model is inherently non-Markovian, so cannot be fit within their framework.</p>
+<p>The authors then introduce general sequential importance sampling (section 3.1.1) and, like us, use the state process as the proposal density, noting that this is known to be suboptimal. Particle degeneracy is tackled via resampling (section 3.1.2), although they resample only when the effective sample size of their particles is below some threshold. This reduces computational load and decreases the impact of particle degeneracy but is incompatible with fixed-lag smoothing - their method returns samples from the filtering posterior distributions only.</p>
+<p>Rather than PMMH, the authors augment the parameters <span class="math inline">\(\theta\)</span> as additional time-varying hidden states. To avoid severe particle degeneracy issues and the overestimation of the posterior variance of <span class="math inline">\(\theta\)</span>, they use the approach of #TODO: cite liuCombinedParameterState2001. This approach allows the authors to handle the estimation of <span class="math inline">\(\theta\)</span> alongside <span class="math inline">\(X_t\)</span> (thus all inference can be performed in a single algorithm), but this approach is again incompatible with our fixed-lag smoothing.</p>
+</section>
+<section id="endo-van-leeuwen-and-baguelin-2019" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="endo-van-leeuwen-and-baguelin-2019"><span class="header-section-number">7.2</span> Endo, van Leeuwen, and Baguelin (2019)</h2>
+<p>Our overall approach is similar to <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span>, although there remain some crucial differences. Before getting into details, we highlight that their figure 3 provides an excellent graphic overview of the SMC algorithm.</p>
+<p>The underlying model fit in <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span> is defined in the same fashion as <span class="citation" data-cites="temfackReviewSequentialMonte2024b">Temfack and Wyse (<a href="references.html#ref-temfackReviewSequentialMonte2024b" role="doc-biblioref">2024</a>)</span>, including using <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> to represent the same state and observation processes respectively. In this case, they do not explicitly write the dependence on model parameters <span class="math inline">\(\theta\)</span>, although highlight in the text that both <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> can depend on <span class="math inline">\(\theta\)</span> implicitly.</p>
+<p>Like other papers in the field, <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span> focus on methods for Markovian models with applications to compartmental SIR-type epidemic models. They focus on “Particle Markov-chain Monte Carlo” (PMCMC), which is largely analagous to the PMMH algorithm we use (<a href="smc-pmmh.html#sec-smc-pmmh" class="quarto-xref"><span>Section 5.3</span></a>). Like PMMH, PMCMC uses a particle filter to estimate the likelihood of proposed parameter vectors.</p>
+<p>Unlike our approach, however, the authors do not separate the inference of <span class="math inline">\(\theta\)</span> from the inference of <span class="math inline">\(X_t\)</span>. To recap, in our approach we:</p>
+<ol type="a">
+<li>Use PMMH to sample from <span class="math inline">\(P(\theta|y_{1:T})\)</span>, using the bootstrap filter as a subroutine.</li>
+<li>Run the bootstrap filter at a sufficiently large number of samples of <span class="math inline">\(\theta\)</span>, storing all particle trajectories.</li>
+</ol>
+<p>This results in waste: we run many bootstrap filters in step (a), the results of which are lost.</p>
+<p>In contrast, <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span> only perform the equivalent of step (a). They retain a single trajectory <span class="math inline">\(x_{1:T}\)</span> from each accepted parameter sample, generating a set <span class="math inline">\(\{x_{1:T}^{(i)}, \theta^{(i)}\}_{i=1}^M\)</span>. This uses information from every bootstrap filter that was run at an accepted value of <span class="math inline">\(\theta\)</span>.</p>
+<p>While this appears more computationally efficient, in order to effectively pre-allocate memory to store the (possibly very high dimensional) particle trajectories, we would need to know at what value of <span class="math inline">\(M\)</span> to stop the PMMH algorithm. We instead prioritise the adaptivity of our approach over the possible efficiency gains of <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span>.</p>
+<p>Despite this, the overall framework of <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span> could be adapted to fit non-Markovian models by replacing their bootstrap filter with the one outlined in <a href="smc-bootstrap.html" class="quarto-xref"><span>Chapter 4</span></a>.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-endoIntroductionParticleMarkovchain2019" class="csl-entry" role="listitem">
+Endo, Akira, Edwin van Leeuwen, and Marc Baguelin. 2019. <span>“Introduction to Particle <span class="nocase">Markov-chain Monte Carlo</span> for Disease Dynamics Modellers.”</span> <em>Epidemics</em> 29 (December): 100363. <a href="https://doi.org/10.1016/j.epidem.2019.100363">https://doi.org/10.1016/j.epidem.2019.100363</a>.
+</div>
 <div id="ref-temfackReviewSequentialMonte2024b" class="csl-entry" role="listitem">
 Temfack, Dhorasso, and Jason Wyse. 2024. <span>“A Review of Sequential <span>Monte Carlo</span> Methods for Real-Time Disease Modeling.”</span> arXiv. <a href="https://doi.org/10.48550/ARXIV.2408.15739">https://doi.org/10.48550/ARXIV.2408.15739</a>.
 </div>

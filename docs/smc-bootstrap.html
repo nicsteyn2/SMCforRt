@@ -333,6 +333,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">EpiNow2</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./othermethods_pomp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Iterated filtering and POMP</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item">
@@ -386,15 +392,16 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#intuition" id="toc-intuition" class="nav-link active" data-scroll-target="#intuition"><span class="header-section-number">4.1</span> Intuition</a>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background"><span class="header-section-number">4.1</span> Background</a>
   <ul class="collapse">
-  <li><a href="#sequential-importance-resampling" id="toc-sequential-importance-resampling" class="nav-link" data-scroll-target="#sequential-importance-resampling"><span class="header-section-number">4.1.1</span> Sequential Importance (Re)sampling</a></li>
-  <li><a href="#state-history-resampling" id="toc-state-history-resampling" class="nav-link" data-scroll-target="#state-history-resampling"><span class="header-section-number">4.1.2</span> State-history resampling</a></li>
-  <li><a href="#using-the-particles" id="toc-using-the-particles" class="nav-link" data-scroll-target="#using-the-particles"><span class="header-section-number">4.1.3</span> Using the particles</a></li>
+  <li><a href="#sec-smc-bootstrap-overview" id="toc-sec-smc-bootstrap-overview" class="nav-link" data-scroll-target="#sec-smc-bootstrap-overview"><span class="header-section-number">4.1.1</span> Overview</a></li>
+  <li><a href="#simulation-based-inference" id="toc-simulation-based-inference" class="nav-link" data-scroll-target="#simulation-based-inference"><span class="header-section-number">4.1.2</span> Simulation-based inference</a></li>
   </ul></li>
-  <li><a href="#algorithm" id="toc-algorithm" class="nav-link" data-scroll-target="#algorithm"><span class="header-section-number">4.2</span> Algorithm</a></li>
-  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">4.3</span> Example</a></li>
-  <li><a href="#sec-smc-bootstrap-additional" id="toc-sec-smc-bootstrap-additional" class="nav-link" data-scroll-target="#sec-smc-bootstrap-additional"><span class="header-section-number">4.4</span> Resources from other fields</a></li>
+  <li><a href="#the-bootstrap-filter" id="toc-the-bootstrap-filter" class="nav-link" data-scroll-target="#the-bootstrap-filter"><span class="header-section-number">4.2</span> The bootstrap filter</a></li>
+  <li><a href="#fixed-lag-smoothing" id="toc-fixed-lag-smoothing" class="nav-link" data-scroll-target="#fixed-lag-smoothing"><span class="header-section-number">4.3</span> Fixed-lag smoothing</a></li>
+  <li><a href="#algorithm" id="toc-algorithm" class="nav-link" data-scroll-target="#algorithm"><span class="header-section-number">4.4</span> Algorithm</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">4.5</span> Example</a></li>
+  <li><a href="#sec-smc-bootstrap-additional" id="toc-sec-smc-bootstrap-additional" class="nav-link" data-scroll-target="#sec-smc-bootstrap-additional"><span class="header-section-number">4.6</span> Additional resources</a></li>
   </ul>
 </nav>
     </div>
@@ -420,68 +427,126 @@ window.Quarto = {
 </header>
 
 
-<p>In this chapter we introduce a variant of the <strong>bootstrap filter</strong>.</p>
-<p>The bootstrap filter generates sample-based approximations to the conditional filtering distribution <span class="math inline">\(P(X_t | y_{1:t}, \theta)\)</span> and conditional smoothing distribution <span class="math inline">\(P(X_t | y_{1:T}, \theta)\)</span>.</p>
-<p><em>This chapter assumes fixed and known values of the model parameters <span class="math inline">\(\theta\)</span>. <a href="smc-pmmh.html" class="quarto-xref"><span>Chapter 5</span></a> handles the estimation of <span class="math inline">\(\theta\)</span>.</em></p>
-<section id="intuition" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="intuition"><span class="header-section-number">4.1</span> Intuition</h2>
-<p>The goal of the bootstrap filter is to use observed data <span class="math inline">\(y_{1:T}\)</span> to learn about the hidden-states <span class="math inline">\(X_t\)</span>.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
+<p><em>This chapter assumes fixed and known values of the model parameters. <a href="smc-pmmh.html" class="quarto-xref"><span>Chapter 5</span></a> considers the estimation of <span class="math inline">\(\theta\)</span>.</em></p>
+<section id="background" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="background"><span class="header-section-number">4.1</span> Background</h2>
+<div class="callout callout-style-default callout-tip callout-titled" title="Goal">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+Goal
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>We provide a different intuitive explanation in the corresponding <a href="https://github.com/nicsteyn2/SMCforRt/blob/main/smcforRt.pdf">journal article</a>. Otherwise see <a href="#sec-smc-bootstrap-additional" class="quarto-xref"><span>Section 4.4</span></a> for additional resources.</p>
+<p>The <strong>goal</strong> of the bootstrap filter is to use observed data <span class="math inline">\(y_{1:T}\)</span> to learn about the hidden-states <span class="math inline">\(X_t\)</span> given a pre-determined parameter vector <span class="math inline">\(\theta\)</span>.</p>
 </div>
 </div>
-<section id="sequential-importance-resampling" class="level3" data-number="4.1.1">
-<h3 data-number="4.1.1" class="anchored" data-anchor-id="sequential-importance-resampling"><span class="header-section-number">4.1.1</span> Sequential Importance (Re)sampling</h3>
-<p>Assume that we have a collection of samples from the <em>filtering distribution</em> at time <span class="math inline">\(t\!-\!1\)</span>, denoted <span class="math inline">\(\{x_{t-1}^{(i)}\} \sim P(X_{t-1}|y_{1:t-1}, \theta)\)</span>. We call these samples <strong>particles</strong>, and they collectively represent our knowledge about the hidden-states at this time step.</p>
+<p>The fundamental idea of the bootstrap filter (and particle filters in general) is to produce collections of samples from the target posterior distribution of a hidden-state model (<a href="intro-hiddenstatemodels.html" class="quarto-xref"><span>Chapter 3</span></a>) at each time-step <span class="math inline">\(t\)</span>. The result of this algorithm takes the form:</p>
+<p><span id="eq-smc-bootstrap-particles"><span class="math display">\[
+\{x_t^{(i)}\}_{i=1}^N \sim P(X_t | y_{1:t}, \theta)
+\tag{4.1}\]</span></span></p>
+<p>These samples are often called <strong>particles</strong>, hence the term <em>particle filtering</em>.</p>
+<p>We can use these particles to find the posterior mean, for example:</p>
+<p><span class="math display">\[
+E[X_t|y_{1:t}, \theta] \approx \frac{1}{N} \sum_{i=1}^N x_t^{(i)}
+\]</span></p>
+<p>or 95% credible intervals (by finding the 2.5th and 97.5th percentile values), or any other quantity we might care about. As these samples are Bayesian, they can be naturally used in downstream models.</p>
+<p><em>Side-note: the particles in <a href="#eq-smc-bootstrap-particles" class="quarto-xref">Equation&nbsp;<span>4.1</span></a> represent the filtering distribution (our knowledge about <span class="math inline">\(X_t\)</span> using data availabile up-to time <span class="math inline">\(t\)</span>, see <a href="intro-hiddenstatemodels.html#sec-intro-filteringandsmoothing" class="quarto-xref"><span>Section 3.1.1</span></a>). As we will soon see, we can also use the bootstrap filter to find particles representing the smoothing distribution (our knowledge about <span class="math inline">\(X_t\)</span> using all available data).</em></p>
+<section id="sec-smc-bootstrap-overview" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="sec-smc-bootstrap-overview"><span class="header-section-number">4.1.1</span> Overview</h3>
+<p>The bootstrap filter repeats three steps for each time step.</p>
+<p>Assume we are at time step <span class="math inline">\(t\)</span> and have a collection of samples from the filtering distribution at time <span class="math inline">\(t\!-\!1\)</span>, denoted <span class="math inline">\(\{x_{t-1}^{(i)}\}\)</span>, representing our guesses of the value of <span class="math inline">\(X_{t-1}\)</span>. We update these samples to represent our guesses of the value of <span class="math inline">\(X_t\)</span> by:</p>
+<ol type="1">
+<li>Projecting them forward according to the state-space transition distribution.</li>
+<li>Weighting these projected particles according to the observation distribution.</li>
+<li>Resampling these particles according to their weights.</li>
+</ol>
+<p>This is visualised in <a href="#fig-smc-bootstrapeg" class="quarto-xref">Figure&nbsp;<span>4.1</span></a>:</p>
+<div id="fig-smc-bootstrapeg" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-smc-bootstrapeg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/diag-smc.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-smc-bootstrapeg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.1: Diagram showing the three steps performed by the bootstrap filter at each time step <span class="math inline">\(t\)</span>. In this diagram, particle histories are also resampled, making this an example of a bootstrap <em>smoother</em>.
+</figcaption>
+</figure>
+</div>
+<p>Step one creates a set of particles representing equally-likely one-step-ahead projections of <span class="math inline">\(X_t\)</span> given data up to time <span class="math inline">\(t-1\)</span>:</p>
+<p><span class="math display">\[
+\{\tilde{x}_t^{(i)}\}_{i=1}^N \sim P(X_t | y_{1:t-1}, \theta)
+\]</span></p>
+<p>Step two weights these projections according to how likely they are under the observation model:</p>
+<p><span class="math display">\[
+w_t^{(i)} = P(y_t | \tilde{x}_t^{(i)}, \theta)
+\]</span></p>
+<p>And the final step resamples according to these weights to ensure the resulting <span class="math inline">\(\{x_t^{(i)}\}\)</span> are equally-likely samples from <span class="math inline">\(P(X_t|y_{1:t}, \theta)\)</span>.</p>
+</section>
+<section id="simulation-based-inference" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="simulation-based-inference"><span class="header-section-number">4.1.2</span> Simulation-based inference</h3>
+<p>In order to use SMC methods to fit a hidden-state model, we only need to:</p>
+<ol type="a">
+<li>Sample from the state-space transition distribution</li>
+<li>Evaluate the observation distribution</li>
+</ol>
+<p>Crucially, we do not need to <em>evalute</em> the state-space transition distribution, allowing for easy <strong>simulation-based inference</strong>.</p>
+<p>Simulation-based inference methods rely on simulations rather than analytical solutions and are very popular in statistical epidemiology. In this case, sampling from the state-space transition distribtion is the same as running the “simulator” one-step forward into the future. This simulator implies a likelihood even though we never need to find its precise form.</p>
+</section>
+</section>
+<section id="the-bootstrap-filter" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="the-bootstrap-filter"><span class="header-section-number">4.2</span> The bootstrap filter</h2>
+<p>Like before, assume that we have a collection of samples from the filtering distribution at time <span class="math inline">\(t\!-\!1\)</span>, denoted <span class="math inline">\(\{x_{t-1}^{(i)}\} \sim P(X_{t-1}|y_{1:t-1}, \theta)\)</span>. For now, also assume that our state-space transitions are Markovian (i.e., <span class="math inline">\(X_t\)</span> depends only on <span class="math inline">\(X_{t-1}\)</span>).</p>
+<p><strong>Step 1: Projection</strong></p>
 <p>By coupling these particles with the state-space transition model (<a href="intro-hiddenstatemodels.html#eq-intro-statespace" class="quarto-xref">Equation&nbsp;<span>3.1</span></a>), we can make one-step-ahead predictions. Mathematically we want to obtain the predictive distribution: <span class="math display">\[
 \underbrace{P(X_t | y_{1:t-1}, \theta)}_{\text{predictive dist.}} = \int \underbrace{P(X_t | X_{t-1}, \theta)}_{\text{state-space transition dist.}} \underbrace{P(X_{t-1}|y_{1:t-1}, \theta)}_{\text{prev. filtering dist.}} \ dX_{t-1}
-\]</span> Which is a complicated and potentially high-dimensional integral. Fortunately, all we need to do is sample from the state-space transition model while conditioning on our particles: <span class="math display">\[
-\{\tilde{x}_t^{(i)}\} \sim P(X_t | x_{t-1}^{(i)}, \theta)
 \]</span></p>
+<p>Which is represented by complicated and potentially high-dimensional integral of two things we know. Fortunately, all we need to do is sample from the state-space transition model while conditioning on our particles:</p>
+<p><span class="math display">\[
+\tilde{x}_t^{(i)} \sim P(X_t | x_{t-1}^{(i)}, \theta)
+\]</span></p>
+<p><strong>Step 2: Weighting</strong></p>
 <p>If we treat this predictive distribution as the prior distribution for <span class="math inline">\(X_t|y_{1:t}\)</span>, we can apply Bayes’ formula:</p>
 <p><span class="math display">\[
 \underbrace{P(X_t | y_{1:t}, \theta)}_{\text{new filtering dist}} \propto \underbrace{P(y_t|X_t, y_{1:t-1}, \theta)}_{\text{observation dist.}} \underbrace{P(X_t | y_{1:t-1}, \theta)}_{\text{predictive dist.}}
 \]</span></p>
-<p>Since we already have samples from <span class="math inline">\(P(X_t | y_{1:t-1}, \theta)\)</span>, all we need to do is assign them weights <span class="math inline">\(w_t^{(i)}\)</span> according to the observation distribution:</p>
+<p>Since we already have samples from the predictive distribution <span class="math inline">\(P(X_t | y_{1:t-1}, \theta)\)</span>, all we need to do is assign them weights <span class="math inline">\(w_t^{(i)}\)</span> according to the observation distribution:</p>
 <p><span class="math display">\[
 w_t^{(i)} = P(y_t | \tilde{x}_t^{(i)}, y_{1:t-1}, \theta)
 \]</span></p>
-<p>The final set of particles <span class="math inline">\(\{x_t^{(i)}\}\)</span> is constructed by re-sampling (with replacement) from <span class="math inline">\(\{\tilde{x}_t^{(i)}\}\)</span> according to the corresponding weights. Thus:</p>
+<p><strong>Step 3: Resampling</strong></p>
+<p>The final set of particles <span class="math inline">\(\{x_t^{(i)}\}\)</span> is constructed by sampling (with replacement) from <span class="math inline">\(\{\tilde{x}_t^{(i)}\}\)</span> according to the corresponding weights, resulting in:</p>
 <p><span class="math display">\[
 x_t^{(i)} \sim P(X_t | y_{1:t}, \theta)
 \]</span></p>
-<p>Thus, starting with an initial set of particles <span class="math inline">\(\{x_0^{(i)}\} \sim P(X_0)\)</span>, all we need to do is repeat this procedue at each time step <span class="math inline">\(t\)</span>, storing the particle values as we go. If the resampling-step is performed at every time step where data are observed, this is called a <strong>bootstrap filter</strong>, which is a special case of a sequential importance resampling algorithm.</p>
+<p><strong>Repeat</strong></p>
+<p>Starting with an initial set of particles <span class="math inline">\(\{x_0^{(i)}\} \sim P(X_0)\)</span>, all we need to do is repeat this procedue for each <span class="math inline">\(t = 1, 2, \ldots, T\)</span>, storing the particle values as we go. This concludes the bootstrap filter.</p>
+<p>The bootstrap filter is a special case of a sequential importance sampling algorithm (<a href="#sec-smc-bootstrap-additional" class="quarto-xref"><span>Section 4.6</span></a>).</p>
 </section>
-<section id="state-history-resampling" class="level3" data-number="4.1.2">
-<h3 data-number="4.1.2" class="anchored" data-anchor-id="state-history-resampling"><span class="header-section-number">4.1.2</span> State-history resampling</h3>
-<p>In most</p>
-<p>The derivation provided above assumes that our model is Markovian: the state-space transition and observation distributions depend only on <span class="math inline">\(X_{t-1}\)</span>, and not on <span class="math inline">\(X_{t-2}, X_{t-3}, \ldots\)</span>.</p>
+<section id="fixed-lag-smoothing" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="fixed-lag-smoothing"><span class="header-section-number">4.3</span> Fixed-lag smoothing</h2>
+<p>There are two problems with the bootstrap filter above:</p>
+<ul>
+<li>It assumes the state-space transition model is Markovian (<span class="math inline">\(X_t\)</span> depends only on <span class="math inline">\(X_{t-1}\)</span>)</li>
+<li><span class="math inline">\(X_t\)</span> is informed by past data <span class="math inline">\(y_{1:t}\)</span> only (the filtering posterior), when we may want to leverage all available data (the smoothing posterior).</li>
+</ul>
+<p>Both of these problems are solved using <strong>fixed-lag resampling</strong>.</p>
 </section>
-<section id="using-the-particles" class="level3" data-number="4.1.3">
-<h3 data-number="4.1.3" class="anchored" data-anchor-id="using-the-particles"><span class="header-section-number">4.1.3</span> Using the particles</h3>
+<section id="algorithm" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="algorithm"><span class="header-section-number">4.4</span> Algorithm</h2>
+<p>We present the algorithm as a Julia code-snippet. For a pseudocode implementation, please see our preprint #TODO: add link.</p>
 </section>
-</section>
-<section id="algorithm" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="algorithm"><span class="header-section-number">4.2</span> Algorithm</h2>
-<p>#TODO: write SMC algorithm</p>
-</section>
-<section id="example" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="example"><span class="header-section-number">4.3</span> Example</h2>
+<section id="example" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="example"><span class="header-section-number">4.5</span> Example</h2>
 <p>For demonstration, we consider a simple reproduction number estimator. First assume that <span class="math inline">\(\log R_t\)</span> follows a Gaussian random walk:</p>
 <p>[#TODO]</p>
 </section>
-<section id="sec-smc-bootstrap-additional" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="sec-smc-bootstrap-additional"><span class="header-section-number">4.4</span> Resources from other fields</h2>
+<section id="sec-smc-bootstrap-additional" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="sec-smc-bootstrap-additional"><span class="header-section-number">4.6</span> Additional resources</h2>
 <p>Bootstrap filters (and SMC methods more generally) have found use in many fields. Each field has their own motivation for and notation describing these methods. We provide an overview of other resources here.</p>
+<p><strong>Sequential Importance Sampling</strong></p>
+<p>Sequential imporance sampling is the name given to the general class of algorithms, of which the bootstrap filter is one. #TODO: finish writing this</p>
 <p><strong>Bayesian Filtering and Smoothing <span class="citation" data-cites="sarkkaBayesianFilteringSmoothing2013">(<a href="references.html#ref-sarkkaBayesianFilteringSmoothing2013" role="doc-biblioref">Särkkä 2013</a>)</span></strong></p>
 <p>Those with an <strong>engineering background</strong> may be familiar with “filtering and smoothing”, where the state of a time-varying system is tracked through the observation of noisy measurements. Classical examples include GPS position tracking or audio signal processing.</p>
 <p>The Kalman filter, which provides an analytical solution when the state-space transition and observation models are linear Gaussian and Markovian, is perhaps the best-known example of a filtering method from engineering.</p>
