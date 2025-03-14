@@ -14,7 +14,7 @@
     "href": "index.html#welcome",
     "title": "SMC and epidemic renewal models",
     "section": "",
-    "text": "Estimate \\(R_t\\) from imperfect data, or from multiple sources of data\nProduce well-calibrated short-term projections\nEstimate abrupt change-points in disease transmission\n… and so much more\n\n\n\nIs simple, intuitive, and flexible\nProduces valid credible intervals on quantities of interest\nCan simultaneously account for reporting biases, aggregated/missing data, imported cases, multiple data sources, and more.\n\n\n\n\nReported cases for the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand Ministry of Health NZ (2024). We will develop methods to estimate the reproduction number from these data.",
+    "text": "Estimate \\(R_t\\) from imperfect data, or from multiple sources of data\nProduce well-calibrated short-term projections\nEstimate abrupt change-points in disease transmission\n… and so much more\n\n\n\nIs simple, intuitive, and flexible\nProduces valid credible intervals on quantities of interest\nCan simultaneously account for reporting biases, aggregated/missing data, imported cases, multiple data sources, and more.\nUses entirely standalone code (i.e. no external packages or software are required)\nCan handle a mixture of continuous and discrete variables (where Stan requires only continuous variablese)\n\n\n\n\nReported cases for the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand Ministry of Health NZ (2024). We will develop methods to estimate the reproduction number from these data.",
     "crumbs": [
       "Welcome"
     ]
