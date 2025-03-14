@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Appendix A — Terminology – SMC and epidemic renewal models</title>
+<title>7&nbsp; Other resources – SMC and epidemic renewal models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,7 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -30,8 +50,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./simulateddata.html" rel="next">
-<link href="./references.html" rel="prev">
+<link href="./models-simple.html" rel="next">
+<link href="./smc-combining.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -110,7 +130,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./terminology.html">Appendices</a></li><li class="breadcrumb-item"><a href="./terminology.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Terminology</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./smc-bootstrap.html">Sequential Monte Carlo</a></li><li class="breadcrumb-item"><a href="./smc-other.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Other resources</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -200,12 +220,18 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Putting it together</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./smc-other.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Other resources</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">The reproducton number</span></a>
+ <span class="menu-text">Models</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -213,92 +239,48 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./models_simple.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">A simple Rt estimator</span></span></a>
+  <a href="./models-simple.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A simple model</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./models_obsnoise.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./models_tempagg.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Temporally aggregated data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Temporally aggregated data</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./models_imports.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Imported cases</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Imported cases</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./models_multipledata.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Multiple sources of data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Multiple sources of data</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Evaluation</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./evaluation_predcov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Predictive coverage</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./evaluation_crps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Continuous ranked probability score</span></span></a>
-  </div>
-</li>
-      </ul>
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Prediction</span></span>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Extensions</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./extensions_nowcasting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Nowcasting???</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./extensions_forecasting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Forecasting</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./extensions_elimination.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Probability of elimination</span></span></a>
-  </div>
-</li>
-      </ul>
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Inference</span></span>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Case studies</span></a>
+ <span class="menu-text">Evaluation</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -306,8 +288,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./casestudies_nzcovid.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">COVID-19 in New Zealand</span></span></a>
+  <a href="./eval-precisioncalibration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Precision and calibration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./eval-scoringrules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Scoring rules</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./eval-additionalnotes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Additional notes on model evaluation</span></span></a>
   </div>
 </li>
       </ul>
@@ -324,19 +318,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./othermethods_epiestim.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">EpiEstim</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">EpiEstim</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./othermethods_epifilter.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">EpiFilter</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">EpiFilter</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./othermethods_epinow2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">EpiNow2</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">EpiNow2</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./othermethods_pomp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Iterated filtering and POMP</span></span></a>
   </div>
 </li>
       </ul>
@@ -358,8 +358,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./terminology.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Terminology</span></span></a>
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Notation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -387,15 +387,22 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#temfack-and-wyse-2024" id="toc-temfack-and-wyse-2024" class="nav-link active" data-scroll-target="#temfack-and-wyse-2024"><span class="header-section-number">7.1</span> Temfack and Wyse (2024)</a></li>
+  <li><a href="#endo-van-leeuwen-and-baguelin-2019" id="toc-endo-van-leeuwen-and-baguelin-2019" class="nav-link" data-scroll-target="#endo-van-leeuwen-and-baguelin-2019"><span class="header-section-number">7.2</span> Endo, van Leeuwen, and Baguelin (2019)</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./terminology.html">Appendices</a></li><li class="breadcrumb-item"><a href="./terminology.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Terminology</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./smc-bootstrap.html">Sequential Monte Carlo</a></li><li class="breadcrumb-item"><a href="./smc-other.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Other resources</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Appendix A — Terminology</h1>
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Other resources</span></h1>
 </div>
 
 
@@ -412,81 +419,53 @@ window.Quarto = {
 </header>
 
 
-<p>Terms are presented in the order they are introduced, except where it makes sense to place similar terms near each other.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 40%">
-<col style="width: 60%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Term</th>
-<th>Definition</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Filtering distribution</td>
-<td>The posterior distribution of hidden state <span class="math inline">\(x_t\)</span> given observed data until time <span class="math inline">\(t\)</span>. Written <span class="math inline">\(P(x_t | y_{1:t})\)</span>.</td>
-</tr>
-<tr class="even">
-<td>Smoothing distribution</td>
-<td>The posterior distribution of hidden state <span class="math inline">\(x_t\)</span> given all observed data. Written <span class="math inline">\(P(x_t|y_{1:T})\)</span>.</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Symbol</th>
-<th>Definition</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="link.link">Introduction</a></td>
-<td><!-- #TODO: Figure out how to make this span --></td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(E[\cdot]\)</span></td>
-<td>The expectation operator.</td>
-</tr>
-<tr class="odd">
-<td><span class="math inline">\(C_t\)</span></td>
-<td>Reported cases on time-step <span class="math inline">\(t\)</span>.</td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(I_t\)</span></td>
-<td>Infection incidence on time-step <span class="math inline">\(t\)</span>.</td>
-</tr>
-<tr class="odd">
-<td><span class="math inline">\(R_t\)</span></td>
-<td>The instantaneous reproduction number at time-step <span class="math inline">\(t\)</span>.</td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(\omega_u\)</span></td>
-<td>The serial interval distribution. The probability that a secondary case was reported <span class="math inline">\(u\)</span> days after the primary case.</td>
-</tr>
-<tr class="odd">
-<td><span class="math inline">\(g_u\)</span></td>
-<td>The generation time distribution. The probability that a secondary case was infected <span class="math inline">\(u\)</span> days after the primary case.</td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(\Lambda_t^c\)</span></td>
-<td>The force-of-infection derived from reported cases. Equals <span class="math inline">\(\sum_{u=1}^{u_{max}} C_{t-u} \omega_u\)</span>.</td>
-</tr>
-<tr class="odd">
-<td><span class="math inline">\(\Lambda_t\)</span></td>
-<td>The force-of-infection derived from infection incidence. Equals <span class="math inline">\(\sum_{u=1}^{u_{max}} I_{t-u} g_u\)</span>.</td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(s:t\)</span></td>
-<td>Used as a subscript, refers to all indices between <span class="math inline">\(s\)</span> and <span class="math inline">\(t\)</span> (inclusive).</td>
-</tr>
-</tbody>
-</table>
+<p>We have outlined additional resources at the end of relevant sections. This chapter is specifically dedicated to papers presenting an overall framework in the style of a primer or tutorial.</p>
+<section id="temfack-and-wyse-2024" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="temfack-and-wyse-2024"><span class="header-section-number">7.1</span> Temfack and Wyse (2024)</h2>
+<p><span class="citation" data-cites="temfackReviewSequentialMonte2024b">Temfack and Wyse (<a href="references.html#ref-temfackReviewSequentialMonte2024b" role="doc-biblioref">2024</a>)</span> provide an excellent introduction to SMC methods in epidemiology, albeit with a focus on SEIR-type compartmental models rather than the renewal model. They also target the filtering posterior distribution rather than the smoothing posterior distribuon. Despite these differences, many considerations in their paper are useful in our context too. To assist with interpretation, we contextualise and compare their work here.</p>
+<p>After providing a useful background of SMC methods in epidemiology (section 2), and an introduction to the discrete-time stochastic SEIR model (section 3), they describe a general state-space model (abbreviated as SSM) in section 3.1 as:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp; x_0 \sim f(x_0|\theta) &amp; \text{Initial state} \\
+&amp; x_t | x_{t-1} \sim f(x_t|x_{t-1}, \theta) &amp; \text{State process} \\
+&amp; y_t | x_t \sim g(y_t | x_t, \theta) &amp; \text{Observation process}
+\end{aligned}
+\]</span></p>
+<p>Their state process corresponds to our state-space transition distribution, while their observation process corresponds to our observation distribution.</p>
+<p>This construction is a special case of ours for two reasons:</p>
+<ol type="1">
+<li>Their state process is explicitly Markovian: <span class="math inline">\(f\)</span> depends only on <span class="math inline">\(x_{t-1}\)</span>, whereas our state-space transition distribution can depend on all past values <span class="math inline">\(x_{1:t-1}\)</span>.</li>
+<li>Their observation process depends only on the current hidden state <span class="math inline">\(x_t\)</span>. Our observation distribution can depend on past values of both the hidden state <span class="math inline">\(x_{1:t}\)</span> and the observed data <span class="math inline">\(y_{1:t-1}\)</span>.</li>
+</ol>
+<p>The Markovian structure allows for a much wider range of SMC-type methods (often more efficient than ours) to be used, at the cost of a restricted range of models that can be fit. The renewal model is inherently non-Markovian, so cannot be fit within their framework.</p>
+<p>The authors then introduce general sequential importance sampling (section 3.1.1) and, like us, use the state process as the proposal density, noting that this is known to be suboptimal. Particle degeneracy is tackled via resampling (section 3.1.2), although they resample only when the effective sample size of their particles is below some threshold. This reduces computational load and decreases the impact of particle degeneracy but is incompatible with fixed-lag smoothing - their method returns samples from the filtering posterior distributions only.</p>
+<p>Rather than PMMH, the authors augment the parameters <span class="math inline">\(\theta\)</span> as additional time-varying hidden states. To avoid severe particle degeneracy issues and the overestimation of the posterior variance of <span class="math inline">\(\theta\)</span>, they use the approach of #TODO: cite liuCombinedParameterState2001. This approach allows the authors to handle the estimation of <span class="math inline">\(\theta\)</span> alongside <span class="math inline">\(X_t\)</span> (thus all inference can be performed in a single algorithm), but this approach is again incompatible with our fixed-lag smoothing.</p>
+</section>
+<section id="endo-van-leeuwen-and-baguelin-2019" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="endo-van-leeuwen-and-baguelin-2019"><span class="header-section-number">7.2</span> Endo, van Leeuwen, and Baguelin (2019)</h2>
+<p>Our overall approach is similar to <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span>, although there remain some crucial differences. Before getting into details, we highlight that their figure 3 provides an excellent graphic overview of the SMC algorithm.</p>
+<p>The underlying model fit in <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span> is defined in the same fashion as <span class="citation" data-cites="temfackReviewSequentialMonte2024b">Temfack and Wyse (<a href="references.html#ref-temfackReviewSequentialMonte2024b" role="doc-biblioref">2024</a>)</span>, including using <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> to represent the same state and observation processes respectively. In this case, they do not explicitly write the dependence on model parameters <span class="math inline">\(\theta\)</span>, although highlight in the text that both <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> can depend on <span class="math inline">\(\theta\)</span> implicitly.</p>
+<p>Like other papers in the field, <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span> focus on methods for Markovian models with applications to compartmental SIR-type epidemic models. They focus on “Particle Markov-chain Monte Carlo” (PMCMC), which is largely analagous to the PMMH algorithm we use (<a href="smc-pmmh.html#sec-smc-pmmh" class="quarto-xref"><span>Section 5.3</span></a>). Like PMMH, PMCMC uses a particle filter to estimate the likelihood of proposed parameter vectors.</p>
+<p>Unlike our approach, however, the authors do not separate the inference of <span class="math inline">\(\theta\)</span> from the inference of <span class="math inline">\(X_t\)</span>. To recap, in our approach we:</p>
+<ol type="a">
+<li>Use PMMH to sample from <span class="math inline">\(P(\theta|y_{1:T})\)</span>, using the bootstrap filter as a subroutine.</li>
+<li>Run the bootstrap filter at a sufficiently large number of samples of <span class="math inline">\(\theta\)</span>, storing all particle trajectories.</li>
+</ol>
+<p>This results in waste: we run many bootstrap filters in step (a), the results of which are lost.</p>
+<p>In contrast, <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span> only perform the equivalent of step (a). They retain a single trajectory <span class="math inline">\(x_{1:T}\)</span> from each accepted parameter sample, generating a set <span class="math inline">\(\{x_{1:T}^{(i)}, \theta^{(i)}\}_{i=1}^M\)</span>. This uses information from every bootstrap filter that was run at an accepted value of <span class="math inline">\(\theta\)</span>.</p>
+<p>While this appears more computationally efficient, in order to effectively pre-allocate memory to store the (possibly very high dimensional) particle trajectories, we would need to know at what value of <span class="math inline">\(M\)</span> to stop the PMMH algorithm. We instead prioritise the adaptivity of our approach over the possible efficiency gains of <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span>.</p>
+<p>Despite this, the overall framework of <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span> could be adapted to fit non-Markovian models by replacing their bootstrap filter with the one outlined in <a href="smc-bootstrap.html" class="quarto-xref"><span>Chapter 4</span></a>.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-endoIntroductionParticleMarkovchain2019" class="csl-entry" role="listitem">
+Endo, Akira, Edwin van Leeuwen, and Marc Baguelin. 2019. <span>“Introduction to Particle <span class="nocase">Markov-chain Monte Carlo</span> for Disease Dynamics Modellers.”</span> <em>Epidemics</em> 29 (December): 100363. <a href="https://doi.org/10.1016/j.epidem.2019.100363">https://doi.org/10.1016/j.epidem.2019.100363</a>.
+</div>
+<div id="ref-temfackReviewSequentialMonte2024b" class="csl-entry" role="listitem">
+Temfack, Dhorasso, and Jason Wyse. 2024. <span>“A Review of Sequential <span>Monte Carlo</span> Methods for Real-Time Disease Modeling.”</span> arXiv. <a href="https://doi.org/10.48550/ARXIV.2408.15739">https://doi.org/10.48550/ARXIV.2408.15739</a>.
+</div>
+</div>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -911,13 +890,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./references.html" class="pagination-link" aria-label="References">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">References</span>
+      <a href="./smc-combining.html" class="pagination-link" aria-label="Putting it together">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Putting it together</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./simulateddata.html" class="pagination-link" aria-label="Simulated data">
-        <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Simulated data</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./models-simple.html" class="pagination-link" aria-label="A simple model">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A simple model</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

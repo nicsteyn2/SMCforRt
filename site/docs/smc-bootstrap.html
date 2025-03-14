@@ -20,40 +20,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -254,12 +220,18 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Putting it together</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./smc-other.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Other resources</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">The reproducton number</span></a>
+ <span class="menu-text">Models</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -267,92 +239,48 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./models_simple.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">A simple Rt estimator</span></span></a>
+  <a href="./models-simple.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A simple model</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./models_obsnoise.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./models_tempagg.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Temporally aggregated data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Temporally aggregated data</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./models_imports.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Imported cases</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Imported cases</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./models_multipledata.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Multiple sources of data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Multiple sources of data</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Evaluation</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./evaluation_predcov.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Predictive coverage</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./evaluation_crps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Continuous ranked probability score</span></span></a>
-  </div>
-</li>
-      </ul>
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Prediction</span></span>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Extensions</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./extensions_nowcasting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Nowcasting???</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./extensions_forecasting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Forecasting</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./extensions_elimination.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Probability of elimination</span></span></a>
-  </div>
-</li>
-      </ul>
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Inference</span></span>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Case studies</span></a>
+ <span class="menu-text">Evaluation</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -360,8 +288,20 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./casestudies_nzcovid.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">COVID-19 in New Zealand</span></span></a>
+  <a href="./eval-precisioncalibration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Precision and calibration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./eval-scoringrules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Scoring rules</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./eval-additionalnotes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Additional notes on model evaluation</span></span></a>
   </div>
 </li>
       </ul>
@@ -378,19 +318,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./othermethods_epiestim.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">EpiEstim</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">EpiEstim</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./othermethods_epifilter.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">EpiFilter</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">EpiFilter</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./othermethods_epinow2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">EpiNow2</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">EpiNow2</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./othermethods_pomp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Iterated filtering and POMP</span></span></a>
   </div>
 </li>
       </ul>
@@ -412,8 +358,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./terminology.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Terminology</span></span></a>
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Notation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -446,15 +392,16 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#intuition" id="toc-intuition" class="nav-link active" data-scroll-target="#intuition"><span class="header-section-number">4.1</span> Intuition</a></li>
-  <li><a href="#algorithm" id="toc-algorithm" class="nav-link" data-scroll-target="#algorithm"><span class="header-section-number">4.2</span> Algorithm</a></li>
-  <li><a href="#sec-smc-bootstrapexample" id="toc-sec-smc-bootstrapexample" class="nav-link" data-scroll-target="#sec-smc-bootstrapexample"><span class="header-section-number">4.3</span> Example</a>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background"><span class="header-section-number">4.1</span> Background</a>
   <ul class="collapse">
-  <li><a href="#sec-smc-data" id="toc-sec-smc-data" class="nav-link" data-scroll-target="#sec-smc-data"><span class="header-section-number">4.3.1</span> Data</a></li>
-  <li><a href="#setting-up" id="toc-setting-up" class="nav-link" data-scroll-target="#setting-up"><span class="header-section-number">4.3.2</span> Setting up</a></li>
-  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">4.3.3</span> Implementation</a></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">4.3.4</span> Results</a></li>
+  <li><a href="#sec-smc-bootstrap-overview" id="toc-sec-smc-bootstrap-overview" class="nav-link" data-scroll-target="#sec-smc-bootstrap-overview"><span class="header-section-number">4.1.1</span> Overview</a></li>
+  <li><a href="#simulation-based-inference" id="toc-simulation-based-inference" class="nav-link" data-scroll-target="#simulation-based-inference"><span class="header-section-number">4.1.2</span> Simulation-based inference</a></li>
   </ul></li>
+  <li><a href="#the-bootstrap-filter" id="toc-the-bootstrap-filter" class="nav-link" data-scroll-target="#the-bootstrap-filter"><span class="header-section-number">4.2</span> The bootstrap filter</a></li>
+  <li><a href="#fixed-lag-smoothing" id="toc-fixed-lag-smoothing" class="nav-link" data-scroll-target="#fixed-lag-smoothing"><span class="header-section-number">4.3</span> Fixed-lag smoothing</a></li>
+  <li><a href="#algorithm" id="toc-algorithm" class="nav-link" data-scroll-target="#algorithm"><span class="header-section-number">4.4</span> Algorithm</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">4.5</span> Example</a></li>
+  <li><a href="#sec-smc-bootstrap-additional" id="toc-sec-smc-bootstrap-additional" class="nav-link" data-scroll-target="#sec-smc-bootstrap-additional"><span class="header-section-number">4.6</span> Additional resources</a></li>
   </ul>
 </nav>
     </div>
@@ -480,133 +427,148 @@ window.Quarto = {
 </header>
 
 
-<p>In this chapter we introduce the <strong>bootstrap filter</strong>.</p>
-<p>The bootstrap filter generates sample-based approximations to the conditional filtering distribution <span class="math inline">\(P(X_t | y_{1:t}, \theta)\)</span> and conditional smoothing distribution <span class="math inline">\(P(X_t | y_{1:T}, \theta)\)</span>.</p>
-<p><em>This chapter assumes fixed values of the model parameters <span class="math inline">\(\theta\)</span>. <a href="smc-pmmh.html" class="quarto-xref"><span>Chapter 5</span></a> handles the estimation of <span class="math inline">\(\theta\)</span>.</em></p>
-<section id="intuition" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="intuition"><span class="header-section-number">4.1</span> Intuition</h2>
-<p>#TODO: write SMC intuition</p>
+<p><em>This chapter assumes fixed and known values of the model parameters. <a href="smc-pmmh.html" class="quarto-xref"><span>Chapter 5</span></a> considers the estimation of <span class="math inline">\(\theta\)</span>.</em></p>
+<section id="background" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="background"><span class="header-section-number">4.1</span> Background</h2>
+<div class="callout callout-style-default callout-tip callout-titled" title="Goal">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Goal
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <strong>goal</strong> of the bootstrap filter is to use observed data <span class="math inline">\(y_{1:T}\)</span> to learn about the hidden-states <span class="math inline">\(X_t\)</span> given a pre-determined parameter vector <span class="math inline">\(\theta\)</span>.</p>
+</div>
+</div>
+<p>The fundamental idea of the bootstrap filter (and particle filters in general) is to produce collections of samples from the target posterior distribution of a hidden-state model (<a href="intro-hiddenstatemodels.html" class="quarto-xref"><span>Chapter 3</span></a>) at each time-step <span class="math inline">\(t\)</span>. The result of this algorithm takes the form:</p>
+<p><span id="eq-smc-bootstrap-particles"><span class="math display">\[
+\{x_t^{(i)}\}_{i=1}^N \sim P(X_t | y_{1:t}, \theta)
+\tag{4.1}\]</span></span></p>
+<p>These samples are often called <strong>particles</strong>, hence the term <em>particle filtering</em>.</p>
+<p>We can use these particles to find the posterior mean, for example:</p>
+<p><span class="math display">\[
+E[X_t|y_{1:t}, \theta] \approx \frac{1}{N} \sum_{i=1}^N x_t^{(i)}
+\]</span></p>
+<p>or 95% credible intervals (by finding the 2.5th and 97.5th percentile values), or any other quantity we might care about. As these samples are Bayesian, they can be naturally used in downstream models.</p>
+<p><em>Side-note: the particles in <a href="#eq-smc-bootstrap-particles" class="quarto-xref">Equation&nbsp;<span>4.1</span></a> represent the filtering distribution (our knowledge about <span class="math inline">\(X_t\)</span> using data availabile up-to time <span class="math inline">\(t\)</span>, see <a href="intro-hiddenstatemodels.html#sec-intro-filteringandsmoothing" class="quarto-xref"><span>Section 3.1.1</span></a>). As we will soon see, we can also use the bootstrap filter to find particles representing the smoothing distribution (our knowledge about <span class="math inline">\(X_t\)</span> using all available data).</em></p>
+<section id="sec-smc-bootstrap-overview" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="sec-smc-bootstrap-overview"><span class="header-section-number">4.1.1</span> Overview</h3>
+<p>The bootstrap filter repeats three steps for each time step.</p>
+<p>Assume we are at time step <span class="math inline">\(t\)</span> and have a collection of samples from the filtering distribution at time <span class="math inline">\(t\!-\!1\)</span>, denoted <span class="math inline">\(\{x_{t-1}^{(i)}\}\)</span>, representing our guesses of the value of <span class="math inline">\(X_{t-1}\)</span>. We update these samples to represent our guesses of the value of <span class="math inline">\(X_t\)</span> by:</p>
+<ol type="1">
+<li>Projecting them forward according to the state-space transition distribution.</li>
+<li>Weighting these projected particles according to the observation distribution.</li>
+<li>Resampling these particles according to their weights.</li>
+</ol>
+<p>This is visualised in <a href="#fig-smc-bootstrapeg" class="quarto-xref">Figure&nbsp;<span>4.1</span></a>:</p>
+<div id="fig-smc-bootstrapeg" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-smc-bootstrapeg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/diag-smc.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-smc-bootstrapeg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.1: Diagram showing the three steps performed by the bootstrap filter at each time step <span class="math inline">\(t\)</span>. In this diagram, particle histories are also resampled, making this an example of a bootstrap <em>smoother</em>.
+</figcaption>
+</figure>
+</div>
+<p>Step one creates a set of particles representing equally-likely one-step-ahead projections of <span class="math inline">\(X_t\)</span> given data up to time <span class="math inline">\(t-1\)</span>:</p>
+<p><span class="math display">\[
+\{\tilde{x}_t^{(i)}\}_{i=1}^N \sim P(X_t | y_{1:t-1}, \theta)
+\]</span></p>
+<p>Step two weights these projections according to how likely they are under the observation model:</p>
+<p><span class="math display">\[
+w_t^{(i)} = P(y_t | \tilde{x}_t^{(i)}, \theta)
+\]</span></p>
+<p>And the final step resamples according to these weights to ensure the resulting <span class="math inline">\(\{x_t^{(i)}\}\)</span> are equally-likely samples from <span class="math inline">\(P(X_t|y_{1:t}, \theta)\)</span>.</p>
 </section>
-<section id="algorithm" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="algorithm"><span class="header-section-number">4.2</span> Algorithm</h2>
-<p>#TODO: write SMC algorithm</p>
+<section id="simulation-based-inference" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="simulation-based-inference"><span class="header-section-number">4.1.2</span> Simulation-based inference</h3>
+<p>In order to use SMC methods to fit a hidden-state model, we only need to:</p>
+<ol type="a">
+<li>Sample from the state-space transition distribution</li>
+<li>Evaluate the observation distribution</li>
+</ol>
+<p>Crucially, we do not need to <em>evalute</em> the state-space transition distribution, allowing for easy <strong>simulation-based inference</strong>.</p>
+<p>Simulation-based inference methods rely on simulations rather than analytical solutions and are very popular in statistical epidemiology. In this case, sampling from the state-space transition distribtion is the same as running the “simulator” one-step forward into the future. This simulator implies a likelihood even though we never need to find its precise form.</p>
 </section>
-<section id="sec-smc-bootstrapexample" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="sec-smc-bootstrapexample"><span class="header-section-number">4.3</span> Example</h2>
+</section>
+<section id="the-bootstrap-filter" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="the-bootstrap-filter"><span class="header-section-number">4.2</span> The bootstrap filter</h2>
+<p>Like before, assume that we have a collection of samples from the filtering distribution at time <span class="math inline">\(t\!-\!1\)</span>, denoted <span class="math inline">\(\{x_{t-1}^{(i)}\} \sim P(X_{t-1}|y_{1:t-1}, \theta)\)</span>. For now, also assume that our state-space transitions are Markovian (i.e., <span class="math inline">\(X_t\)</span> depends only on <span class="math inline">\(X_{t-1}\)</span>).</p>
+<p><strong>Step 1: Projection</strong></p>
+<p>By coupling these particles with the state-space transition model (<a href="intro-hiddenstatemodels.html#eq-intro-statespace" class="quarto-xref">Equation&nbsp;<span>3.1</span></a>), we can make one-step-ahead predictions. Mathematically we want to obtain the predictive distribution: <span class="math display">\[
+\underbrace{P(X_t | y_{1:t-1}, \theta)}_{\text{predictive dist.}} = \int \underbrace{P(X_t | X_{t-1}, \theta)}_{\text{state-space transition dist.}} \underbrace{P(X_{t-1}|y_{1:t-1}, \theta)}_{\text{prev. filtering dist.}} \ dX_{t-1}
+\]</span></p>
+<p>Which is represented by complicated and potentially high-dimensional integral of two things we know. Fortunately, all we need to do is sample from the state-space transition model while conditioning on our particles:</p>
+<p><span class="math display">\[
+\tilde{x}_t^{(i)} \sim P(X_t | x_{t-1}^{(i)}, \theta)
+\]</span></p>
+<p><strong>Step 2: Weighting</strong></p>
+<p>If we treat this predictive distribution as the prior distribution for <span class="math inline">\(X_t|y_{1:t}\)</span>, we can apply Bayes’ formula:</p>
+<p><span class="math display">\[
+\underbrace{P(X_t | y_{1:t}, \theta)}_{\text{new filtering dist}} \propto \underbrace{P(y_t|X_t, y_{1:t-1}, \theta)}_{\text{observation dist.}} \underbrace{P(X_t | y_{1:t-1}, \theta)}_{\text{predictive dist.}}
+\]</span></p>
+<p>Since we already have samples from the predictive distribution <span class="math inline">\(P(X_t | y_{1:t-1}, \theta)\)</span>, all we need to do is assign them weights <span class="math inline">\(w_t^{(i)}\)</span> according to the observation distribution:</p>
+<p><span class="math display">\[
+w_t^{(i)} = P(y_t | \tilde{x}_t^{(i)}, y_{1:t-1}, \theta)
+\]</span></p>
+<p><strong>Step 3: Resampling</strong></p>
+<p>The final set of particles <span class="math inline">\(\{x_t^{(i)}\}\)</span> is constructed by sampling (with replacement) from <span class="math inline">\(\{\tilde{x}_t^{(i)}\}\)</span> according to the corresponding weights, resulting in:</p>
+<p><span class="math display">\[
+x_t^{(i)} \sim P(X_t | y_{1:t}, \theta)
+\]</span></p>
+<p><strong>Repeat</strong></p>
+<p>Starting with an initial set of particles <span class="math inline">\(\{x_0^{(i)}\} \sim P(X_0)\)</span>, all we need to do is repeat this procedue for each <span class="math inline">\(t = 1, 2, \ldots, T\)</span>, storing the particle values as we go. This concludes the bootstrap filter.</p>
+<p>The bootstrap filter is a special case of a sequential importance sampling algorithm (<a href="#sec-smc-bootstrap-additional" class="quarto-xref"><span>Section 4.6</span></a>).</p>
+</section>
+<section id="fixed-lag-smoothing" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="fixed-lag-smoothing"><span class="header-section-number">4.3</span> Fixed-lag smoothing</h2>
+<p>There are two problems with the bootstrap filter above:</p>
+<ul>
+<li>It assumes the state-space transition model is Markovian (<span class="math inline">\(X_t\)</span> depends only on <span class="math inline">\(X_{t-1}\)</span>)</li>
+<li><span class="math inline">\(X_t\)</span> is informed by past data <span class="math inline">\(y_{1:t}\)</span> only (the filtering posterior), when we may want to leverage all available data (the smoothing posterior).</li>
+</ul>
+<p>Both of these problems are solved using <strong>fixed-lag resampling</strong>.</p>
+</section>
+<section id="algorithm" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="algorithm"><span class="header-section-number">4.4</span> Algorithm</h2>
+<p>We present the algorithm as a Julia code-snippet. For a pseudocode implementation, please see our preprint #TODO: add link.</p>
+</section>
+<section id="example" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="example"><span class="header-section-number">4.5</span> Example</h2>
 <p>For demonstration, we consider a simple reproduction number estimator. First assume that <span class="math inline">\(\log R_t\)</span> follows a Gaussian random walk:</p>
-<p><span class="math display">\[\log R_t \sim \text{Normal}(\log R_{t-1}, \sigma) \]</span></p>
-<p>while reported cases are assumed to follow the Poisson renewal model:</p>
-<p><span class="math display">\[ C_t \sim \text{Poisson}\left(R_t \sum_{u=1}^{t-1} C_{t-u} g_u\right) \]</span></p>
-<p>The first equation defines our <em>hidden-state model</em> while the second equation defines our <em>observation model</em>. With only a slight difference<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, this model is almost identical to that employed by EpiFilter <span class="citation" data-cites="paragImprovedEstimationTimevarying2021">(<a href="references.html#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">Parag 2021</a>)</span>.</p>
-<p>Leaving parameter estimation to <a href="smc-pmmh.html" class="quarto-xref"><span>Chapter 5</span></a>, we use the following defaults:</p>
-<div id="458427ae" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Serial interval</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> ω<span class="op">/</span><span class="fu">sum</span>(ω)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Smoothing parameter</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>σ <span class="op">=</span> <span class="fl">0.15</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial distribution for Rt</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>pR0 <span class="op">=</span> <span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">10</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Collectively, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(\{\omega_u\}_{u=1}^{u_{max}}\)</span>, and <span class="math inline">\(P(R_0)\)</span> constitute the model parameters <span class="math inline">\(\theta\)</span>.</p>
-<section id="sec-smc-data" class="level3" data-number="4.3.1">
-<h3 data-number="4.3.1" class="anchored" data-anchor-id="sec-smc-data"><span class="header-section-number">4.3.1</span> Data</h3>
-<p>We use data from the first 100 days of the COVID-19 pandemic in New Zealand. Focusing now on total cases (we leave the critical separation of imported and local cases to <a href="models_imports.html" class="quarto-xref"><span>Chapter 10</span></a>):</p>
-<div id="cell-fig-models-nzdata" class="cell" data-execution_count="3">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nzdata <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"NZCOVID"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="fu">length</span>(nzdata.Ct)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">bar</span>(nzdata.date, nzdata.Ct, label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reported cases"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm, color<span class="op">=:</span>darkblue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-display" data-execution_count="4">
-<div id="fig-models-nzdata" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-models-nzdata-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="smc-bootstrap_files/figure-html/fig-models-nzdata-output-1.svg" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-models-nzdata-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.1: Reported cases from the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
+<p>[#TODO]</p>
 </section>
-<section id="setting-up" class="level3" data-number="4.3.2">
-<h3 data-number="4.3.2" class="anchored" data-anchor-id="setting-up"><span class="header-section-number">4.3.2</span> Setting up</h3>
-<p>We need to specify the number of particles <span class="math inline">\(N\)</span> and resampling window <span class="math inline">\(L\)</span>:</p>
-<div id="6d22ad5f" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="fl">10000</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> <span class="fl">50</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>pre-allocate memory for our particles:</p>
-<div id="af0b454a" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>and sample from the initial distribution:</p>
-<div id="62a68c80" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>X[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">rand</span>(pR0, N)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="implementation" class="level3" data-number="4.3.3">
-<h3 data-number="4.3.3" class="anchored" data-anchor-id="implementation"><span class="header-section-number">4.3.3</span> Implementation</h3>
-<p>All that’s left to do is run the bootstrap filter:</p>
-<div id="87b3d688" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Project according to the state-space model</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    X[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">exp</span>.(<span class="fu">rand</span>.(<span class="fu">Normal</span>.(<span class="fu">log</span>.(X[<span class="op">:</span>,tt<span class="op">-</span><span class="fl">1</span>]), σ)))</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Weight according to the observation model</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    Λ <span class="op">=</span> <span class="fu">sum</span>(nzdata.Ct[tt<span class="op">-</span><span class="fl">1</span><span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    W <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Poisson</span>.(X[<span class="op">:</span>,tt] <span class="op">.*</span> Λ), nzdata.Ct[tt])</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Resample</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    inds <span class="op">=</span> <span class="fu">wsample</span>(<span class="fl">1</span><span class="op">:</span>N, W, N; replace<span class="op">=</span><span class="cn">true</span>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    X[<span class="op">:</span>, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="op">=</span> X[inds, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt]</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="results" class="level3" data-number="4.3.4">
-<h3 data-number="4.3.4" class="anchored" data-anchor-id="results"><span class="header-section-number">4.3.4</span> Results</h3>
-<p>The <span class="math inline">\(t^{th}\)</span> column of <span class="math inline">\(X\)</span> is a set of samples from <span class="math inline">\(P(X_t | C_{1:t+L})\)</span>. The mean and quantiles of this posterior distribution are found using:</p>
-<div id="cell-fig-models-simpleconditionalsmooth" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> [<span class="fu">mean</span>(X[<span class="op">:</span>,tt]) for tt <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>T]</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>l <span class="op">=</span> [<span class="fu">quantile</span>(X[<span class="op">:</span>,tt], <span class="fl">0.025</span>) for tt <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>T]</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> [<span class="fu">quantile</span>(X[<span class="op">:</span>,tt], <span class="fl">0.975</span>) for tt <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>T]</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m, ribbon<span class="op">=</span>(m<span class="op">-</span>l, u<span class="op">-</span>m), color<span class="op">=:</span>darkgreen, label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">hline!</span>([<span class="fl">1</span>], label<span class="op">=</span><span class="cn">false</span>, color<span class="op">=:</span>black, line<span class="op">=:</span>dash)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
-<div id="fig-models-simpleconditionalsmooth" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-models-simpleconditionalsmooth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="smc-bootstrap_files/figure-html/fig-models-simpleconditionalsmooth-output-1.svg" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-models-simpleconditionalsmooth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.2: Estimated <span class="math inline">\(R_t\)</span> for the first 100 days of the COVID-19 pandemic. The dashed horizontal line indicates <span class="math inline">\(R_t = 1\)</span>. The green line shows the posterior mean and the green shading shows the 95% credible interval.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
+<section id="sec-smc-bootstrap-additional" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="sec-smc-bootstrap-additional"><span class="header-section-number">4.6</span> Additional resources</h2>
+<p>Bootstrap filters (and SMC methods more generally) have found use in many fields. Each field has their own motivation for and notation describing these methods. We provide an overview of other resources here.</p>
+<p><strong>Sequential Importance Sampling</strong></p>
+<p>Sequential imporance sampling is the name given to the general class of algorithms, of which the bootstrap filter is one. #TODO: finish writing this</p>
+<p><strong>Bayesian Filtering and Smoothing <span class="citation" data-cites="sarkkaBayesianFilteringSmoothing2013">(<a href="references.html#ref-sarkkaBayesianFilteringSmoothing2013" role="doc-biblioref">Särkkä 2013</a>)</span></strong></p>
+<p>Those with an <strong>engineering background</strong> may be familiar with “filtering and smoothing”, where the state of a time-varying system is tracked through the observation of noisy measurements. Classical examples include GPS position tracking or audio signal processing.</p>
+<p>The Kalman filter, which provides an analytical solution when the state-space transition and observation models are linear Gaussian and Markovian, is perhaps the best-known example of a filtering method from engineering.</p>
+<p>Chapters 7 and 11 of <span class="citation" data-cites="sarkkaBayesianFilteringSmoothing2013">Särkkä (<a href="references.html#ref-sarkkaBayesianFilteringSmoothing2013" role="doc-biblioref">2013</a>)</span> introduce SMC methods under the headings “particle filtering” and “particle smoothing”. We also recommend chapters 1 (<em>What are Bayesian filtering and smoothing?</em>), 4 (<em>Bayesian filtering equations and exact solutions</em>), and 8 (<em>Bayesian smoothing equations and exact solutions</em>).</p>
+<p><strong>A survey of Sequential Monte Carlo Methods for Economics and Finance <span class="citation" data-cites="crealSurveySequentialMonte2012">(<a href="references.html#ref-crealSurveySequentialMonte2012" role="doc-biblioref">Creal 2012</a>)</span></strong></p>
+<p>Those with an <strong>econometrics background</strong> may find this extensive review helpful, although the author focusses on Markovian models. Examples employed in this review include a stochastic volatility model and a nonlinear dynamic stochastic general equilibrium model.</p>
+<p><em>This list is incomplete. If you know of any additional resources that may be helpful, <a href="mailto:nicholas.steyn@univ.ox.ac.uk">please get in touch</a>!</em></p>
+<p><strong>Data Assimilation Fundamentals: … <span class="citation" data-cites="evensenDataAssimilationFundamentals2022">(<a href="references.html#ref-evensenDataAssimilationFundamentals2022" role="doc-biblioref">Evensen, Vossepoel, and Van Leeuwen 2022</a>)</span></strong></p>
+<p>Those with a background in <strong>atmospheric science, oceanography, metereology, or other environmental sciences</strong> may be familiar with “data assimilation”, where focus is placed on combining model predictions with observational data. Chapter 9 of this book introduces particle filters as a method for solving the “fully nonlinear data assimilation” problem.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
-<div id="ref-paragImprovedEstimationTimevarying2021" class="csl-entry" role="listitem">
-Parag, Kris V. 2021. <span>“Improved Estimation of Time-Varying Reproduction Numbers at Low Case Incidence and Between Epidemic Waves.”</span> <em>PLOS Computational Biology</em> 17 (9): e1009347. <a href="https://doi.org/10.1371/journal.pcbi.1009347">https://doi.org/10.1371/journal.pcbi.1009347</a>.
+<div id="ref-crealSurveySequentialMonte2012" class="csl-entry" role="listitem">
+Creal, Drew. 2012. <span>“A <span>Survey</span> of <span>Sequential Monte Carlo Methods</span> for <span>Economics</span> and <span>Finance</span>.”</span> <em>Econometric Reviews</em> 31 (3): 245–96. <a href="https://doi.org/10.1080/07474938.2011.607333">https://doi.org/10.1080/07474938.2011.607333</a>.
+</div>
+<div id="ref-evensenDataAssimilationFundamentals2022" class="csl-entry" role="listitem">
+Evensen, Geir, Femke C. Vossepoel, and Peter Jan Van Leeuwen. 2022. <em>Data <span>Assimilation Fundamentals</span>: <span>A Unified Formulation</span> of the <span>State</span> and <span>Parameter Estimation Problem</span></em>. Springer <span>Textbooks</span> in <span>Earth Sciences</span>, <span>Geography</span> and <span>Environment</span>. Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-030-96709-3">https://doi.org/10.1007/978-3-030-96709-3</a>.
+</div>
+<div id="ref-sarkkaBayesianFilteringSmoothing2013" class="csl-entry" role="listitem">
+Särkkä, Simo. 2013. <em>Bayesian <span>Filtering</span> and <span>Smoothing</span></em>. 1st ed. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9781139344203">https://doi.org/10.1017/CBO9781139344203</a>.
 </div>
 </div>
-</section>
-</section>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1"><p><span class="citation" data-cites="paragImprovedEstimationTimevarying2021">Parag (<a href="references.html#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">2021</a>)</span> assumes <span class="math inline">\(R_t\)</span> (rather than <span class="math inline">\(\log R_t\)</span>) follows a Gaussian random walk. The standard deviation of this random walk is multiplied by <span class="math inline">\(\sqrt{R_t}\)</span> to allow <span class="math inline">\(R_t\)</span> to take larger “jumps” when it is larger, achieving the same outcome as our log-model. We discuss this further in <a href="othermethods_epifilter.html" class="quarto-xref"><span>Chapter 19</span></a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
 </section>
 
 </main> <!-- /main -->
