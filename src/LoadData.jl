@@ -4,7 +4,11 @@ using DataFrames, CSV, Dates, Distributions
 
 # Loads various data-sources.
 # Returns a dataframe typically containing :t (time) and :Ct (cases), but this may vary.
-function loadData(fname)
+function loadData(fname; data_directory=missing)
+
+    if !ismissing(data_directory) #TODO: Implement custom data directories in loadData()
+        error("not implemented yet")
+    end
 
     if fname == "simulated_simple"
 
