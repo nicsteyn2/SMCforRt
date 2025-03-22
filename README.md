@@ -1,7 +1,8 @@
-# An introduction to SMC methods for $R_t$ estimation
+# SMC and epidemic renewal models
 
-Estimation of the instantaneous reproduction number is a well-researched problem in infectious disease epidemiology. We introduce a simple framework using sequential Monte Carlo (SMC) methods. Our approach:
+Renewal models are popular in statistical epidemiology for their use as a semi-mechanistic model of disease transmission. We demonstrate how sequential Monte Carlo (SMC) methods can be used to perform inference on and generate projections with these models.
 
+Our approach:
 👍 Is conceptually simple  
 👍 Flexible  
 👍 Produces valid credible intervals  
@@ -11,7 +12,7 @@ This repository contains all data, scripts, and notebooks required to follow alo
 
 This tutorial is designed for researchers with a basic understanding of statistical inference. We walk through the steps of constructing an SMC model to build a gold-standard $R_t$ estimator, fine-tuned for your purposes, from scratch. This balances the convenience of an off-the-shelf method, with the flexibility and deep understanding that comes with constructing a model from first principles.
 
-We also highlight the accompanying paper, [An introduction to sequential Monte Carlo methods for reproduction number estimation](https://nicsteyn2.github.io/SMCforRt/).
+We also highlight the accompanying website, [An introduction to sequential Monte Carlo methods for reproduction number estimation](https://nicsteyn2.github.io/SMCforRt/).
 
 ![Figure showing unknown Rt and reported cases in NZ](assets/root_readme_data.png)
 
