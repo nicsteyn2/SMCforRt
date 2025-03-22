@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -57,10 +57,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -333,12 +333,6 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">EpiNow2</span></span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./othermethods_pomp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Iterated filtering and POMP</span></span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item">
@@ -392,13 +386,13 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#definition" id="toc-definition" class="nav-link active" data-scroll-target="#definition"><span class="header-section-number">3.1</span> Definition</a>
+  <li><a href="#definition-hidden-state-model" id="toc-definition-hidden-state-model" class="nav-link active" data-scroll-target="#definition-hidden-state-model"><span class="header-section-number">3.1</span> Definition: hidden-state model</a>
   <ul class="collapse">
   <li><a href="#sec-intro-filteringandsmoothing" id="toc-sec-intro-filteringandsmoothing" class="nav-link" data-scroll-target="#sec-intro-filteringandsmoothing"><span class="header-section-number">3.1.1</span> Filtering and smoothing distributions</a></li>
   </ul></li>
   <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples"><span class="header-section-number">3.2</span> Examples</a>
   <ul class="collapse">
-  <li><a href="#example-1-the-simple-model" id="toc-example-1-the-simple-model" class="nav-link" data-scroll-target="#example-1-the-simple-model"><span class="header-section-number">3.2.1</span> Example 1: the simple model</a></li>
+  <li><a href="#example-1-a-simple-model" id="toc-example-1-a-simple-model" class="nav-link" data-scroll-target="#example-1-a-simple-model"><span class="header-section-number">3.2.1</span> Example 1: a simple model</a></li>
   <li><a href="#example-2-epifilter" id="toc-example-2-epifilter" class="nav-link" data-scroll-target="#example-2-epifilter"><span class="header-section-number">3.2.2</span> Example 2: EpiFilter</a></li>
   <li><a href="#example-3-modelling-infection-incidence" id="toc-example-3-modelling-infection-incidence" class="nav-link" data-scroll-target="#example-3-modelling-infection-incidence"><span class="header-section-number">3.2.3</span> Example 3: Modelling infection incidence</a></li>
   </ul></li>
@@ -427,45 +421,45 @@ window.Quarto = {
 </header>
 
 
-<p>Sequential monte carlo (SMC) methods are a class of methods used to solve <strong>hidden-state models</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>Sequential Monte Carlo (SMC) methods are a class of methods used to solve <strong>hidden-state models</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
 <p>It is helpful to define some general notation:</p>
 <ul>
 <li><span class="math inline">\(X_t\)</span> - hidden-states (such as the reproduction number <span class="math inline">\(R_t\)</span> or infection incidence <span class="math inline">\(I_t\)</span>)</li>
 <li><span class="math inline">\(y_t\)</span> - observed data (such as reported cases <span class="math inline">\(C_t\)</span>)</li>
-<li><span class="math inline">\(\theta\)</span> - model parameters</li>
+<li><span class="math inline">\(\theta\)</span> - model parameters that don’t change over time</li>
 </ul>
 <div id="fig-intro-hiddenstatemodel" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-intro-hiddenstatemodel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/diag-intro-hiddenstatemodel.png" class="img-fluid figure-img" width="400">
+<img src="images/diag-intro-hiddenstatemodel.png" class="img-fluid figure-img" width="600">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intro-hiddenstatemodel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.1: A diagram of a simple hidden-state model. In this example, <span class="math inline">\(y_t\)</span> depends only on <span class="math inline">\(X_t\)</span>, and <span class="math inline">\(X_t\)</span> depends only on <span class="math inline">\(X_{t-1}\)</span>, however our methods can fit models with more complciated relationships too.
+Figure&nbsp;3.1: A diagram of a simple hidden-state model. In this example, <span class="math inline">\(y_t\)</span> depends only on <span class="math inline">\(X_t\)</span>, and <span class="math inline">\(X_t\)</span> depends only on <span class="math inline">\(X_{t-1}\)</span>, however our methods can fit models with more complicated relationships too.
 </figcaption>
 </figure>
 </div>
-<p>Depending on your goal, you may only care about some of these terms, while the other terms are nuisance-terms. Nevertheless, it is important to consider all three.</p>
+<p>Depending on your goal, you may only care about some of these terms, and might want to marginalise out the terms you’re not interested in. Nevertheless, it is important to consider all three.</p>
 <p>If your goal is <strong>forecasting</strong>, then future observed data <span class="math inline">\(Y_{t+k}\)</span> are your quantity of interest, and you only care about <span class="math inline">\(X_t\)</span> and <span class="math inline">\(\theta\)</span> to the extent that they allow you to estimate <span class="math inline">\(Y_{t+k}\)</span>.</p>
 <p>If your goal is <strong>reproduction number estimation</strong> (or the estimation of any hidden-state), then <span class="math inline">\(\theta\)</span> is often a nuisance parameter which you only care about to the extent that it allows you to estimate <span class="math inline">\(R_t\)</span>.</p>
-<p>If your goal is to <strong>learn about <span class="math inline">\(\theta\)</span></strong>, which may represen the effect of a non-pharmaceutical intervention (for example), then <span class="math inline">\(\theta\)</span> is likely your quantity of interest, and you only care about <span class="math inline">\(X_t\)</span> to the extent that it allows you to estimate this effect.</p>
-<section id="definition" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="definition"><span class="header-section-number">3.1</span> Definition</h2>
+<p>If your goal is to <strong>learn about <span class="math inline">\(\theta\)</span></strong>, which may represent the effect of a non-pharmaceutical intervention, for example, then <span class="math inline">\(\theta\)</span> is likely your quantity of interest, and you only care about <span class="math inline">\(X_t\)</span> to the extent that it allows you to estimate this effect.</p>
+<section id="definition-hidden-state-model" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="definition-hidden-state-model"><span class="header-section-number">3.1</span> Definition: hidden-state model</h2>
 <p>A hidden-state model has two components:</p>
 <p><strong>A state-space transition distribution:</strong></p>
 <p><span id="eq-intro-statespace"><span class="math display">\[
 P(X_t | X_{1:t-1}, \theta)
 \tag{3.1}\]</span></span></p>
 <p>which dictates how the hidden-states vary over time.</p>
-<p><strong>An observation distribution:</strong> <span id="eq-into-observation"><span class="math display">\[
+<p><strong>An observation distribution:</strong> <span id="eq-intro-observation"><span class="math display">\[
 P(y_t | X_{1:t-1}, y_{1:t-1}, \theta)
 \tag{3.2}\]</span></span></p>
 <p>which relates the observed data to the hidden-states.</p>
 <p><strong>These two distributions wholly define the model.</strong></p>
 <p>This structure makes it clear why hidden-state models are so popular in epidemiology. The underlying epidemic is often unobserved (thus represented by the state-space model), while reported cases (or other data) are generated through some observation process.</p>
-<p><em>We note that we make no Markov-type assumption, although Markovian models (a.k.a Hidden Markov Models) can be viewed as a special-case of these hidden-state models.</em></p>
+<p><em>We note that we make no Markov-type assumption, although Markovian models (a.k.a. Hidden Markov Models <span class="citation" data-cites="kantasParticleMethodsParameter2015">(<a href="references.html#ref-kantasParticleMethodsParameter2015" role="doc-biblioref">Kantas et al. 2015</a>)</span> or POMPs <span class="citation" data-cites="kingStatisticalInferencePartially2016">(<a href="references.html#ref-kingStatisticalInferencePartially2016" role="doc-biblioref">King, Nguyen, and Ionides 2016</a>)</span>) can be viewed as a special case of these hidden-state models.</em></p>
 <section id="sec-intro-filteringandsmoothing" class="level3" data-number="3.1.1">
 <h3 data-number="3.1.1" class="anchored" data-anchor-id="sec-intro-filteringandsmoothing"><span class="header-section-number">3.1.1</span> Filtering and smoothing distributions</h3>
-<p>Borrowing language from signal processing, we highlight two different posterior distributions for <span class="math inline">\(R_t\)</span> that we may be interested in.</p>
+<p>Borrowing language from signal processing, we highlight two different posterior distributions for <span class="math inline">\(R_t\)</span> that we may be interested in <span class="citation" data-cites="sarkkaBayesianFilteringSmoothing2013">(<a href="references.html#ref-sarkkaBayesianFilteringSmoothing2013" role="doc-biblioref">Särkkä 2013</a>)</span>.</p>
 <p>The conditional<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> <strong>filtering distribution</strong> is defined as:</p>
 <p><span id="eq-intro-filteringdist"><span class="math display">\[
 P(X_t | y_{1:t}, \theta)
@@ -475,25 +469,21 @@ P(X_t | y_{1:t}, \theta)
 P(X_t | y_{1:T}, \theta)
 \tag{3.4}\]</span></span></p>
 <p>The filtering distribution uses only past observations to estimate the hidden-states, whereas the smoothing distribution uses both past and future observations.</p>
-<div id="fig-intro-hiddenstatemodel-filteringsmoothing" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-intro-hiddenstatemodel-filteringsmoothing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/diag-intro-hiddenstatemodels-filteringandsmoothing.png" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intro-hiddenstatemodel-filteringsmoothing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.2: Diagram highlighting which data are used when finding the filtering and smoothing distributions of the hidden-states at time <span class="math inline">\(t\)</span>. The plotted curve is the observed data from which the filtering and smoothing distributions are derived.
-</figcaption>
+<div id="intro-hiddenstatemodels-filteringandsmoothing" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/intro-hiddenstatemodels-filteringandsmoothing.png" class="img-fluid figure-img"></p>
+<figcaption>Diagram highlighting which data are used when finding the filtering and smoothing distributions of the hidden-states at time <span class="math inline">\(t\)</span>. The plotted curve is the observed data from which the filtering and smoothing distributions are derived.</figcaption>
 </figure>
 </div>
-<p>One of the strengths of EpiFilter <span class="citation" data-cites="paragImprovedEstimationTimevarying2021">(<a href="references.html#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">Parag 2021</a>)</span> is its ability to find the smoothing distribution, allowing more data to inform <span class="math inline">\(R_t\)</span> estiamtes, particularly improving inference in low-incidence scenarios.</p>
+<p>One of the strengths of EpiFilter <span class="citation" data-cites="paragImprovedEstimationTimevarying2021">(<a href="references.html#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">Parag 2021</a>)</span> is its ability to find the smoothing distribution, allowing more data to inform <span class="math inline">\(R_t\)</span> estimates, particularly improving inference in low-incidence scenarios.</p>
 <p>We demonstrate SMC methods suitable for finding both distributions.</p>
 </section>
 </section>
 <section id="examples" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="examples"><span class="header-section-number">3.2</span> Examples</h2>
 <p>We present three examples of increasing complexity. While all examples are relatively simple, many off-the-shelf methods are unable to fit the third example model.</p>
-<section id="example-1-the-simple-model" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1" class="anchored" data-anchor-id="example-1-the-simple-model"><span class="header-section-number">3.2.1</span> Example 1: the simple model</h3>
+<section id="example-1-a-simple-model" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="example-1-a-simple-model"><span class="header-section-number">3.2.1</span> Example 1: a simple model</h3>
 <p>In <a href="introduction.html#sec-intro-Rtestimation" class="quarto-xref"><span>Section 1.2</span></a> we introduced a simple model for <span class="math inline">\(R_t\)</span> estimation. We can write this model in the form of a hidden-state model.</p>
 <p>The Gamma<span class="math inline">\((a_0, b_0)\)</span> prior distribution on <span class="math inline">\(R_t\)</span> forms the <strong>state-space transition distribution</strong>:</p>
 <p><span id="eq-intro-simplestatespace"><span class="math display">\[
@@ -537,8 +527,17 @@ C_t \sim \text{Normal}(I_t, \phi)
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-kantasParticleMethodsParameter2015" class="csl-entry" role="listitem">
+Kantas, Nikolas, Arnaud Doucet, Sumeetpal S. Singh, Jan Maciejowski, and Nicolas Chopin. 2015. <span>“On <span>Particle Methods</span> for <span>Parameter Estimation</span> in <span>State-Space Models</span>.”</span> <em>Statistical Science</em> 30 (3): 328–51. <a href="https://doi.org/10.1214/14-STS511">https://doi.org/10.1214/14-STS511</a>.
+</div>
+<div id="ref-kingStatisticalInferencePartially2016" class="csl-entry" role="listitem">
+King, Aaron A., Dao Nguyen, and Edward L. Ionides. 2016. <span>“Statistical <span>Inference</span> for <span>Partially Observed Markov Processes</span> via the <span><em>R</em></span> <span>Package</span> <span><strong>Pomp</strong></span>.”</span> <em>Journal of Statistical Software</em> 69 (12). <a href="https://doi.org/10.18637/jss.v069.i12">https://doi.org/10.18637/jss.v069.i12</a>.
+</div>
 <div id="ref-paragImprovedEstimationTimevarying2021" class="csl-entry" role="listitem">
 Parag, Kris V. 2021. <span>“Improved Estimation of Time-Varying Reproduction Numbers at Low Case Incidence and Between Epidemic Waves.”</span> <em>PLOS Computational Biology</em> 17 (9): e1009347. <a href="https://doi.org/10.1371/journal.pcbi.1009347">https://doi.org/10.1371/journal.pcbi.1009347</a>.
+</div>
+<div id="ref-sarkkaBayesianFilteringSmoothing2013" class="csl-entry" role="listitem">
+Särkkä, Simo. 2013. <em>Bayesian <span>Filtering</span> and <span>Smoothing</span></em>. 1st ed. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9781139344203">https://doi.org/10.1017/CBO9781139344203</a>.
 </div>
 </div>
 </section>
@@ -546,7 +545,7 @@ Parag, Kris V. 2021. <span>“Improved Estimation of Time-Varying Reproduction N
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p>SMC methods can also be used to solve more standard parameter-estimation problems, but this isn’t the focus of this book.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>SMC methods can also be used to solve more standard parameter estimation problems, but this isn’t the focus of this website.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>The specification of a <em>conditional</em> filtering/smoothing distribution is used to highlight that model parameters have been chosen instead of estimated. We later demonstrate how to find the <em>marginal</em> filtering/smoothing distribution which we denote with <span class="math inline">\(P(X_t|y_{1:t})\)</span>, to highlight that model parameters have been marginalised out.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
@@ -634,8 +633,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -746,7 +743,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

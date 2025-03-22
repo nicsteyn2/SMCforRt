@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -57,10 +57,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -333,12 +333,6 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">EpiNow2</span></span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./othermethods_pomp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Iterated filtering and POMP</span></span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item">
@@ -394,6 +388,7 @@ window.Quarto = {
   <ul>
   <li><a href="#temfack-and-wyse-2024" id="toc-temfack-and-wyse-2024" class="nav-link active" data-scroll-target="#temfack-and-wyse-2024"><span class="header-section-number">7.1</span> Temfack and Wyse (2024)</a></li>
   <li><a href="#endo-van-leeuwen-and-baguelin-2019" id="toc-endo-van-leeuwen-and-baguelin-2019" class="nav-link" data-scroll-target="#endo-van-leeuwen-and-baguelin-2019"><span class="header-section-number">7.2</span> Endo, van Leeuwen, and Baguelin (2019)</a></li>
+  <li><a href="#yang-et-al.-2022" id="toc-yang-et-al.-2022" class="nav-link" data-scroll-target="#yang-et-al.-2022"><span class="header-section-number">7.3</span> Yang et al.&nbsp;(2022)</a></li>
   </ul>
 </nav>
     </div>
@@ -455,6 +450,12 @@ window.Quarto = {
 <p>In contrast, <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span> only perform the equivalent of step (a). They retain a single trajectory <span class="math inline">\(x_{1:T}\)</span> from each accepted parameter sample, generating a set <span class="math inline">\(\{x_{1:T}^{(i)}, \theta^{(i)}\}_{i=1}^M\)</span>. This uses information from every bootstrap filter that was run at an accepted value of <span class="math inline">\(\theta\)</span>.</p>
 <p>While this appears more computationally efficient, in order to effectively pre-allocate memory to store the (possibly very high dimensional) particle trajectories, we would need to know at what value of <span class="math inline">\(M\)</span> to stop the PMMH algorithm. We instead prioritise the adaptivity of our approach over the possible efficiency gains of <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span>.</p>
 <p>Despite this, the overall framework of <span class="citation" data-cites="endoIntroductionParticleMarkovchain2019">Endo, van Leeuwen, and Baguelin (<a href="references.html#ref-endoIntroductionParticleMarkovchain2019" role="doc-biblioref">2019</a>)</span> could be adapted to fit non-Markovian models by replacing their bootstrap filter with the one outlined in <a href="smc-bootstrap.html" class="quarto-xref"><span>Chapter 4</span></a>.</p>
+</section>
+<section id="yang-et-al.-2022" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="yang-et-al.-2022"><span class="header-section-number">7.3</span> Yang et al.&nbsp;(2022)</h2>
+<p><span class="citation" data-cites="yangBayesianDataAssimilation2022">Yang et al. (<a href="references.html#ref-yangBayesianDataAssimilation2022" role="doc-biblioref">2022</a>)</span> introduce “<em>Bayesian data assimilation</em>” for <span class="math inline">\(R_t\)</span> estimation. Like our methods (and unlike those listed above), they introduce methods that can handle non-Markovian models, and thus are able to apply their methods to the renewal model.</p>
+<p>However, their paper and supplementary material do not contain sufficient detail to fully understand their approach. They claim to use a particle approximation to the forward filtering and backward smoothing equations separately, which is a different approach to ours (where smoothing is performed while filtering through fixed-lag resampling). Details on the specific particle filter used are scarce.</p>
+<p><span class="citation" data-cites="yangBayesianDataAssimilation2022">Yang et al. (<a href="references.html#ref-yangBayesianDataAssimilation2022" role="doc-biblioref">2022</a>)</span> also do not provide methods for the estimation of fixed parameters <span class="math inline">\(\theta\)</span>. Their methods are an alternative to the bootstrap filter (<a href="smc-bootstrap.html" class="quarto-xref"><span>Chapter 4</span></a>) but not to PMMH (<a href="smc-pmmh.html" class="quarto-xref"><span>Chapter 5</span></a>).</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
@@ -463,6 +464,9 @@ Endo, Akira, Edwin van Leeuwen, and Marc Baguelin. 2019. <span>“Introduction t
 </div>
 <div id="ref-temfackReviewSequentialMonte2024b" class="csl-entry" role="listitem">
 Temfack, Dhorasso, and Jason Wyse. 2024. <span>“A Review of Sequential <span>Monte Carlo</span> Methods for Real-Time Disease Modeling.”</span> arXiv. <a href="https://doi.org/10.48550/ARXIV.2408.15739">https://doi.org/10.48550/ARXIV.2408.15739</a>.
+</div>
+<div id="ref-yangBayesianDataAssimilation2022" class="csl-entry" role="listitem">
+Yang, Xian, Shuo Wang, Yuting Xing, Ling Li, Richard Yi Da Xu, Karl J. Friston, and Yike Guo. 2022. <span>“Bayesian Data Assimilation for Estimating Instantaneous Reproduction Numbers During Epidemics: <span>Applications</span> to <span>COVID-19</span>.”</span> <em>PLOS Computational Biology</em> 18 (2): e1009807. <a href="https://doi.org/10.1371/journal.pcbi.1009807">https://doi.org/10.1371/journal.pcbi.1009807</a>.
 </div>
 </div>
 </section>
@@ -550,8 +554,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -662,7 +664,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
