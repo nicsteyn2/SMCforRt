@@ -6,3 +6,9 @@
 /.quarto/
 /_site/
 
+# Saved files
+*.h5
+
+# Playground files
+playground.jl
+playground.ipynb
