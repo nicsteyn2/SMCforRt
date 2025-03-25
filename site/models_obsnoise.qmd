@@ -1,11 +1,24 @@
 # Modelling observation noise {#sec-models-obsnoise}
 
+---
+execute:
+  eval: false
+---
+
+<!-- Reporting noise:
+
+- @huismanEstimationWorldwideMonitoring2022
+- @wilderTrackingDiseaseOutbreaks2021
+- @desimoneBayesianApproachMonitoring2020
+- @bhattSemimechanisticBayesianModelling2023 -->
+
+
 ```{julia}
 #| code-fold: true
 #| output: false
 
 using Plots, Measures
-include("../src/loadData.jl")
+include("../src/LoadData.jl")
 include("../src/FitModel.jl")
 
 Y = loadData("NZCOVID")
@@ -266,6 +279,7 @@ opts["paramNames"] = ["sigma", "k"]
 
 
 ## Reporting delays
+
 
 
 ## Concluding remarks

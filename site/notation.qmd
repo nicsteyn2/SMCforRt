@@ -1,0 +1,22 @@
+# Notation
+
+Terms are presented in the order they are introduced, except where it makes sense to place similar terms near each other.
+
+|Term|Definition|
+|--|---|
+|Filtering distribution|The posterior distribution of hidden state $x_t$ given observed data until time $t$. Written $P(x_t | y_{1:t})$.|
+|Smoothing distribution|The posterior distribution of hidden state $x_t$ given all observed data. Written $P(x_t|y_{1:T})$.|
+
+
+|Symbol|Definition|
+|-|---|
+|[Introduction](link.link)| <!-- #TODO: Figure out how to make this span -->
+|$E[\cdot]$|The expectation operator.|
+|$C_t$| Reported cases on time-step $t$.|
+|$I_t$| Infection incidence on time-step $t$.|
+|$R_t$| The instantaneous reproduction number at time-step $t$.|
+|$\omega_u$| The serial interval distribution. The probability that a secondary case was reported $u$ days after the primary case.|
+|$g_u$| The generation time distribution. The probability that a secondary case was infected $u$ days after the primary case.
+|$\Lambda_t^c$ | The force-of-infection derived from reported cases. Equals $\sum_{u=1}^{u_{max}} C_{t-u} \omega_u$.|
+|$\Lambda_t$| The force-of-infection derived from infection incidence. Equals $\sum_{u=1}^{u_{max}} I_{t-u} g_u$.|
+|$s:t$| Used as a subscript, refers to all indices between $s$ and $t$ (inclusive).|

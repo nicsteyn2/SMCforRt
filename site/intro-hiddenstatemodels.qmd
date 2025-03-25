@@ -1,29 +1,30 @@
 
-# Hidden-state models
+# Hidden-state models {#sec-intro-hiddenstatemodels}
 
-Sequential monte carlo (SMC) methods are a class of methods used to solve **hidden-state models**^[SMC methods can also be used to solve more standard parameter-estimation problems, but this isn't the focus of this book.].
+Sequential Monte Carlo (SMC) methods are a class of methods used to solve **hidden-state models**^[SMC methods can also be used to solve more standard parameter estimation problems, but this isn't the focus of this website.].
 
 It is helpful to define some general notation:
 
 - $X_t$ - hidden-states (such as the reproduction number $R_t$ or infection incidence $I_t$)
 - $y_t$ - observed data (such as reported cases $C_t$)
-- $\theta$ - model parameters
+- $\theta$ - model parameters that don't change over time
 
-![A diagram of a simple hidden-state model. In this example, $y_t$ depends only on $X_t$, and $X_t$ depends only on $X_{t-1}$, however our methods can fit models with more complciated relationships too.](images/diag-intro-hiddenstatemodel.png){#fig-intro-hiddenstatemodel width=400}
+![A diagram of a simple hidden-state model. In this example, $y_t$ depends only on $X_t$, and $X_t$ depends only on $X_{t-1}$, however our methods can fit models with more complicated relationships too.](images/diag-intro-hiddenstatemodel.png){#fig-intro-hiddenstatemodel width=600}
 
-Depending on your goal, you may only care about some of these terms, while the other terms are nuisance-terms. Nevertheless, it is important to consider all three.
+Depending on your goal, you may only care about some of these terms, and might want to marginalise out the terms you're not interested in. Nevertheless, it is important to consider all three.
 
 If your goal is **forecasting**, then future observed data $Y_{t+k}$ are your quantity of interest, and you only care about $X_t$ and $\theta$ to the extent that they allow you to estimate $Y_{t+k}$.
 
-If your goal is **reproduction number estimation** (or the estimation of any hidden-state), then $\theta$ is often a smoothing parameter, and you only care about $\theta$ to the extent that it allows you to estimate $R_t$.
+If your goal is **reproduction number estimation** (or the estimation of any hidden-state), then $\theta$ is often a nuisance parameter which you only care about to the extent that it allows you to estimate $R_t$.
 
-If your goal is to **learn about $\theta$**, say when modelling the effect of a non-pharmaceutical intervention, then $\theta$ is likely your quantity of interest, and you only care about $X_t$ to the extent that it allows you to estimate this effect.
+If your goal is to **learn about $\theta$**, which may represent the effect of a non-pharmaceutical intervention, for example, then $\theta$ is likely your quantity of interest, and you only care about $X_t$ to the extent that it allows you to estimate this effect.
 
-## Definition
 
-A (sequential) hidden-state model is composed of two parts:
+## Definition: hidden-state model
 
-**A state-space model:**
+A hidden-state model has two components:
+
+**A state-space transition distribution:**
 
 $$
 P(X_t | X_{1:t-1}, \theta)
@@ -31,83 +32,23 @@ $$ {#eq-intro-statespace}
 
 which dictates how the hidden-states vary over time.
 
-**An observation model:**
+**An observation distribution:**
 $$
 P(y_t | X_{1:t-1}, y_{1:t-1}, \theta)
-$$ {#eq-into-observation}
+$$ {#eq-intro-observation}
 
 which relates the observed data to the hidden-states.
 
 **These two distributions wholly define the model.**
 
-This structure makes it clear why hidden-state models are so popular in epidemiology. The underlying epidemic is often unobserved, often corresponding to the state-space model, while reported cases (or other data) are generated through some observation process.
+This structure makes it clear why hidden-state models are so popular in epidemiology. The underlying epidemic is often unobserved (thus represented by the state-space model), while reported cases (or other data) are generated through some observation process.
 
-*We note that we make no Markov-type assumption, although Markovian models (a.k.a Hidden Markov Models) can be viewed as a special-case of these hidden-state models.*
+*We note that we make no Markov-type assumption, although Markovian models (a.k.a. Hidden Markov Models [@kantasParticleMethodsParameter2015] or POMPs [@kingStatisticalInferencePartially2016]) can be viewed as a special case of these hidden-state models.*
 
-## Purpose
-
-The purpose of hidden-state models is to learn about the hidden-states $X_t$ and/or model parameters $\theta$. If the hidden-states are a means-to-an-end, then you might want to find the posterior distribution of $\theta$:
-
-$$
-P(\theta|y_{1:T})
-$$ {#eq-intro-posteriortheta}
-
-Or perhaps you want to make inferences about the hidden-states in real-time:
-
-$$
-P(X_t | y_{1:t})
-$$ {#eq-intro-marginalfiltering}
-
-This last distribution is called the *marginal filtering distribution*. We detail why in @sec-intro-filteringandsmoothing below.
-
-
-## Example 1: the unsmoothed model
-
-In @sec-intro-Rtestimation we introduced a simple model for $R_t$ estimation. While it's overkill, we can write this as hidden-state model.
-
-[Diagram here]
-
-We first placed a Gamma$(a_0, b_0)$ prior distribution on $R_t$ and made no further assumptions about the dynamics. This is the **state-space model**:
-
-$$
-R_t | a_0, b_0 \sim \text{Gamma}(a_0, b_0)
-$$ {#eq-intro-simplestatespace}
-
-Then we assumed that cases today were Poisson distributed with mean $R_t \Lambda_t$. This is the **observation model**:
-
-$$
-C_t | R_t, C_{1:t-1} \sim \text{Poisson}(R_t \Lambda_t^c)
-$$ {#eq-intro-simpleobservation}
-
-The hidden-states are the collection of $R_t$ values, observed data are reported cases $C_{1:T}$, and  model parameters are $a_0$, $b_0$, and $\{\omega_u\}_{u=1}^{u_{max}}$. Altogether this forms our hidden-state model.
-
-We previously solved this hidden-state model in @sec-intro-Rtestimation by leveraging the conjugacy of the state-space model with the observation model. This conjugacy is rare, and often we need to make unrealistic assumptions to obtain it, hence state-space models are often solved using SMC (or other simulation-based methods).
-
-## Example 2: EpiFilter
-
-[Diagram here]
-
-EpiFilter [@paragImprovedEstimationTimevarying2021] is an example of a typical state-space model. Autocorrelation in $R_t$ is modelled using a Gaussian random-walk, defining the **state-space model** as:
-
-$$
-R_t | R_{t-1} \sim \text{Normal}\left(R_{t-1}, \eta \sqrt{R_{t-1}}\right)
-$$ {#eq-intro-epifilterobs}
-
-with initial condition $R_0 \sim P(R_0)$. The gaussian random walk acts to smooth $R_t$ (see @sec-intro-smoothing). Like Example 1 above, EpiFilter also uses the Poisson renewal model as the observation distribution:
-
-$$
-C_t | R_t, C_{1:t-1} \sim \text{Poisson}(R_t \Lambda_t^c)
-$$ {#eq-intro-epifilterobs}
-
-As before, the hidden-states are the collection of $R_t$ values, and the observed data are reported cases $C_{1:T}$. Model parameters are now $\eta$ (which controls the smoothness of $R_t$), $\{\omega_u\}_{u=1}^{u_{max}}$, and $P(R_0)$.
-
-No analytical solution to the posterior distribution for $R_t$ exists, however @paragImprovedEstimationTimevarying2021 avoid the need for simulation-based methods through the use of grid-based approximations.
 
 ### Filtering and smoothing distributions {#sec-intro-filteringandsmoothing}
 
-Borrowing language from signal processing, we highlight two different posterior distributions for $R_t$ that we may be interested in.
-
-[DIAGRAM HERE]
+Borrowing language from signal processing, we highlight two different posterior distributions for $R_t$ that we may be interested in [@sarkkaBayesianFilteringSmoothing2013].
 
 The conditional^[The specification of a *conditional* filtering/smoothing distribution is used to highlight that model parameters have been chosen instead of estimated. We later demonstrate how to find the *marginal* filtering/smoothing distribution which we denote with $P(X_t|y_{1:t})$, to highlight that model parameters have been marginalised out.] **filtering distribution** is defined as:
 
@@ -123,19 +64,75 @@ $$ {#eq-intro-smoothingdist}
 
 The filtering distribution uses only past observations to estimate the hidden-states, whereas the smoothing distribution uses both past and future observations.
 
-One of the strengths of EpiFilter is its ability to find the smoothing distribution, allowing more data to inform $R_t$ estiamtes, particularly improving inference in low-incidence scenarios.
+![Diagram highlighting which data are used when finding the filtering and smoothing distributions of the hidden-states at time $t$. The plotted curve is the observed data from which the filtering and smoothing distributions are derived.](images/intro-hiddenstatemodels-filteringandsmoothing.png){#intro-hiddenstatemodels-filteringandsmoothing}
 
-We develop SMC methods suitable for finding both distributions.
+One of the strengths of EpiFilter [@paragImprovedEstimationTimevarying2021] is its ability to find the smoothing distribution, allowing more data to inform $R_t$ estimates, particularly improving inference in low-incidence scenarios.
 
-
-## Example 3: Modelling infection incidence
-
-In @sec-intro-casesvsinfections we highlighted that the renewal model can be placed on either reported cases (as in the examples so far) or infection incidence.
-
-When the renewal model is placed on infections it forms part of the hidden-state model, rather than the observation model. We then need to specify some observation mechanism. For this example we assume that each infection has an indepdendent $p = 0.5$ chance of
+We demonstrate SMC methods suitable for finding both distributions.
 
 
-## Concluding remarks
+## Examples {#sec-intro-hiddenstatemodels-examples}
 
-All three examples are focussed on $R_t$ estimation.  This is simply a consequence of the popularity of renewal models for this purpose. In all three cases we have constructed an epidemic model that could equally be used for forecasting or inference about model parameters.
+We present three examples of increasing complexity. While all examples are relatively simple, many off-the-shelf methods are unable to fit the third example model.
 
+### Example 1: a simple model
+
+In @sec-intro-Rtestimation we introduced a simple model for $R_t$ estimation. We can write this model in the form of a hidden-state model.
+
+The Gamma$(a_0, b_0)$ prior distribution on $R_t$ forms the **state-space transition distribution**:
+
+$$
+R_t \sim \text{Gamma}(a_0, b_0)
+$$ {#eq-intro-simplestatespace}
+
+while the Poisson renewal model with mean $R_t \Lambda_t$ forms the **observation distribution**:
+
+$$
+C_t | R_t, C_{1:t-1} \sim \text{Poisson}(R_t \Lambda_t^c)
+$$ {#eq-intro-simpleobservation}
+
+The sole time-varying hidden-state is the reproduction number $R_t$, the observed data are reported cases $C_{1:T}$, and the model parameters are $a_0$, $b_0$, and $\{\omega_u\}_{u=1}^{u_{max}}$. Altogether this forms our hidden-state model.
+
+We previously solved this hidden-state model in @sec-intro-Rtestimation by leveraging the conjugacy of the state-space model with the observation model. Such conjugacy is rare, hence state-space models are often solved using SMC (or other simulation-based methods).
+
+*Side-note: the state-space transition distribution for $R_t$ does not depend on previous values of $R_t$, so calling it a "transition" distribution might feel strange. Nevertheless, the model still fits in this framework!*
+
+### Example 2: EpiFilter
+
+EpiFilter [@paragImprovedEstimationTimevarying2021] is an example of a typical state-space model. Autocorrelation in $R_t$ is modelled using a Gaussian random walk, defining the **state-space model** as:
+
+$$
+R_t | R_{t-1} \sim \text{Normal}\left(R_{t-1}, \eta \sqrt{R_{t-1}}\right)
+$$ {#eq-intro-epifilterobs}
+
+with initial condition $R_0 \sim P(R_0)$. The gaussian random walk acts to smooth $R_t$ (see @sec-intro-smoothing). Like Example 1 above, EpiFilter also uses the Poisson renewal model as the **observation distribution**:
+
+$$
+C_t | R_t, C_{1:t-1} \sim \text{Poisson}(R_t \Lambda_t^c)
+$$ {#eq-intro-epifilterobs}
+
+As before, the hidden-states are the collection of $R_t$ values, and the observed data are reported cases $C_{1:T}$. Model parameters are now $\eta$ (which controls the smoothness of $R_t$), $\{\omega_u\}_{u=1}^{u_{max}}$, and $P(R_0)$.
+
+No analytical solution to the posterior distribution for $R_t$ exists, however @paragImprovedEstimationTimevarying2021 avoid the need for simulation-based methods through the use of grid-based approximations.
+
+
+### Example 3: Modelling infection incidence
+
+In @sec-intro-casesvsinfections we highlighted that the renewal model can be placed on either reported cases (as in the examples so far) or "true" infection incidence. Let's now assume that reported cases are observed with Gaussian noise about the true number of infections.
+
+We keep the same state-space model for $R_t$, and now assume that infection incidence $I_t$ (also a hidden-state) follows the renewal model, resulting in the following **state-space model**:
+$$
+R_t | R_{t-1} \sim \text{Normal}\left(R_{t-1}, \eta \sqrt{R_{t-1}}\right)
+$$
+
+$$
+I_t | R_t, I_{1:t-1} \sim \text{Poisson}(R_t \Lambda_t)
+$$
+
+With our **observation distribution** now taking the form:
+
+$$
+C_t \sim \text{Normal}(I_t, \phi)
+$$
+
+While appearing simple, there are a number of reasons why existing methodology stuggles to fit this model. The new state-space model is non-Markovian, thus the grid-based approach used by EpiFilter (and many other methods developed for hidden Markov models) no longer works. Furthermore, $I_t$ is integer-valued so the model cannot be fit using popular probabilistic programming languages like Stan.

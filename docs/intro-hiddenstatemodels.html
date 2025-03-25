@@ -240,7 +240,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./models-simple.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A simple model</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Introductory models</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -390,7 +390,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#sec-intro-filteringandsmoothing" id="toc-sec-intro-filteringandsmoothing" class="nav-link" data-scroll-target="#sec-intro-filteringandsmoothing"><span class="header-section-number">3.1.1</span> Filtering and smoothing distributions</a></li>
   </ul></li>
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples"><span class="header-section-number">3.2</span> Examples</a>
+  <li><a href="#sec-intro-hiddenstatemodels-examples" id="toc-sec-intro-hiddenstatemodels-examples" class="nav-link" data-scroll-target="#sec-intro-hiddenstatemodels-examples"><span class="header-section-number">3.2</span> Examples</a>
   <ul class="collapse">
   <li><a href="#example-1-a-simple-model" id="toc-example-1-a-simple-model" class="nav-link" data-scroll-target="#example-1-a-simple-model"><span class="header-section-number">3.2.1</span> Example 1: a simple model</a></li>
   <li><a href="#example-2-epifilter" id="toc-example-2-epifilter" class="nav-link" data-scroll-target="#example-2-epifilter"><span class="header-section-number">3.2.2</span> Example 2: EpiFilter</a></li>
@@ -479,8 +479,8 @@ P(X_t | y_{1:T}, \theta)
 <p>We demonstrate SMC methods suitable for finding both distributions.</p>
 </section>
 </section>
-<section id="examples" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="examples"><span class="header-section-number">3.2</span> Examples</h2>
+<section id="sec-intro-hiddenstatemodels-examples" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sec-intro-hiddenstatemodels-examples"><span class="header-section-number">3.2</span> Examples</h2>
 <p>We present three examples of increasing complexity. While all examples are relatively simple, many off-the-shelf methods are unable to fit the third example model.</p>
 <section id="example-1-a-simple-model" class="level3" data-number="3.2.1">
 <h3 data-number="3.2.1" class="anchored" data-anchor-id="example-1-a-simple-model"><span class="header-section-number">3.2.1</span> Example 1: a simple model</h3>
@@ -499,7 +499,7 @@ C_t | R_t, C_{1:t-1} \sim \text{Poisson}(R_t \Lambda_t^c)
 </section>
 <section id="example-2-epifilter" class="level3" data-number="3.2.2">
 <h3 data-number="3.2.2" class="anchored" data-anchor-id="example-2-epifilter"><span class="header-section-number">3.2.2</span> Example 2: EpiFilter</h3>
-<p>EpiFilter <span class="citation" data-cites="paragImprovedEstimationTimevarying2021">(<a href="references.html#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">Parag 2021</a>)</span> is an example of a typical state-space model. Autocorrelation in <span class="math inline">\(R_t\)</span> is modelled using a Gaussian random-walk, defining the <strong>state-space model</strong> as:</p>
+<p>EpiFilter <span class="citation" data-cites="paragImprovedEstimationTimevarying2021">(<a href="references.html#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">Parag 2021</a>)</span> is an example of a typical state-space model. Autocorrelation in <span class="math inline">\(R_t\)</span> is modelled using a Gaussian random walk, defining the <strong>state-space model</strong> as:</p>
 <p><span id="eq-intro-epifilterobs"><span class="math display">\[
 R_t | R_{t-1} \sim \text{Normal}\left(R_{t-1}, \eta \sqrt{R_{t-1}}\right)
 \tag{3.7}\]</span></span></p>

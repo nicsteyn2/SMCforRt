@@ -12,7 +12,7 @@ where:
 - $R_t$: the **instantaneous reproduction number** at time-step $t$. Defined as the average number of secondary cases produced by an infected individual, if they were to have their entire infectious period at the current time-step.
 - $\omega_u$: the **serial interval**. The probability that a secondary case was reported $u$ days after the primary case. $u_{max}$ denotes the maximum value of $u$ for which $\omega_u > 0$.
 
-![Simple diagram outlining the renewal equation](images/diag-introduction-renewalmodel.png){#fig-intro-diagram width=600}
+![Diagram of the renewal model. In this example, the serial interval takes values ωu = 0.25, 0.5, 0.25 for u = 1, 2, 3 (a maximum serial interval of three days) and the reproduction number is assumed to take values Rt–1 = 2, Rt = 2, and Rt+1 = 1. On the left, the expected number of secondary cases produced by a primary case who was reported at time t–2 is shown (0.5 cases on day t–1, a single case on day t, and 0.25 cases on day t+1), with their expected contribution to total cases at time t highlighted. On the right, the expected total cases at time t is shown as the sum of the expected cases produced by primary cases reported u = 1, 2, and 3 days ago, defining the renewal equation.](images/intro-renewalmodel-diagram.png){#fig-intro-diagram}
 
 We also need to specify a distribution for $C_t$. The canonical choice is the *Poisson renewal model*:
 
@@ -26,20 +26,9 @@ $$
 \Lambda_t^c = \sum_{u=1}^{u_{max}} C_{t-u} \omega_u
 $$ {#eq-intro-forceofinfection}
 
-where $\Lambda_t^c$ is called the **force-of-infection** at time $t$. The superscript $c$ denotes that $\Lambda_t^c$ is calculated using past reported cases, to differentiate it from $\Lambda_t$, which we use when modelling *infections*.
+where $\Lambda_t^c$ is called the **force-of-infection** at time $t$. The superscript $c$ denotes that $\Lambda_t^c$ is calculated using past reported cases, to differentiate it from $\Lambda_t$, which we use when modelling *infections* (see @sec-intro-casesvsinfections).
 
 ## Simulating the renewal model
-
-```{julia}
-#| output: false
-#| code-fold: true
-
-#TODO: Re-label "Code" to "Setup code"
-
-# Some setting up code!
-using Distributions
-T = 100 # Number of days we will later simulate
-```
 
 To understand how the renewal model works, let's start by simulating $T = 100$ days of reported cases from it. To do this, we need **three components**:
 
@@ -48,11 +37,12 @@ To understand how the renewal model works, let's start by simulating $T = 100$ d
 ```{julia}
 #| output: false
 
-C = zeros(T) 
-C[1] = 50 
+T = 100
+C = zeros(T)
+C[1] = 50 # Specify C_1 = 50
 ```
 
-2. The **reproduction number** over time. We will use a sin-curve for this example:
+2. The **reproduction number** over time. We will use a sin-curve alternating between $R_t = 1.5$ and $R_t = 0.5$ with a period of 50 days for this example:
 
 ```{julia}
 #| output: false
@@ -64,6 +54,7 @@ R = 1.0 .+ 0.5 * sin.((2*π/50) .* (1:T))
 
 ```{julia}
 #| output: false
+using Distributions
 
 ω = pdf.(Gamma(2.36, 2.74), 1:T)
 ω = ω/sum(ω) # Ensure it is normalised!
@@ -78,7 +69,7 @@ Plotting our chosen $R_t$ and serial interval:
 
 # Visualise Rt and the serial interval
 using Plots, Measures
-plotR = plot(R, label=false, xlabel="Time (days)", ylabel="Reproduction number", color=:darkgreen)
+plotR = plot(R, label=false, xlabel="Time (days)", ylabel="Reproduction number", color=:darkgreen, linewidth=3)
 plotω = bar(1:21, ω[1:21], label=false, xlabel="Day", ylabel="Serial interval probability", color=:darkorange)
 display(plot(plotR, plotω, layout=(1,2), size=(800,300), margins=3mm))
 ```
@@ -108,6 +99,21 @@ Finally letting us plot our simulated cases:
 display(bar(C, label=false, xlabel="Time (days)", ylabel="Simulated cases", size=(800,300), margins=3mm, color=:darkblue))
 
 ```
+
+::: {.callout-tip title="Julia"}
+These codeblocks are written in the programming language Julia, which should (mostly) make sense to those familiar with R/Python/MATLAB. One key difference between these languages and Julia is **broadcasting**.
+
+Broadcasting allows functions to be called *elementwise*. For example, when defining `R` above, we write:
+
+```julia
+R = 1.0 .+ 0.5 * sin.(...)
+```
+
+As `1.0` is a scalar and `0.5 * sin.(...)` is a vector, the `.` before the `+` tells Julia to add 1 to each *element* of `0.5 * sin.(...)`. Similarly, the `.` in `sin.(x)` tells Julia to apply the sine function to each element of `x`. Other languages may handle this automatically in some cases, but by being explicit about element-wise operations, Julia avoids ambiguity.
+
+Broadcasting can also be more memory-efficient in certain situations. It also works automatically with user-defined functions.
+:::
+
 
 ## Estimating $R_t$ {#sec-intro-Rtestimation}
 
@@ -159,70 +165,31 @@ EpiEstimPosterior = EpiEstim(7, ω, C; a0=a0, b0=b0)
 Finally, we are ready to plot our results:
 
 ```{julia}
-#| label: fig-intro-exampleRt
+#| label: fig-intro-examplert
 #| fig-cap: "Estimates of Rt from the basic (unsmoothed) renewal model (blue) and from a smoothed model (EpiEstim, orange)."
 #| code-fold: true
-
 plot(xlabel="Time (days)", ylabel="Reproduction number", size=(800,350), left_margin=3mm, bottom_margin=3mm)
 plot!(2:T, MeanRt[2:T], ribbon=(MeanRt[2:T]-LowerRt[2:T], UpperRt[2:T]-MeanRt[2:T]), fillalpha=0.4, label="Unsmoothed posterior")
 plot!(2:T, EpiEstMean[2:T], ribbon=(EpiEstMean[2:T]-EpiEstLower[2:T], EpiEstUpper[2:T]-EpiEstMean[2:T]), fillalpha=0.4, label="EpiEstim (smoothed) posterior")
 plot!(1:T, R, label="True Rt", color=:black)
-
 ```
 
 ### The necessity and dangers of smoothing {#sec-intro-smoothing}
 
-@fig-intro-exampleRt highlights both the necessity and dangers of smoothing. Our independent daily estimates (blue) are highly variable and the credible intervals are wide. By using smoothed estimates (orange), we reduce this variance and produce much more confident results. However, our results strongly depend on these smoothing assumptions. In the example above, we can clearly see that the credible intervals produced by EpiEstim often do not include the true value of $R_t$!
+@fig-intro-examplert highlights both the necessity and dangers of smoothing. Our independent daily estimates (blue) are highly variable and the credible intervals are wide. By using smoothed estimates (orange), we reduce this variance and produce much more confident results. However, our results strongly depend on these smoothing assumptions. In the example above, we can clearly see that the credible intervals produced by EpiEstim often do not include the true value of $R_t$!
 
-Smoothing works by allowing data from multiple days to inform point-estimates. A variety of approaches have been developed, discussed at length in @sec-smoothingmethods. **In fact, most renewal-model based estimators of $R_t$ differ only in their choice of smoothing method!**
+Smoothing works by allowing data from multiple days to inform point-estimates. A variety of approaches have been developed, discussed at length in @sec-smoothingmethods. **In fact, many popular renewal-model based estimators of $R_t$ differ only in their choice of smoothing method!**
 
 Epidemic renewal models are usually smoothed by placing assumptions on the dynamics of $R_t$. Examples include assuming $R_t$ is fixed over trailing windows [@coriNewFrameworkSoftware2013], modelling it with splines [@azmonEstimationReproductionNumber2014] or Gaussian processes [@abbottEstimatingTimevaryingReproduction2020], or assuming it follows a random walk [@paragImprovedEstimationTimevarying2021]. Piecewise-constant models, where $R_t$ is assumed to be fixed over different time-windows, are also examples of smoothing [@creswellBayesianNonparametricMethod2023].
 
-So far we have only considered process noise in the epidemic, but epidemic data are often subject to observation noise, a secondary reason why smoothing is so important. We elaborate on this in #TODO.
+So far we have only considered process noise in the epidemic, but epidemic data are often subject to observation noise, a secondary reason why smoothing is so important.
 
 
-
-
-
-<!-- 
-To account for this noise, popular $R_t$ estimators utilise smoothing methods to increase the quantity of data available on each time-step. These smoothing methods typically take the form of a dynamic model on $R_t$. An extensive discussion of existing smoothing methods is included [here](link.link) [\#TODO: Write-up smoothing comparison]. -->
-
-<!-- ### A dynamic model for $R_t$
-
-The primary requirement for using our SMC-methods is a *sequential* dynamic model. That is, we want a model for the evolution of $R_t$ that looks like:
-
-$$
-P(R_t | R_{1:t-1}) = f(R_{1:t-1})
-$$
-
-for some arbitrary probability density (or mass) function $f$.
-
-We employ a default model similar to that used by EpiFilter [@paragImprovedEstimationTimevarying2021], specifically a Gaussian random walk:
-
-$$
-\log R_t | \log R_{t-1} \sim \text{Normal}(\log R_{t-1}, \sigma)
-$$ {#eq-intro-rtmodel}
-
-Design choices in this model include:
-
-- The Gaussian random walk encodes the assumption that $R_t4 varies smoothly over time
-- Modelling on a log-scale allows $R_t$ to vary faster at larger values
- -->
 
 ## The serial interval
 
 The other key component in the renewal model is the serial interval $\omega$. This parameter is typically not identifiable from reported case data (at least at the same time as $R_t$), so it often receives less attention. When fitting renewal models, researchers usually use estimates of the serial interval from other data.
 
-External estimates of $\omega$. 
-
-<!-- ## Statistical noise
-
-#TODO: Copy to somewhere else
-
-Statistical noise in reported cases time-series can be separated into two categories:
-
-1. **Process noise**: the true dynamics of $R_t$ are unknown and the underlying infection process is inherently stochastic
-2. **Observation noise**: case reporting may be delayed, incomplete, or feature a number of other biases.   -->
 
 ## Reported cases vs infections {#sec-intro-casesvsinfections}
 

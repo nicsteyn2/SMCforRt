@@ -1,42 +1,47 @@
 
 
 ::: {.callout-warning}
-This site is a very early beta version and will change significantly over the coming months. This may continue until I finish my DPhil in October 2025, at which time it will (for better or worse) become relatively static.
+This is a very early beta version of this site and will change significantly over the coming weeks.
 
-There are some quirks with the current hosting platform. Some website elements, such as links between chapters, are not presenting properly. These will be automatically fixed when the website is made public on GitHub pages.
+Comments, suggestions, and feedback are very welcome and can be sent to: nicholas.steyn@univ.ox.ac.uk. Please also get in touch if you would like to collaborate!
+
+Please see the [preprint](https://doi.org/10.48550/arXiv.2503.18875) for a more complete overview of the topics that will be covered here.
 :::
 
 ## Welcome {.unnumbered}
 
-Renewal models are popular in statistical epidemiology for their use as a semi-mechanistic model of disease transmission. We demonstrate how sequential Monte Carlo (SMC) methods can be used to perform inference on and forecast with these models.
+Renewal models are popular in statistical epidemiology for their use as a semi-mechanistic model of disease transmission. We demonstrate how sequential Monte Carlo (SMC) methods can be used to perform inference on and generate projections with these models.
 
 With these methods one can:
 
 - Estimate $R_t$ from imperfect data, or from multiple sources of data
-- Produce well-calibrated short-term forecasts
+- Produce well-calibrated short-term projections
 - Estimate abrupt change-points in disease transmission
 - ... and so much more
 
-Our approach:
+This approach:
 
 - Is simple, intuitive, and flexible
 - Produces valid credible intervals on quantities of interest
 - Can **simultaneously** account for reporting biases, aggregated/missing data, imported cases, multiple data sources, and more.
+- Uses entirely standalone code (i.e. no external packages or software are required)
+- Can handle a mixture of continuous and discrete variables (where Stan requires only continuous variablese)
 
-![Reported cases for the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand [CITE]. We will develop methods to estimate the reproduction number from these data.](images/root_readme_data.png)
+![Reported cases for the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand @ministryofhealthnzNewZealandCOVID192024. We will develop methods to estimate the reproduction number from these data.](images/root_readme_data.png)
 
 Renewal models underlie many of the most popular methods for reproduction number estimation, including EpiEstim [@coriNewFrameworkSoftware2013] and EpiNow2 [@abbottEstimatingTimevaryingReproduction2020]. They have also been used to model elimination probabilities [@paragDecipheringEarlywarningSignals2021], estimate the effect of non-pharmaceutical interventions [@flaxmanEstimatingEffectsNonpharmaceutical2020], and produce forecasts [@banholzerComparisonShorttermProbabilistic2023], for example.
 
-## Structure of this book
+## Structure of this website
 
-This book is made up of a collection of Jupyter-style notebooks. All code is implemented in [Julia](https://julialang.org/), a programming language with the speed of C++ and simplicity of R and Python. The notebooks are organised into chapters:
+This website is made up of a collection of Jupyter-style notebooks. All code is implemented in [Julia](https://julialang.org/), a programming language with the speed of C++ and simplicity of R and Python. The notebooks are organised into chapters:
 
-- **Introduction:** We introduce key concepts such as the [renewal model](introduction.html) or [hidden-state models](link.link). Those already familiar with these concepts can safely skip these pages.
-- **Sequential Monte Carlo:** We introduce specific SMC methods. This includes defining the [bootstrap filter](link.link) and [particle marginal Metropolis Hastings](link.link).
-- **Evaluation:** We introduce key metrics for model evaluation, including [scoring rules](link.link), [KL-divergence](link.link), and ???.
-- **Reproduction number estimation:** A collection of $R_t$ estimators, accounting for various statistical artefacts, are introduced. 
-- **Additional models:** We demonstrate how these methods can be used for [epidemic forecasting](link.link), [inference](link.link), and [elimination probabilities](link.link).
-- **Case studies:**
+- **Introduction:** We introduce key concepts such as the [renewal model](introduction.html) and [hidden-state models](intro-hiddenstatemodels.html). Those already familiar with these concepts can safely skip these pages.
+- **Sequential Monte Carlo:** We introduce specific SMC methods. This includes defining the [bootstrap filter](smc-bootstrap.html) and [particle marginal Metropolis Hastings](smc-pmmh.html).
+- **Models:** A collection of epidemic models accounting for various statistical artefacts. The focus in this chapter is on $R_t$ estimation.
+- **Prediction:** We use the models developed to [produce short-term forecasts](link.link), estimate the [probability of elimination](link.link), and [estimate missing data](link.link). 
+- **Inference:** #TODO
+- **Evaluation:** We introduce key metrics for [model evaluation](eval-scoringrules.html), including [scoring rules](eval-scoringrules.html), [KL-divergence](eval-additionalnotes.qmd), and TBC.
+<!-- - **Additional models:** We demonstrate how these methods can be used for [epidemic forecasting](link.link), [inference](link.link), and [elimination probabilities](link.link). -->
 - **Other methods:** We compare our methods to popular alternatives in the literature. Where possible, Julia implementations are provided for these.
 
 

@@ -1,0 +1,312 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# The bootstrap filter {#sec-smc-bootstrap}\n",
+        "\n",
+        "<!-- ```{julia}\n",
+        "#| echo: false\n",
+        "#| output: false\n",
+        "\n",
+        "# Setting up\n",
+        "using Plots, Measures, Distributions\n",
+        "include(\"../src/loadData.jl\")\n",
+        "``` -->\n",
+        "\n",
+        "\n",
+        "In this chapter we introduce a variant of the **bootstrap filter**.\n",
+        "\n",
+        "The bootstrap filter generates sample-based approximations to the conditional filtering distribution $P(X_t | y_{1:t}, \\theta)$ and conditional smoothing distribution $P(X_t | y_{1:T}, \\theta)$.\n",
+        "\n",
+        "*This chapter assumes fixed and known values of the model parameters $\\theta$. @sec-smc-parameterestimation handles the estimation of $\\theta$.*\n",
+        "\n",
+        "\n",
+        "## Intuition\n",
+        "\n",
+        "The goal of the bootstrap filter is to use observed data $y_{1:T}$ to learn about the hidden-states $X_t$.\n",
+        "\n",
+        "::: {.callout-tip}\n",
+        "We provide a different intuitive explanation in the corresponding [journal article](https://github.com/nicsteyn2/SMCforRt/blob/main/smcforRt.pdf). Otherwise see @sec-smc-bootstrap-additional for additional resources.\n",
+        ":::\n",
+        "\n",
+        "### Sequential Importance (Re)sampling\n",
+        "\n",
+        "Assume that we have a collection of samples from the *filtering distribution* at time $t\\!-\\!1$, denoted $\\{x_{t-1}^{(i)}\\} \\sim P(X_{t-1}|y_{1:t-1}, \\theta)$. We call these samples **particles**, and they collectively represent our knowledge about the hidden-states at this time step.\n",
+        "\n",
+        "By coupling these particles with the state-space transition model (@eq-intro-statespace), we can make one-step-ahead predictions. Mathematically we want to obtain the predictive distribution:\n",
+        "$$\n",
+        "\\underbrace{P(X_t | y_{1:t-1}, \\theta)}_{\\text{predictive dist.}} = \\int \\underbrace{P(X_t | X_{t-1}, \\theta)}_{\\text{state-space transition dist.}} \\underbrace{P(X_{t-1}|y_{1:t-1}, \\theta)}_{\\text{prev. filtering dist.}} \\ dX_{t-1}\n",
+        "$$\n",
+        "Which is a complicated and potentially high-dimensional integral. Fortunately, all we need to do is sample from the state-space transition model while conditioning on our particles:\n",
+        "$$\n",
+        "\\{\\tilde{x}_t^{(i)}\\} \\sim P(X_t | x_{t-1}^{(i)}, \\theta)\n",
+        "$$\n",
+        "\n",
+        "If we treat this predictive distribution as the prior distribution for $X_t|y_{1:t}$, we can apply Bayes' formula:\n",
+        "\n",
+        "$$\n",
+        "\\underbrace{P(X_t | y_{1:t}, \\theta)}_{\\text{new filtering dist}} \\propto \\underbrace{P(y_t|X_t, y_{1:t-1}, \\theta)}_{\\text{observation dist.}} \\underbrace{P(X_t | y_{1:t-1}, \\theta)}_{\\text{predictive dist.}}\n",
+        "$$\n",
+        "\n",
+        "Since we already have samples from $P(X_t | y_{1:t-1}, \\theta)$, all we need to do is assign them weights $w_t^{(i)}$ according to the observation distribution:\n",
+        "\n",
+        "$$\n",
+        "w_t^{(i)} = P(y_t | \\tilde{x}_t^{(i)}, y_{1:t-1}, \\theta)\n",
+        "$$\n",
+        "\n",
+        "The final set of particles $\\{x_t^{(i)}\\}$ is constructed by re-sampling (with replacement) from $\\{\\tilde{x}_t^{(i)}\\}$ according to the corresponding weights. Thus:\n",
+        "\n",
+        "$$\n",
+        "x_t^{(i)} \\sim P(X_t | y_{1:t}, \\theta)\n",
+        "$$\n",
+        "\n",
+        "Thus, starting with an initial set of particles $\\{x_0^{(i)}\\} \\sim P(X_0)$, all we need to do is repeat this procedue at each time step $t$, storing the particle values as we go. If the resampling-step is performed at every time step where data are observed, this is called a **bootstrap filter**, which is a special case of a sequential importance resampling algorithm.\n",
+        "\n",
+        "### State-history resampling\n",
+        "\n",
+        "In most \n",
+        "\n",
+        "The derivation provided above assumes that our model is Markovian: the state-space transition and observation distributions depend only on $X_{t-1}$, and not on $X_{t-2}, X_{t-3}, \\ldots$.\n",
+        "\n",
+        "\n",
+        "\n",
+        "### Using the particles\n",
+        "\n",
+        "## Algorithm\n",
+        "\n",
+        "\\#TODO: write SMC algorithm\n",
+        "\n",
+        "<!--\n",
+        "## Example {#sec-smc-bootstrapexample}\n",
+        "\n",
+        "For demonstration, we consider a simple reproduction number estimator. First assume that $\\log R_t$ follows a Gaussian random walk:\n",
+        "\n",
+        "$$\\log R_t \\sim \\text{Normal}(\\log R_{t-1}, \\sigma) $$\n",
+        "\n",
+        "while reported cases are assumed to follow the Poisson renewal model:\n",
+        "\n",
+        "$$ C_t \\sim \\text{Poisson}\\left(R_t \\sum_{u=1}^{t-1} C_{t-u} g_u\\right) $$\n",
+        "\n",
+        "The first equation defines our *hidden-state model* while the second equation defines our *observation model*. With only a slight difference[^1], this model is almost identical to that employed by EpiFilter [@paragImprovedEstimationTimevarying2021].\n",
+        "\n",
+        "[^1]: @paragImprovedEstimationTimevarying2021 assumes $R_t$ (rather than $\\log R_t$) follows a Gaussian random walk. The standard deviation of this random walk is multiplied by $\\sqrt{R_t}$ to allow $R_t$ to take larger \"jumps\" when it is larger, achieving the same outcome as our log-model. We discuss this further in @sec-other-epifilter.\n",
+        "\n",
+        "Leaving parameter estimation to @sec-smc-parameterestimation, we use the following defaults:"
+      ],
+      "id": "bc695341"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "\n",
+        "# Serial interval\n",
+        "ω = pdf.(Gamma(2.36, 2.74), 1:100)\n",
+        "ω = ω/sum(ω)\n",
+        "\n",
+        "# Smoothing parameter\n",
+        "σ = 0.15\n",
+        "\n",
+        "# Initial distribution for Rt\n",
+        "pR0 = Uniform(0, 10) "
+      ],
+      "id": "20072692",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Collectively, $\\sigma$, $\\{\\omega_u\\}_{u=1}^{u_{max}}$, and $P(R_0)$ constitute the model parameters $\\theta$.\n",
+        "\n",
+        "\n",
+        "### Data {#sec-smc-data}\n",
+        "\n",
+        "We use data from the first 100 days of the COVID-19 pandemic in New Zealand. Focusing now on total cases (we leave the critical separation of imported and local cases to @sec-models-imported):\n"
+      ],
+      "id": "870393ec"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| fig-cap: Reported cases from the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand.\n",
+        "#| code-fold: true\n",
+        "#| label: fig-models-nzdata\n",
+        "\n",
+        "nzdata = loadData(\"NZCOVID\")\n",
+        "T = length(nzdata.Ct)\n",
+        "bar(nzdata.date, nzdata.Ct, label=false, xlabel=\"Date\", ylabel=\"Reported cases\", size=(800,300), margins=3mm, color=:darkblue)"
+      ],
+      "id": "fig-models-nzdata",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Setting up\n",
+        "\n",
+        "We need to specify the number of particles $N$ and resampling window $L$:\n"
+      ],
+      "id": "0d306f70"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "N = 10000\n",
+        "L = 50"
+      ],
+      "id": "da1d7146",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "pre-allocate memory for our particles:\n"
+      ],
+      "id": "8e0f1a81"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "X = zeros(N, T)"
+      ],
+      "id": "fd617ae4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "and sample from the initial distribution:\n"
+      ],
+      "id": "c3f76573"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "X[:,1] = rand(pR0, N)"
+      ],
+      "id": "99ec27f3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Implementation\n",
+        "\n",
+        "All that's left to do is run the bootstrap filter:\n"
+      ],
+      "id": "9f4c45bb"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: false\n",
+        "\n",
+        "for tt = 2:T\n",
+        "\n",
+        "    # Project according to the state-space model\n",
+        "    X[:,tt] = exp.(rand.(Normal.(log.(X[:,tt-1]), σ)))\n",
+        "\n",
+        "    # Weight according to the observation model\n",
+        "    Λ = sum(nzdata.Ct[tt-1:-1:1] .* ω[1:tt-1])\n",
+        "    W = pdf.(Poisson.(X[:,tt] .* Λ), nzdata.Ct[tt])\n",
+        "\n",
+        "    # Resample\n",
+        "    inds = wsample(1:N, W, N; replace=true)\n",
+        "    X[:, max(tt - L, 1):tt] = X[inds, max(tt - L, 1):tt]\n",
+        "\n",
+        "end"
+      ],
+      "id": "f885a2b0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Results\n",
+        "\n",
+        "The $t^{th}$ column of $X$ is a set of samples from $P(X_t | C_{1:t+L})$. The mean and quantiles of this posterior distribution are found using:\n"
+      ],
+      "id": "15d0ac78"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| fig-cap: Estimated $R_t$ for the first 100 days of the COVID-19 pandemic. The dashed horizontal line indicates $R_t = 1$. The green line shows the posterior mean and the green shading shows the 95% credible interval.\n",
+        "#| label: fig-models-simpleconditionalsmooth\n",
+        "\n",
+        "m = [mean(X[:,tt]) for tt in 1:T]\n",
+        "l = [quantile(X[:,tt], 0.025) for tt in 1:T]\n",
+        "u = [quantile(X[:,tt], 0.975) for tt in 1:T]\n",
+        "plot(m, ribbon=(m-l, u-m), color=:darkgreen, label=false, xlabel=\"Date\", ylabel=\"Reproduction number\", size=(800,300), margins=3mm)\n",
+        "hline!([1], label=false, color=:black, line=:dash)"
+      ],
+      "id": "fig-models-simpleconditionalsmooth",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "-->\n",
+        "\n",
+        "## Resources from other fields {#sec-smc-bootstrap-additional}\n",
+        "\n",
+        "Bootstrap filters (and SMC methods more generally) have found use in many fields. Each field has their own motivation for and notation describing these methods. We provide an overview of other resources here.\n",
+        "\n",
+        "**Bayesian Filtering and Smoothing [@sarkkaBayesianFilteringSmoothing2013]**\n",
+        "\n",
+        "Those with an **engineering background** may be familiar with \"filtering and smoothing\", where the state of a time-varying system is tracked through the observation of noisy measurements. Classical examples include GPS position tracking or audio signal processing.\n",
+        "\n",
+        "The Kalman filter, which provides an analytical solution when the state-space transition and observation models are linear Gaussian and Markovian, is perhaps the best-known example of a filtering method from engineering.\n",
+        "\n",
+        "Chapters 7 and 11 of @sarkkaBayesianFilteringSmoothing2013 introduce SMC methods under the headings \"particle filtering\" and \"particle smoothing\". We also recommend chapters 1 (*What are Bayesian filtering and smoothing?*), 4 (*Bayesian filtering equations and exact solutions*), and 8 (*Bayesian smoothing equations and exact solutions*).\n",
+        "\n",
+        "**A survey of Sequential Monte Carlo Methods for Economics and Finance [@crealSurveySequentialMonte2012]**\n",
+        "\n",
+        "Those with an **econometrics background** may find this extensive review helpful, although the author focusses on Markovian models. Examples employed in this review include a stochastic volatility model and a nonlinear dynamic stochastic general equilibrium model.\n",
+        "\n",
+        "*This list is incomplete. If you know of any additional resources that may be helpful, [please get in touch](mailto:nicholas.steyn@univ.ox.ac.uk)!*\n",
+        "\n",
+        "**Data Assimilation Fundamentals: ... [@evensenDataAssimilationFundamentals2022]**\n",
+        "\n",
+        "Those with a background in **atmospheric science, oceanography, metereology, or other environmental sciences** may be familiar with \"data assimilation\", where focus is placed on combining model predictions with observational data. Chapter 9 of this book introduces particle filters as a method for solving the \"fully nonlinear data assimilation\" problem."
+      ],
+      "id": "e92c9976"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "julia-_n-threads_-1.8",
+      "language": "julia",
+      "display_name": "Julia (n threads) 1.8.0",
+      "path": "/Users/nicsteyn/Library/Jupyter/kernels/julia-_n-threads_-1.8"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

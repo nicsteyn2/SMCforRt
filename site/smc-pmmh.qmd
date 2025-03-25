@@ -1,5 +1,10 @@
 # Parameter estimation {#sec-smc-parameterestimation}
 
+<!-- --- -->
+<!-- execute:
+  eval: false
+--- -->
+
 In @sec-smc-bootstrap we introduced the bootstrap filter, an algorithm which returns a particle approximation to $P(X_t | y_{1:T}, \theta)$. Critically, this posterior distribution depends on parameter(s) $\theta$. This chapter is dedicated to performing inference on $\theta$ itself.
 
 We start by showing how the bootstrap filter can be used to estimate the log-likelihood of $\theta$. We then use this log-likelihood (and a corresponding prior distribution) to develop a posterior distribution for $\theta$. Two approaches for this are demonstrated:
@@ -7,7 +12,7 @@ We start by showing how the bootstrap filter can be used to estimate the log-lik
 - A grid-based approach, useful for simple 1-dimensional cases
 - Particle marginal Metropolis Hastings (PMMH), useful for more complicated cases, and in @sec-smc-combining where we use the output to find the marginal posterior of $X_t$.
 
-If your goal is to perform inference on $\theta$, then you are done! In the frequentist setting, you have access to a likelihood upon which you can base your inferences. In the Bayesian setting you have the desired posterior distribution.
+If your goal is to perform inference on $\theta$, then you are done! In the frequentist setting, you have access to a likelihood upon which you can base your inferences (e.g. @sec-smc-parameterestimation-pomp). In the Bayesian setting you have the desired posterior distribution.
 
 If your goal is to perform inference on $X_t$ after accounting for uncertainty in $\theta$, then you can use the posterior distribution to marginalise out $\theta$. This is demonstrated in @sec-smc-combining.
 
@@ -230,3 +235,49 @@ gif(anim, fps=5, verbose=false, show_msg=false)
 The estimates of $\theta$ as presented here assume that the model is correctly specified, however this almost certainly is not the case.
 
 In the context of the example, we highlight the presence of unmodelled observation noise as a particular concern here: any noise in the data beyond that implied by the Poisson observation distribution is attributed to changes in $R_t$ (that is, is incorporated in estimates of $\sigma$). There are almost certainly additional sources of noise, so we are likely over-estimating $\sigma$. This is dicscussed further in @sec-models-obsnoise.
+
+
+## Other methods
+
+PMMH is just one method for estimating fixed model parameters $\theta$. Alternatives include SMC^2 (an "online" Bayesian approach) and iterated filtering (a frequentist approach). We provide a brief description of these methods here. Further discussion of parameter estimation in state-space models can be found in @kantasParticleMethodsParameter2015.
+
+
+### SMC^2
+
+\#TODO: Write SMC^2 section
+
+
+### Iterated filtering and POMP {#sec-smc-parameterestimation-pomp}
+
+
+Iterated filtering [@ionidesInferenceNonlinearDynamical2006; @ionidesIteratedFiltering2011; @ionidesInferenceDynamicLatent2015] takes a frequentist approach to estimating fixed model parameters $\theta$. This is a direct alternative to the PMMH algorithm we introduce above.
+
+Theoretically, this algorithm can estimate parameter vectors that would otherwise be intractable in a Bayesian setting. Their examples are restricted to Markovian models, limiting their applicability to renewal models, although including the relevant state-history in $X_t$ is a potential way around this problem (at the cost of a substantially increased model dimensionality).
+
+``POMP`` is the name given to an R package developed by Aaron King, Dao Nguyen, and Edward Ionides [@kingStatisticalInferencePartially2016] for performing statistical inference on "*Partially observed markov processes (POMP)*". The package contains a collection of methods, including PMMH[\#TODO: CHECK], although the focus here is on iterated filtering (called IF2 in the package).
+
+The authors use different terminology in places. POMP refers to Hidden Markov Models (HMMs), which are hidden-state models with Markovian hidden-state transitions. "Plug-and-play" refers to simulation-based inference methods (i.e. those that only require a simulator of the model, rather than direct evaluations of a likelihood function).
+
+
+
+#### Main differences
+
+Iterated filtering methods [] [] are claimed to be the only currently available, full-information (see below), simulation-based, frequentist methods for HMMs. 
+
+#### The "three criteria"
+
+The authors emphasise three criteria for comparing inference methods on HMMs:
+
+1. The "plug-and-play" property
+2. Full-information or feature-based
+3. Frequentist or Bayesian
+
+The "plug-and-play" property refers to simulation-based inference: a method is called "plug-and-play" if it only requires a simulator of the hidden-state model, rather than explicit likelihood evaluations.
+
+Full-information methods are those based on the likelihood function for the full data, whereas feature-based methods consider summary statistics or an alternative to the likelihood. Generally, full-information models are preferred, although feature-based methods can be useful if they improve computational efficiency.
+
+The primary difference between their methodology and ours, is their focus on frequentist-inference.
+
+The methods introduced on this website are simulation-based (so satisfy the "plug-and-play" criteria), generally leverage full-information, and are Bayesian. The methods presented in ``POMP`` are similar in the first two regards, although are generally (but not always) frequentist in nature. 
+
+There are obvious cases where we do not leverage full-information, e.g. when working with temporally aggregated data. However, in these cases the approximation occurs in the *model*, rather than the *method*, meaning our methods still leverage full-information in this context.

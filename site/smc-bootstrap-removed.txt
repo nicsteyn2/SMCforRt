@@ -1,0 +1,108 @@
+For demonstration, we consider a simple reproduction number estimator. First assume that $\log R_t$ follows a Gaussian random walk:
+
+$$\log R_t \sim \text{Normal}(\log R_{t-1}, \sigma) $$
+
+while reported cases are assumed to follow the Poisson renewal model:
+
+$$ C_t \sim \text{Poisson}\left(R_t \sum_{u=1}^{t-1} C_{t-u} g_u\right) $$
+
+The first equation defines our *hidden-state model* while the second equation defines our *observation model*. With only a slight difference[^1], this model is almost identical to that employed by EpiFilter [@paragImprovedEstimationTimevarying2021].
+
+[^1]: @paragImprovedEstimationTimevarying2021 assumes $R_t$ (rather than $\log R_t$) follows a Gaussian random walk. The standard deviation of this random walk is multiplied by $\sqrt{R_t}$ to allow $R_t$ to take larger "jumps" when it is larger, achieving the same outcome as our log-model. We discuss this further in @sec-other-epifilter.
+
+Leaving parameter estimation to @sec-smc-parameterestimation, we use the following defaults:
+
+```{julia}
+#| output: false
+
+# Serial interval
+ω = pdf.(Gamma(2.36, 2.74), 1:100)
+ω = ω/sum(ω)
+
+# Smoothing parameter
+σ = 0.15
+
+# Initial distribution for Rt
+pR0 = Uniform(0, 10) 
+```
+
+Collectively, $\sigma$, $\{\omega_u\}_{u=1}^{u_{max}}$, and $P(R_0)$ constitute the model parameters $\theta$.
+
+
+### Data {#sec-smc-data}
+
+We use data from the first 100 days of the COVID-19 pandemic in New Zealand. Focusing now on total cases (we leave the critical separation of imported and local cases to @sec-models-imported):
+
+```{julia}
+#| fig-cap: "Reported cases from the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand."
+#| code-fold: true
+#| label: fig-models-nzdata
+
+nzdata = loadData("NZCOVID")
+T = length(nzdata.Ct)
+bar(nzdata.date, nzdata.Ct, label=false, xlabel="Date", ylabel="Reported cases", size=(800,300), margins=3mm, color=:darkblue)
+```
+
+### Setting up
+
+We need to specify the number of particles $N$ and resampling window $L$:
+```{julia}
+#| output: false
+N = 10000
+L = 50
+```
+
+pre-allocate memory for our particles:
+
+```{julia}
+#| output: false
+X = zeros(N, T)
+```
+
+and sample from the initial distribution:
+
+```{julia}
+#| output: false
+X[:,1] = rand(pR0, N)
+```
+
+### Implementation
+
+All that's left to do is run the bootstrap filter:
+
+```{julia}
+#| output: false
+
+for tt = 2:T
+
+    # Project according to the state-space model
+    X[:,tt] = exp.(rand.(Normal.(log.(X[:,tt-1]), σ)))
+
+    # Weight according to the observation model
+    Λ = sum(nzdata.Ct[tt-1:-1:1] .* ω[1:tt-1])
+    W = pdf.(Poisson.(X[:,tt] .* Λ), nzdata.Ct[tt])
+
+    # Resample
+    inds = wsample(1:N, W, N; replace=true)
+    X[:, max(tt - L, 1):tt] = X[inds, max(tt - L, 1):tt]
+
+end
+```
+
+
+
+### Results
+
+The $t^{th}$ column of $X$ is a set of samples from $P(X_t | C_{1:t+L})$. The mean and quantiles of this posterior distribution are found using:
+
+```{julia}
+#| fig-cap: "Estimated $R_t$ for the first 100 days of the COVID-19 pandemic. The dashed horizontal line indicates $R_t = 1$. The green line shows the posterior mean and the green shading shows the 95% credible interval."
+#| label: fig-models-simpleconditionalsmooth
+
+m = [mean(X[:,tt]) for tt in 1:T]
+l = [quantile(X[:,tt], 0.025) for tt in 1:T]
+u = [quantile(X[:,tt], 0.975) for tt in 1:T]
+plot(m, ribbon=(m-l, u-m), color=:darkgreen, label=false, xlabel="Date", ylabel="Reproduction number", size=(800,300), margins=3mm)
+hline!([1], label=false, color=:black, line=:dash)
+```
+-->

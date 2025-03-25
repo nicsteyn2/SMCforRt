@@ -1,0 +1,12 @@
+{
+  "hash": "ff56698cad15c304845c45c60dd342e7",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "# EpiNow2 {#sec-other-epinow2}\n\n::: {#cell-fig-test .cell execution_count=1}\n``` {.julia .cell-code}\nusing Plots\nplot(rand(10))\n```\n\n::: {.cell-output .cell-output-display execution_count=4}\n![A test figure.](othermethods_epinow2_files/figure-html/fig-test-output-1.svg){#fig-test}\n:::\n:::\n\n\nSee Figure @fig-test.\n\n",
+    "supporting": [
+      "othermethods_epinow2_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

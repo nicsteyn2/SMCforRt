@@ -1,3 +1,5 @@
 # Probability of elimination
 
-After observing consecutive time-steps of zero-cases, it is often natural to ask: what is the probability that the pathogen has been eliminated?
+After observing consecutive time-steps of zero-cases, it is often natural to ask: what is the probability that the pathogen has been eliminated? Elimination is defined as ...
+
+But this problem is not as well-defined as it seems. For example...

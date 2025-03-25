@@ -1,135 +1,167 @@
 # The bootstrap filter {#sec-smc-bootstrap}
 
-```{julia}
-#| echo: false
-#| output: false
+*This chapter assumes fixed and known values of the model parameters. @sec-smc-parameterestimation considers the estimation of $\theta$.*
 
-# Setting up
-using Plots, Measures, Distributions
-include("../src/loadData.jl")
-```
+## Background
+
+::: {.callout-tip title="Goal"}
+The **goal** of the bootstrap filter is to use observed data $y_{1:T}$ to learn about the hidden-states $X_t$ given a pre-determined parameter vector $\theta$.
+:::
+
+The fundamental idea of the bootstrap filter (and particle filters in general) is to produce collections of samples from the target posterior distribution of a hidden-state model (@sec-intro-hiddenstatemodels) at each time-step $t$. The result of this algorithm takes the form:
+
+$$
+\{x_t^{(i)}\}_{i=1}^N \sim P(X_t | y_{1:t}, \theta)
+$$ {#eq-smc-bootstrap-particles}
+
+These samples are often called **particles**, hence the term *particle filtering*.
+
+We can use these particles to find the posterior mean, for example:
+
+$$
+E[X_t|y_{1:t}, \theta] \approx \frac{1}{N} \sum_{i=1}^N x_t^{(i)}
+$$
+
+or 95\% credible intervals (by finding the 2.5th and 97.5th percentile values), or any other quantity we might care about. As these samples are Bayesian, they can be naturally used in downstream models.
+
+*Side-note: the particles in @eq-smc-bootstrap-particles represent the filtering distribution (our knowledge about $X_t$ using data availabile up-to time $t$, see @sec-intro-filteringandsmoothing). As we will soon see, we can also use the bootstrap filter to find particles representing the smoothing distribution (our knowledge about $X_t$ using all available data).*
 
 
-In this chapter we introduce the **bootstrap filter**.
+### Overview {#sec-smc-bootstrap-overview}
 
-The bootstrap filter generates sample-based approximations to the conditional filtering distribution $P(X_t | y_{1:t}, \theta)$ and conditional smoothing distribution $P(X_t | y_{1:T}, \theta)$.
+The bootstrap filter repeats three steps for each time step.
 
-*This chapter assumes fixed values of the model parameters $\theta$. @sec-smc-parameterestimation handles the estimation of $\theta$.*
+Assume we are at time step $t$ and have a collection of samples from the filtering distribution at time $t\!-\!1$, denoted $\{x_{t-1}^{(i)}\}$, representing our guesses of the value of $X_{t-1}$. We update these samples to represent our guesses of the value of $X_t$ by:
+
+1. Projecting them forward according to the state-space transition distribution.
+2. Weighting these projected particles according to the observation distribution.
+3. Resampling these particles according to their weights.
+
+This is visualised in @fig-smc-bootstrapeg:
+
+![Diagram showing the three steps performed by the bootstrap filter at each time step $t$. In this diagram, particle histories are also resampled, making this an example of a bootstrap *smoother*.](images/diag-smc.png){#fig-smc-bootstrapeg}
+
+Step one creates a set of particles representing equally-likely one-step-ahead projections of $X_t$ given data up to time $t-1$:
+
+$$
+\{\tilde{x}_t^{(i)}\}_{i=1}^N \sim P(X_t | y_{1:t-1}, \theta)
+$$
+
+Step two weights these projections according to how likely they are under the observation model:
+
+$$
+w_t^{(i)} = P(y_t | \tilde{x}_t^{(i)}, \theta)
+$$
+
+And the final step resamples according to these weights to ensure the resulting $\{x_t^{(i)}\}$ are equally-likely samples from $P(X_t|y_{1:t}, \theta)$.
 
 
-## Intuition
+### Simulation-based inference
 
-\#TODO: write SMC intuition
+In order to use SMC methods to fit a hidden-state model, we only need to:
+
+a. Sample from the state-space transition distribution
+b. Evaluate the observation distribution
+
+Crucially, we do not need to *evalute* the state-space transition distribution, allowing for easy **simulation-based inference**.
+
+Simulation-based inference methods rely on simulations rather than analytical solutions and are very popular in statistical epidemiology. In this case, sampling from the state-space transition distribtion is the same as running the "simulator" one-step forward into the future. This simulator implies a likelihood even though we never need to find its precise form. 
+
+
+
+
+## The bootstrap filter
+
+Like before, assume that we have a collection of samples from the filtering distribution at time $t\!-\!1$, denoted $\{x_{t-1}^{(i)}\} \sim P(X_{t-1}|y_{1:t-1}, \theta)$. For now, also assume that our state-space transitions are Markovian (i.e., $X_t$ depends only on $X_{t-1}$).
+
+**Step 1: Projection**
+
+By coupling these particles with the state-space transition model (@eq-intro-statespace), we can make one-step-ahead predictions. Mathematically we want to obtain the predictive distribution:
+$$
+\underbrace{P(X_t | y_{1:t-1}, \theta)}_{\text{predictive dist.}} = \int \underbrace{P(X_t | X_{t-1}, \theta)}_{\text{state-space transition dist.}} \underbrace{P(X_{t-1}|y_{1:t-1}, \theta)}_{\text{prev. filtering dist.}} \ dX_{t-1}
+$$
+
+Which is represented by complicated and potentially high-dimensional integral of two things we know. Fortunately, all we need to do is sample from the state-space transition model while conditioning on our particles:
+
+$$
+\tilde{x}_t^{(i)} \sim P(X_t | x_{t-1}^{(i)}, \theta)
+$$
+
+
+**Step 2: Weighting**
+
+If we treat this predictive distribution as the prior distribution for $X_t|y_{1:t}$, we can apply Bayes' formula:
+
+$$
+\underbrace{P(X_t | y_{1:t}, \theta)}_{\text{new filtering dist}} \propto \underbrace{P(y_t|X_t, y_{1:t-1}, \theta)}_{\text{observation dist.}} \underbrace{P(X_t | y_{1:t-1}, \theta)}_{\text{predictive dist.}}
+$$
+
+Since we already have samples from the predictive distribution $P(X_t | y_{1:t-1}, \theta)$, all we need to do is assign them weights $w_t^{(i)}$ according to the observation distribution:
+
+$$
+w_t^{(i)} = P(y_t | \tilde{x}_t^{(i)}, y_{1:t-1}, \theta)
+$$
+
+**Step 3: Resampling**
+
+The final set of particles $\{x_t^{(i)}\}$ is constructed by sampling (with replacement) from $\{\tilde{x}_t^{(i)}\}$ according to the corresponding weights, resulting in:
+
+$$
+x_t^{(i)} \sim P(X_t | y_{1:t}, \theta)
+$$
+
+**Repeat**
+
+Starting with an initial set of particles $\{x_0^{(i)}\} \sim P(X_0)$, all we need to do is repeat this procedue for each $t = 1, 2, \ldots, T$, storing the particle values as we go. This concludes the bootstrap filter.
+
+The bootstrap filter is a special case of a sequential importance sampling algorithm (@sec-smc-bootstrap-additional).
+
+## Fixed-lag smoothing
+
+There are two problems with the bootstrap filter above:
+
+- It assumes the state-space transition model is Markovian ($X_t$ depends only on $X_{t-1}$)
+- $X_t$ is informed by past data $y_{1:t}$ only (the filtering posterior), when we may want to leverage all available data (the smoothing posterior).
+
+Both of these problems are solved using **fixed-lag resampling**.
+
+
+
+
 
 ## Algorithm
 
-\#TODO: write SMC algorithm
+We present the algorithm as a Julia code-snippet. For a pseudocode implementation, please see our preprint \#TODO: add link.
 
-## Example {#sec-smc-bootstrapexample}
+## Example
 
 For demonstration, we consider a simple reproduction number estimator. First assume that $\log R_t$ follows a Gaussian random walk:
 
-$$\log R_t \sim \text{Normal}(\log R_{t-1}, \sigma) $$
-
-while reported cases are assumed to follow the Poisson renewal model:
-
-$$ C_t \sim \text{Poisson}\left(R_t \sum_{u=1}^{t-1} C_{t-u} g_u\right) $$
-
-The first equation defines our *hidden-state model* while the second equation defines our *observation model*. With only a slight difference[^1], this model is almost identical to that employed by EpiFilter [@paragImprovedEstimationTimevarying2021].
-
-[^1]: @paragImprovedEstimationTimevarying2021 assumes $R_t$ (rather than $\log R_t$) follows a Gaussian random walk. The standard deviation of this random walk is multiplied by $\sqrt{R_t}$ to allow $R_t$ to take larger "jumps" when it is larger, achieving the same outcome as our log-model. We discuss this further in @sec-other-epifilter.
-
-Leaving parameter estimation to @sec-smc-parameterestimation, we use the following defaults:
-
-```{julia}
-#| output: false
-
-# Serial interval
-ω = pdf.(Gamma(2.36, 2.74), 1:100)
-ω = ω/sum(ω)
-
-# Smoothing parameter
-σ = 0.15
-
-# Initial distribution for Rt
-pR0 = Uniform(0, 10) 
-```
-
-Collectively, $\sigma$, $\{\omega_u\}_{u=1}^{u_{max}}$, and $P(R_0)$ constitute the model parameters $\theta$.
+[\#TODO]
 
 
-### Data {#sec-smc-data}
+## Additional resources {#sec-smc-bootstrap-additional}
 
-We use data from the first 100 days of the COVID-19 pandemic in New Zealand. Focusing now on total cases (we leave the critical separation of imported and local cases to @sec-models-imported):
+Bootstrap filters (and SMC methods more generally) have found use in many fields. Each field has their own motivation for and notation describing these methods. We provide an overview of other resources here.
 
-```{julia}
-#| fig-cap: "Reported cases from the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand."
-#| code-fold: true
-#| label: fig-models-nzdata
+**Sequential Importance Sampling**
 
-nzdata = loadData("NZCOVID")
-T = length(nzdata.Ct)
-bar(nzdata.date, nzdata.Ct, label=false, xlabel="Date", ylabel="Reported cases", size=(800,300), margins=3mm, color=:darkblue)
-```
+Sequential imporance sampling is the name given to the general class of algorithms, of which the bootstrap filter is one. \#TODO: finish writing this
 
-### Setting up
+**Bayesian Filtering and Smoothing [@sarkkaBayesianFilteringSmoothing2013]**
 
-We need to specify the number of particles $N$ and resampling window $L$:
-```{julia}
-#| output: false
-N = 10000
-L = 50
-```
+Those with an **engineering background** may be familiar with "filtering and smoothing", where the state of a time-varying system is tracked through the observation of noisy measurements. Classical examples include GPS position tracking or audio signal processing.
 
-pre-allocate memory for our particles:
+The Kalman filter, which provides an analytical solution when the state-space transition and observation models are linear Gaussian and Markovian, is perhaps the best-known example of a filtering method from engineering.
 
-```{julia}
-#| output: false
-X = zeros(N, T)
-```
+Chapters 7 and 11 of @sarkkaBayesianFilteringSmoothing2013 introduce SMC methods under the headings "particle filtering" and "particle smoothing". We also recommend chapters 1 (*What are Bayesian filtering and smoothing?*), 4 (*Bayesian filtering equations and exact solutions*), and 8 (*Bayesian smoothing equations and exact solutions*).
 
-and sample from the initial distribution:
+**A survey of Sequential Monte Carlo Methods for Economics and Finance [@crealSurveySequentialMonte2012]**
 
-```{julia}
-#| output: false
-X[:,1] = rand(pR0, N)
-```
+Those with an **econometrics background** may find this extensive review helpful, although the author focusses on Markovian models. Examples employed in this review include a stochastic volatility model and a nonlinear dynamic stochastic general equilibrium model.
 
-### Implementation
+*This list is incomplete. If you know of any additional resources that may be helpful, [please get in touch](mailto:nicholas.steyn@univ.ox.ac.uk)!*
 
-All that's left to do is run the bootstrap filter:
+**Data Assimilation Fundamentals: ... [@evensenDataAssimilationFundamentals2022]**
 
-```{julia}
-#| output: false
-
-for tt = 2:T
-
-    # Project according to the state-space model
-    X[:,tt] = exp.(rand.(Normal.(log.(X[:,tt-1]), σ)))
-
-    # Weight according to the observation model
-    Λ = sum(nzdata.Ct[tt-1:-1:1] .* ω[1:tt-1])
-    W = pdf.(Poisson.(X[:,tt] .* Λ), nzdata.Ct[tt])
-
-    # Resample
-    inds = wsample(1:N, W, N; replace=true)
-    X[:, max(tt - L, 1):tt] = X[inds, max(tt - L, 1):tt]
-
-end
-```
-
-
-### Results
-
-The $t^{th}$ column of $X$ is a set of samples from $P(X_t | C_{1:t+L})$. The mean and quantiles of this posterior distribution are found using:
-
-```{julia}
-#| fig-cap: "Estimated $R_t$ for the first 100 days of the COVID-19 pandemic. The dashed horizontal line indicates $R_t = 1$. The green line shows the posterior mean and the green shading shows the 95% credible interval."
-#| label: fig-models-simpleconditionalsmooth
-
-m = [mean(X[:,tt]) for tt in 1:T]
-l = [quantile(X[:,tt], 0.025) for tt in 1:T]
-u = [quantile(X[:,tt], 0.975) for tt in 1:T]
-plot(m, ribbon=(m-l, u-m), color=:darkgreen, label=false, xlabel="Date", ylabel="Reproduction number", size=(800,300), margins=3mm)
-hline!([1], label=false, color=:black, line=:dash)
-```
+Those with a background in **atmospheric science, oceanography, metereology, or other environmental sciences** may be familiar with "data assimilation", where focus is placed on combining model predictions with observational data. Chapter 9 of this book introduces particle filters as a method for solving the "fully nonlinear data assimilation" problem.

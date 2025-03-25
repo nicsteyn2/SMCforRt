@@ -1,0 +1,200 @@
+# Introductory models  {#sec-models-simple}
+
+<!-- ---
+eval: false
+--- -->
+
+We begin by fitting the three example models introduced in @sec-intro-hiddenstatemodels-examples of @sec-intro-hiddenstatemodels to real-world data.
+
+First we load and plot the data we will use for our examples. These are the national reported cases for the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand [@ministryofhealthnzNewZealandCOVID192024], downloaded from [here](https://github.com/minhealthnz/nz-covid-data).
+
+```{julia}
+#| fig-cap: Reported cases for the first 100 days of the COVID-19 pandemic in Aotearoa New Zealand [@ministryofhealthnzNewZealandCOVID192024].
+#| label: fig-models-simple-data
+
+include("../src/LoadData.jl")
+Y = loadData("NZCOVID")
+
+using Plots, Measures
+bar(Y.date, Y.Ct, color=:darkblue, size=(800,400), xlabel="Date", ylabel="Reported cases", label=false, margins=3mm)
+```
+
+
+## Example 1
+
+In this example, we use a Gamma$(1, 0.2)$ prior distribution for $R_t$ which forms the **state-space transition distribution**:
+
+$$
+R_t \sim \text{Gamma}(1, 1/0.2)
+$$
+
+and use the Poisson renewal model (with a Gamma(2.36, 27.4) distribution for the serial interval) for the **observation distribution**:
+
+$$
+C_t | R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \omega_u\right)
+$$
+
+We write this as a hidden-state model in Julia:
+
+```{julia}
+#| output: false
+
+function ExampleModel1(θ, Y::DataFrame, opts::Dict)
+
+    # Extract frequently used options
+    T = opts["T"] # Number of time steps
+    N = opts["N"] # Number of particles to use
+
+    # Define the serial interval
+    ω = pdf.(Gamma(2.36, 2.74), 1:100) # (Unnormalised) serial interval
+    ω = ω/sum(ω) # Normalise the serial interval
+
+    # Initialise output matrices
+    R = zeros(N, T) # Matrix to store particle values
+    W = zeros(N, T) # Matrix to store model weights
+
+    # Run the filter
+    for tt = 2:T
+
+        # "Project" according to the state-space model
+        R[:,tt] = rand(Gamma.(1, 1/0.2), N)
+
+        # Weight according to the observation model
+        Λ = sum(Y.Ct[tt-1:-1:1] .* ω[1:tt-1])/sum(ω[1:tt-1]) # Calculate the force-of-infection
+        W[:,tt] = pdf.(Poisson.(R[:,tt] .* Λ), Y.Ct[tt])
+
+        # Resample
+        inds = wsample(1:N, W[:,tt], N; replace=true)
+        R[:, tt] = R[inds, tt]
+
+    end
+
+    return(R, W)
+
+end
+
+```
+
+::: {.callout-tip}
+
+As there is no autocorrelation in the state-space model, and the observation distributon depends only on the hidden-states at time $t$, we do not need to bother with any fixed-lag resampling.
+
+:::
+
+There are no parameters to estimate, so we simply fit this model to the data:
+
+```{julia}
+#| output: false
+
+# Specify bootstrap filter options (the {String, Any} term allows us to use any type of value in this dictionary)
+opts = Dict{String, Any}("N" => 1000, "T" => 100)
+
+# Fit the model
+(R, W) = ExampleModel1(missing, Y, opts) # θ is missing as there are no "parameters" in this model!
+
+# Extract posterior means and credible intervals
+MeanRt = vec(mean(R, dims=1)) # "dims=1" tells Julia to take column-wise means, vec(.) turns the resulting 1xN matrix into a vector
+LowerRt = [quantile(Rt, 0.025) for Rt in eachcol(R)]
+UpperRt = [quantile(Rt, 0.975) for Rt in eachcol(R)]
+
+```
+
+We can also find the posterior means and credible intervals for this model analytically (@sec-intro-Rtestimation).
+
+```{julia}
+#| code-fold: true
+#| output: false
+
+(MeanRtTrue, LowerRtTrue, UpperRtTrue) = (zeros(opts["T"]), zeros(opts["T"]), zeros(opts["T"])) # Pre-allocate results vectors
+(a0, b0) = (1, 1/5) # Set prior parameters
+
+# Define the serial interval
+ω = pdf.(Gamma(2.36, 2.74), 1:100) # (Unnormalised) serial interval
+ω = ω/sum(ω) # Normalise the serial interval
+
+for tt = 2:opts["T"]
+
+    # Find the posterior distribution on day t
+    a = a0 + Y.Ct[tt]
+    b = b0 + sum(Y.Ct[tt-1:-1:1] .* ω[1:tt-1])/sum(ω[1:tt-1])
+    PosteriorDist = Gamma(a, 1/b)
+
+    # Save the results
+    MeanRtTrue[tt] = mean(PosteriorDist)
+    LowerRtTrue[tt] = quantile(PosteriorDist, 0.025)
+    UpperRtTrue[tt] = quantile(PosteriorDist, 0.975)
+
+end
+
+```
+
+Plotting the estimates from the bootstrap filter against the analytical posterior mean and credible intervals demonstrates the SMC approxmation is of high quality.
+
+```{julia}
+#| fig-cap: Reproduction number estimates from example model 1 fit to data from the first 100 days of COVID-19 in Aotearoa New Zealand. N = 1000 particles are used in the SMC approxmation, resulting in a very good approximation to the analytical posterior means and credible intervals over time.
+#| label: fig-models-simple-example1
+
+# Process the results and plot
+pltR = plot(size=(800,400), xlabel="Date", ylabel="Reproduction number", margins=3mm)
+pltR = plot!(pltR, Y.date, MeanRtTrue, ribbon=(MeanRtTrue-LowerRtTrue, UpperRtTrue-MeanRtTrue), color=:lightgreen, label="Rt (analytical)")
+pltR = plot!(pltR, Y.date, MeanRt, ribbon=(MeanRt-LowerRt, UpperRt-MeanRt), color=:darkgreen, label="Rt (from SMC)")
+hline!([1], color=:black, linestyle=:dash, label="Rt = 1")
+
+```
+
+## Example 2
+
+@fig-models-simple-example1 demonstrates considerable variability in $R_t$ estimates. In pratice, we want to produce smoothed estimates ([@sec-intro-smoothing]).
+
+We update the state-space model to use a Gaussian random walk on $\log R_t$:
+
+$$
+R_t | R_{t-1} \sim \text{Normal}\left(R_{t-1}, \eta \sqrt{R_{t-1}}\right)
+$$
+
+In Julia
+
+
+
+```{julia}
+#| output: false
+
+function ExampleModel2(θ, Y::DataFrame, opts::Dict)
+
+    # Extract frequently used options
+    T = opts["T"] # Number of time steps
+    N = opts["N"] # Number of particles to use
+    L = opts["L"] # Length of fixed-lag resampling
+
+    # Define the serial interval
+    ω = pdf.(Gamma(2.36, 2.74), 1:100) # (Unnormalised) serial interval
+    ω = ω/sum(ω) # Normalise the serial interval
+
+    # Initialise output matrices
+    R = zeros(N, T) # Matrix to store particle values
+    W = zeros(N, T) # Matrix to store model weights
+
+    # Sample from initial distribution
+    R[:,1] = rand(Uniform(0, 10), N)
+
+    # Run the filter
+    for tt = 2:T
+
+        # "Project" according to the state-space model
+        R[:,tt] = exp.(rand.(Normal.(log.(R[:,tt-1]), θ)))
+
+        # Weight according to the observation model
+        Λ = sum(Y.Ct[tt-1:-1:1] .* ω[1:tt-1])/sum(ω[1:tt-1]) # Calculate the force-of-infection
+        W[:,tt] = pdf.(Poisson.(R[:,tt] .* Λ), Y.Ct[tt])
+
+        # Resample
+        inds = wsample(1:N, W[:,tt], N; replace=true)
+        R[:, max(tt - L, 1):tt] = R[inds, max(tt - L, 1):tt]
+
+    end
+
+    return(R, W)
+
+end
+
+```

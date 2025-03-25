@@ -1,0 +1,7 @@
+# Additional notes on model evaluation
+
+The model evaluation section remains under-developed. Included here are notes that will hopefully eventually find a more suitable home.
+
+## KL-divergence of nested models
+
+[#TODO]

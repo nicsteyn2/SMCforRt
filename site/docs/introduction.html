@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -274,7 +274,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./models-simple.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A simple model</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Introductory models</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -365,12 +365,6 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="./othermethods_epinow2.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">EpiNow2</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./othermethods_pomp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Iterated filtering and POMP</span></span></a>
   </div>
 </li>
       </ul>
@@ -472,10 +466,10 @@ E[C_t] = R_t \sum_{u=1}^{u_{max}} C_{t-u} \omega_u
 <div id="fig-intro-diagram" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-intro-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/diag-introduction-renewalmodel.png" class="img-fluid figure-img" width="600">
+<img src="images/intro-renewalmodel-diagram.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intro-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1.1: Simple diagram outlining the renewal equation
+Figure&nbsp;1.1: Diagram of the renewal model. In this example, the serial interval takes values ωu = 0.25, 0.5, 0.25 for u = 1, 2, 3 (a maximum serial interval of three days) and the reproduction number is assumed to take values Rt–1 = 2, Rt = 2, and Rt+1 = 1. On the left, the expected number of secondary cases produced by a primary case who was reported at time t–2 is shown (0.5 cases on day t–1, a single case on day t, and 0.25 cases on day t+1), with their expected contribution to total cases at time t highlighted. On the right, the expected total cases at time t is shown as the sum of the expected cases produced by primary cases reported u = 1, 2, and 3 days ago, defining the renewal equation.
 </figcaption>
 </figure>
 </div>
@@ -487,28 +481,28 @@ C_t|R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \om
 <p><span id="eq-intro-forceofinfection"><span class="math display">\[
 \Lambda_t^c = \sum_{u=1}^{u_{max}} C_{t-u} \omega_u
 \tag{1.3}\]</span></span></p>
-<p>where <span class="math inline">\(\Lambda_t^c\)</span> is called the <strong>force-of-infection</strong> at time <span class="math inline">\(t\)</span>. The superscript <span class="math inline">\(c\)</span> denotes that <span class="math inline">\(\Lambda_t^c\)</span> is calculated using past reported cases, to differentiate it from <span class="math inline">\(\Lambda_t\)</span>, which we use when modelling <em>infections</em>.</p>
+<p>where <span class="math inline">\(\Lambda_t^c\)</span> is called the <strong>force-of-infection</strong> at time <span class="math inline">\(t\)</span>. The superscript <span class="math inline">\(c\)</span> denotes that <span class="math inline">\(\Lambda_t^c\)</span> is calculated using past reported cases, to differentiate it from <span class="math inline">\(\Lambda_t\)</span>, which we use when modelling <em>infections</em> (see <a href="#sec-intro-casesvsinfections" class="quarto-xref"><span>Section 1.4</span></a>).</p>
 <section id="simulating-the-renewal-model" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="simulating-the-renewal-model"><span class="header-section-number">1.1</span> Simulating the renewal model</h2>
 <p>To understand how the renewal model works, let’s start by simulating <span class="math inline">\(T = 100\)</span> days of reported cases from it. To do this, we need <strong>three components</strong>:</p>
 <ol type="1">
 <li><strong>Initial cases</strong> <span class="math inline">\(C_1\)</span>. Let’s start with <span class="math inline">\(C_1 = 50\)</span>.</li>
 </ol>
-<div id="e70d1a3d" class="cell" data-execution_count="1">
+<div id="70a562f7" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="fl">100</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> <span class="fu">zeros</span>(T) </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>C[<span class="fl">1</span>] <span class="op">=</span> <span class="fl">50</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> <span class="fu">zeros</span>(T)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>C[<span class="fl">1</span>] <span class="op">=</span> <span class="fl">50</span> <span class="co"># Specify C_1 = 50</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="2" type="1">
-<li>The <strong>reproduction number</strong> over time. We will use a sin-curve for this example:</li>
+<li>The <strong>reproduction number</strong> over time. We will use a sin-curve alternating between <span class="math inline">\(R_t = 1.5\)</span> and <span class="math inline">\(R_t = 0.5\)</span> with a period of 50 days for this example:</li>
 </ol>
-<div id="cac0e404" class="cell" data-execution_count="2">
+<div id="50dd581a" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> <span class="fl">1.0</span> <span class="op">.+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu">sin</span>.((<span class="fl">2</span><span class="op">*</span><span class="cn">π</span><span class="op">/</span><span class="fl">50</span>) <span class="op">.*</span> (<span class="fl">1</span><span class="op">:</span>T))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="3" type="1">
 <li>A <strong>serial interval</strong>. We use a discretised Gamma(2.36, 2.74)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> distribution:</li>
 </ol>
-<div id="f0ce567a" class="cell" data-execution_count="3">
+<div id="f2f76696" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Distributions</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ω <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span>T)</span>
@@ -520,7 +514,7 @@ C_t|R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \om
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualise Rt and the serial interval</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">Measures</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plotR <span class="op">=</span> <span class="fu">plot</span>(R, label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Time (days)"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, color<span class="op">=:</span>darkgreen)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plotR <span class="op">=</span> <span class="fu">plot</span>(R, label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Time (days)"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, color<span class="op">=:</span>darkgreen, linewidth<span class="op">=</span><span class="fl">3</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>plotω <span class="op">=</span> <span class="fu">bar</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">21</span>, ω[<span class="fl">1</span><span class="op">:</span><span class="fl">21</span>], label<span class="op">=</span><span class="cn">false</span>, xlabel<span class="op">=</span><span class="st">"Day"</span>, ylabel<span class="op">=</span><span class="st">"Serial interval probability"</span>, color<span class="op">=:</span>darkorange)</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="fu">plot</span>(plotR, plotω, layout<span class="op">=</span>(<span class="fl">1</span>,<span class="fl">2</span>), size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -538,7 +532,7 @@ Figure&nbsp;1.2: Assumed time-varying reproduction number and serial intervals.
 </div>
 </div>
 <p>Now we are ready to simulate from the renewal model. We do this by iteratively sampling a new <span class="math inline">\(C_t\)</span> and calculating the new force-of-infection term:</p>
-<div id="f06aebc7" class="cell" data-execution_count="5">
+<div id="309d66f2" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate the force-of-infection</span></span>
@@ -568,6 +562,23 @@ Figure&nbsp;1.3: Simulated epidemic from the renewal model using our chosen valu
 </div>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Julia">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Julia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>These codeblocks are written in the programming language Julia, which should (mostly) make sense to those familiar with R/Python/MATLAB. One key difference between these languages and Julia is <strong>broadcasting</strong>.</p>
+<p>Broadcasting allows functions to be called <em>elementwise</em>. For example, when defining <code>R</code> above, we write:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> <span class="fl">1.0</span> <span class="op">.+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu">sin</span>.(<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As <code>1.0</code> is a scalar and <code>0.5 * sin.(...)</code> is a vector, the <code>.</code> before the <code>+</code> tells Julia to add 1 to each <em>element</em> of <code>0.5 * sin.(...)</code>. Similarly, the <code>.</code> in <code>sin.(x)</code> tells Julia to apply the sine function to each element of <code>x</code>. Other languages may handle this automatically in some cases, but by being explicit about element-wise operations, Julia avoids ambiguity.</p>
+<p>Broadcasting can also be more memory-efficient in certain situations. It also works automatically with user-defined functions.</p>
+</div>
+</div>
 </section>
 <section id="sec-intro-Rtestimation" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="sec-intro-Rtestimation"><span class="header-section-number">1.2</span> Estimating <span class="math inline">\(R_t\)</span></h2>
@@ -579,38 +590,38 @@ Figure&nbsp;1.3: Simulated epidemic from the renewal model using our chosen valu
 <p><span id="eq-intro-simpleposterior"><span class="math display">\[
 R_t | C_{1:t} \sim \text{Gamma}\left(a_0 + C_t, b_0 + \sum_{u=1}^{u_{max}} C_{t-u} \omega_u \right)
 \tag{1.4}\]</span></span></p>
-<div id="5f2665c3" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(MeanRt, LowerRt, UpperRt) <span class="op">=</span> (<span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T)) <span class="co"># Pre-allocate results vectors</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>(a0, b0) <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">5</span>) <span class="co"># Set prior parameters</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the posterior distribution on day t</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> a0 <span class="op">+</span> C[tt]</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> b0 <span class="op">+</span> <span class="fu">sum</span>(C[tt<span class="op">-</span><span class="fl">1</span><span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])<span class="op">/</span><span class="fu">sum</span>(ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    PosteriorDist <span class="op">=</span> <span class="fu">Gamma</span>(a, <span class="fl">1</span><span class="op">/</span>b)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Save the results</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    MeanRt[tt] <span class="op">=</span> <span class="fu">mean</span>(PosteriorDist)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    LowerRt[tt] <span class="op">=</span> <span class="fu">quantile</span>(PosteriorDist, <span class="fl">0.025</span>)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    UpperRt[tt] <span class="op">=</span> <span class="fu">quantile</span>(PosteriorDist, <span class="fl">0.975</span>)</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="d50adbe5" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(MeanRt, LowerRt, UpperRt) <span class="op">=</span> (<span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T), <span class="fu">zeros</span>(T)) <span class="co"># Pre-allocate results vectors</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>(a0, b0) <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">5</span>) <span class="co"># Set prior parameters</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the posterior distribution on day t</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> a0 <span class="op">+</span> C[tt]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> b0 <span class="op">+</span> <span class="fu">sum</span>(C[tt<span class="op">-</span><span class="fl">1</span><span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])<span class="op">/</span><span class="fu">sum</span>(ω[<span class="fl">1</span><span class="op">:</span>tt<span class="op">-</span><span class="fl">1</span>])</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    PosteriorDist <span class="op">=</span> <span class="fu">Gamma</span>(a, <span class="fl">1</span><span class="op">/</span>b)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Save the results</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    MeanRt[tt] <span class="op">=</span> <span class="fu">mean</span>(PosteriorDist)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    LowerRt[tt] <span class="op">=</span> <span class="fu">quantile</span>(PosteriorDist, <span class="fl">0.025</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    UpperRt[tt] <span class="op">=</span> <span class="fu">quantile</span>(PosteriorDist, <span class="fl">0.975</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We will compare our estimates with those from a popular model, EpiEstim, which smooths the data by assuming <span class="math inline">\(R_t\)</span> is fixed over a <span class="math inline">\(\tau\)</span>-day (typically <span class="math inline">\(\tau = 7\)</span>) trailing window:</p>
-<div id="8918b54a" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/RtEstimators.jl"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>EpiEstimPosterior <span class="op">=</span> <span class="fu">EpiEstim</span>(<span class="fl">7</span>, ω, C; a0<span class="op">=</span>a0, b0<span class="op">=</span>b0)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>(EpiEstMean, EpiEstLower, EpiEstUpper) <span class="op">=</span> (<span class="fu">mean</span>.(EpiEstimPosterior), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.025</span>), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="dc0b2a7b" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/RtEstimators.jl"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>EpiEstimPosterior <span class="op">=</span> <span class="fu">EpiEstim</span>(<span class="fl">7</span>, ω, C; a0<span class="op">=</span>a0, b0<span class="op">=</span>b0)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>(EpiEstMean, EpiEstLower, EpiEstUpper) <span class="op">=</span> (<span class="fu">mean</span>.(EpiEstimPosterior), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.025</span>), <span class="fu">quantile</span>.(EpiEstimPosterior, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finally, we are ready to plot our results:</p>
-<div id="cell-fig-intro-exampleRt" class="cell" data-execution_count="9">
+<div id="cell-fig-intro-examplert" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xlabel<span class="op">=</span><span class="st">"Time (days)"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">350</span>), left_margin<span class="op">=</span><span class="fl">3</span>mm, bottom_margin<span class="op">=</span><span class="fl">3</span>mm)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">2</span><span class="op">:</span>T, MeanRt[<span class="fl">2</span><span class="op">:</span>T], ribbon<span class="op">=</span>(MeanRt[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>LowerRt[<span class="fl">2</span><span class="op">:</span>T], UpperRt[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>MeanRt[<span class="fl">2</span><span class="op">:</span>T]), fillalpha<span class="op">=</span><span class="fl">0.4</span>, label<span class="op">=</span><span class="st">"Unsmoothed posterior"</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">2</span><span class="op">:</span>T, EpiEstMean[<span class="fl">2</span><span class="op">:</span>T], ribbon<span class="op">=</span>(EpiEstMean[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>EpiEstLower[<span class="fl">2</span><span class="op">:</span>T], EpiEstUpper[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>EpiEstMean[<span class="fl">2</span><span class="op">:</span>T]), fillalpha<span class="op">=</span><span class="fl">0.4</span>, label<span class="op">=</span><span class="st">"EpiEstim (smoothed) posterior"</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">1</span><span class="op">:</span>T, R, label<span class="op">=</span><span class="st">"True Rt"</span>, color<span class="op">=:</span>black)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xlabel<span class="op">=</span><span class="st">"Time (days)"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">350</span>), left_margin<span class="op">=</span><span class="fl">3</span>mm, bottom_margin<span class="op">=</span><span class="fl">3</span>mm)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">2</span><span class="op">:</span>T, MeanRt[<span class="fl">2</span><span class="op">:</span>T], ribbon<span class="op">=</span>(MeanRt[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>LowerRt[<span class="fl">2</span><span class="op">:</span>T], UpperRt[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>MeanRt[<span class="fl">2</span><span class="op">:</span>T]), fillalpha<span class="op">=</span><span class="fl">0.4</span>, label<span class="op">=</span><span class="st">"Unsmoothed posterior"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">2</span><span class="op">:</span>T, EpiEstMean[<span class="fl">2</span><span class="op">:</span>T], ribbon<span class="op">=</span>(EpiEstMean[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>EpiEstLower[<span class="fl">2</span><span class="op">:</span>T], EpiEstUpper[<span class="fl">2</span><span class="op">:</span>T]<span class="op">-</span>EpiEstMean[<span class="fl">2</span><span class="op">:</span>T]), fillalpha<span class="op">=</span><span class="fl">0.4</span>, label<span class="op">=</span><span class="st">"EpiEstim (smoothed) posterior"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(<span class="fl">1</span><span class="op">:</span>T, R, label<span class="op">=</span><span class="st">"True Rt"</span>, color<span class="op">=:</span>black)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div id="fig-intro-examplert" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -628,47 +639,15 @@ Figure&nbsp;1.4: Estimates of Rt from the basic (unsmoothed) renewal model (blue
 </section>
 <section id="sec-intro-smoothing" class="level3" data-number="1.2.2">
 <h3 data-number="1.2.2" class="anchored" data-anchor-id="sec-intro-smoothing"><span class="header-section-number">1.2.2</span> The necessity and dangers of smoothing</h3>
-<p><span class="quarto-unresolved-ref">?fig-intro-exampleRt</span> highlights both the necessity and dangers of smoothing. Our independent daily estimates (blue) are highly variable and the credible intervals are wide. By using smoothed estimates (orange), we reduce this variance and produce much more confident results. However, our results strongly depend on these smoothing assumptions. In the example above, we can clearly see that the credible intervals produced by EpiEstim often do not include the true value of <span class="math inline">\(R_t\)</span>!</p>
-<p>Smoothing works by allowing data from multiple days to inform point-estimates. A variety of approaches have been developed, discussed at length in <a href="smoothingmethods.html" class="quarto-xref"><span>Appendix C</span></a>. <strong>In fact, most renewal-model based estimators of <span class="math inline">\(R_t\)</span> differ only in their choice of smoothing method!</strong></p>
+<p><a href="#fig-intro-examplert" class="quarto-xref">Figure&nbsp;<span>1.4</span></a> highlights both the necessity and dangers of smoothing. Our independent daily estimates (blue) are highly variable and the credible intervals are wide. By using smoothed estimates (orange), we reduce this variance and produce much more confident results. However, our results strongly depend on these smoothing assumptions. In the example above, we can clearly see that the credible intervals produced by EpiEstim often do not include the true value of <span class="math inline">\(R_t\)</span>!</p>
+<p>Smoothing works by allowing data from multiple days to inform point-estimates. A variety of approaches have been developed, discussed at length in <a href="smoothingmethods.html" class="quarto-xref"><span>Appendix C</span></a>. <strong>In fact, many popular renewal-model based estimators of <span class="math inline">\(R_t\)</span> differ only in their choice of smoothing method!</strong></p>
 <p>Epidemic renewal models are usually smoothed by placing assumptions on the dynamics of <span class="math inline">\(R_t\)</span>. Examples include assuming <span class="math inline">\(R_t\)</span> is fixed over trailing windows <span class="citation" data-cites="coriNewFrameworkSoftware2013">(<a href="references.html#ref-coriNewFrameworkSoftware2013" role="doc-biblioref">Cori et al. 2013</a>)</span>, modelling it with splines <span class="citation" data-cites="azmonEstimationReproductionNumber2014">(<a href="references.html#ref-azmonEstimationReproductionNumber2014" role="doc-biblioref">Azmon, Faes, and Hens 2014</a>)</span> or Gaussian processes <span class="citation" data-cites="abbottEstimatingTimevaryingReproduction2020">(<a href="references.html#ref-abbottEstimatingTimevaryingReproduction2020" role="doc-biblioref">Abbott et al. 2020</a>)</span>, or assuming it follows a random walk <span class="citation" data-cites="paragImprovedEstimationTimevarying2021">(<a href="references.html#ref-paragImprovedEstimationTimevarying2021" role="doc-biblioref">Parag 2021</a>)</span>. Piecewise-constant models, where <span class="math inline">\(R_t\)</span> is assumed to be fixed over different time-windows, are also examples of smoothing <span class="citation" data-cites="creswellBayesianNonparametricMethod2023">(<a href="references.html#ref-creswellBayesianNonparametricMethod2023" role="doc-biblioref">Creswell et al. 2023</a>)</span>.</p>
-<p>So far we have only considered process noise in the epidemic, but epidemic data are often subject to observation noise, a secondary reason why smoothing is so important. We elaborate on this in #TODO.</p>
-<!-- 
-To account for this noise, popular $R_t$ estimators utilise smoothing methods to increase the quantity of data available on each time-step. These smoothing methods typically take the form of a dynamic model on $R_t$. An extensive discussion of existing smoothing methods is included [here](link.link) [\#TODO: Write-up smoothing comparison]. -->
-<!-- ### A dynamic model for $R_t$
-
-The primary requirement for using our SMC-methods is a *sequential* dynamic model. That is, we want a model for the evolution of $R_t$ that looks like:
-
-$$
-P(R_t | R_{1:t-1}) = f(R_{1:t-1})
-$$
-
-for some arbitrary probability density (or mass) function $f$.
-
-We employ a default model similar to that used by EpiFilter [@paragImprovedEstimationTimevarying2021], specifically a Gaussian random walk:
-
-$$
-\log R_t | \log R_{t-1} \sim \text{Normal}(\log R_{t-1}, \sigma)
-$$ {#eq-intro-rtmodel}
-
-Design choices in this model include:
-
-- The Gaussian random walk encodes the assumption that $R_t4 varies smoothly over time
-- Modelling on a log-scale allows $R_t$ to vary faster at larger values
- -->
+<p>So far we have only considered process noise in the epidemic, but epidemic data are often subject to observation noise, a secondary reason why smoothing is so important.</p>
 </section>
 </section>
 <section id="the-serial-interval" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="the-serial-interval"><span class="header-section-number">1.3</span> The serial interval</h2>
 <p>The other key component in the renewal model is the serial interval <span class="math inline">\(\omega\)</span>. This parameter is typically not identifiable from reported case data (at least at the same time as <span class="math inline">\(R_t\)</span>), so it often receives less attention. When fitting renewal models, researchers usually use estimates of the serial interval from other data.</p>
-<p>External estimates of <span class="math inline">\(\omega\)</span>.</p>
-<!-- ## Statistical noise
-
-#TODO: Copy to somewhere else
-
-Statistical noise in reported cases time-series can be separated into two categories:
-
-1. **Process noise**: the true dynamics of $R_t$ are unknown and the underlying infection process is inherently stochastic
-2. **Observation noise**: case reporting may be delayed, incomplete, or feature a number of other biases.   -->
 </section>
 <section id="sec-intro-casesvsinfections" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="sec-intro-casesvsinfections"><span class="header-section-number">1.4</span> Reported cases vs infections</h2>
@@ -803,8 +782,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -915,7 +892,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

@@ -1,0 +1,62 @@
+# Other resources
+
+We have outlined additional resources at the end of relevant sections. This chapter is specifically dedicated to papers presenting an overall framework in the style of a primer or tutorial.
+
+## Temfack and Wyse (2024)
+
+@temfackReviewSequentialMonte2024b provide an excellent introduction to SMC methods in epidemiology, albeit with a focus on SEIR-type compartmental models rather than the renewal model. They also target the filtering posterior distribution rather than the smoothing posterior distribuon. Despite these differences, many considerations in their paper are useful in our context too. To assist with interpretation, we contextualise and compare their work here.
+
+After providing a useful background of SMC methods in epidemiology (section 2), and an introduction to the discrete-time stochastic SEIR model (section 3), they describe a general state-space model (abbreviated as SSM) in section 3.1 as:
+
+$$
+\begin{aligned}
+& x_0 \sim f(x_0|\theta) & \text{Initial state} \\
+& x_t | x_{t-1} \sim f(x_t|x_{t-1}, \theta) & \text{State process} \\
+& y_t | x_t \sim g(y_t | x_t, \theta) & \text{Observation process} 
+\end{aligned}
+$$
+
+Their state process corresponds to our state-space transition distribution, while their observation process corresponds to our observation distribution.
+
+This construction is a special case of ours for two reasons:
+
+1. Their state process is explicitly Markovian: $f$ depends only on $x_{t-1}$, whereas our state-space transition distribution can depend on all past values $x_{1:t-1}$.
+2. Their observation process depends only on the current hidden state $x_t$. Our observation distribution can depend on past values of both the hidden state $x_{1:t}$ and the observed data $y_{1:t-1}$.
+
+The Markovian structure allows for a much wider range of SMC-type methods (often more efficient than ours) to be used, at the cost of a restricted range of models that can be fit. The renewal model is inherently non-Markovian, so cannot be fit within their framework.
+
+The authors then introduce general sequential importance sampling (section 3.1.1) and, like us, use the state process as the proposal density, noting that this is known to be suboptimal. Particle degeneracy is tackled via resampling (section 3.1.2), although they resample only when the effective sample size of their particles is below some threshold. This reduces computational load and decreases the impact of particle degeneracy but is incompatible with fixed-lag smoothing - their method returns samples from the filtering posterior distributions only.
+
+Rather than PMMH, the authors augment the parameters $\theta$ as additional time-varying hidden states. To avoid severe particle degeneracy issues and the overestimation of the posterior variance of $\theta$, they use the approach of \#TODO: cite liuCombinedParameterState2001. This approach allows the authors to handle the estimation of $\theta$ alongside $X_t$ (thus all inference can be performed in a single algorithm), but this approach is again incompatible with our fixed-lag smoothing.
+
+
+
+## Endo, van Leeuwen, and Baguelin (2019)
+
+Our overall approach is similar to @endoIntroductionParticleMarkovchain2019, although there remain some crucial differences. Before getting into details, we highlight that their figure 3 provides an excellent graphic overview of the SMC algorithm.
+
+The underlying model fit in @endoIntroductionParticleMarkovchain2019 is defined in the same fashion as @temfackReviewSequentialMonte2024b, including using $f$ and $g$ to represent the same state and observation processes respectively. In this case, they do not explicitly write the dependence on model parameters $\theta$, although highlight in the text that both $f$ and $g$ can depend on $\theta$ implicitly.
+
+Like other papers in the field, @endoIntroductionParticleMarkovchain2019 focus on methods for Markovian models with applications to compartmental SIR-type epidemic models. They focus on "Particle Markov-chain Monte Carlo" (PMCMC), which is largely analagous to the PMMH algorithm we use (@sec-smc-pmmh). Like PMMH, PMCMC uses a particle filter to estimate the likelihood of proposed parameter vectors.
+
+Unlike our approach, however, the authors do not separate the inference of $\theta$ from the inference of $X_t$. To recap, in our approach we:
+
+a. Use PMMH to sample from $P(\theta|y_{1:T})$, using the bootstrap filter as a subroutine.
+b. Run the bootstrap filter at a sufficiently large number of samples of $\theta$, storing all particle trajectories.
+
+This results in waste: we run many bootstrap filters in step (a), the results of which are lost.
+
+In contrast, @endoIntroductionParticleMarkovchain2019 only perform the equivalent of step (a). They retain a single trajectory $x_{1:T}$ from each accepted parameter sample, generating a set $\{x_{1:T}^{(i)}, \theta^{(i)}\}_{i=1}^M$. This uses information from every bootstrap filter that was run at an accepted value of $\theta$.
+
+While this appears more computationally efficient, in order to effectively pre-allocate memory to store the (possibly very high dimensional) particle trajectories, we would need to know at what value of $M$ to stop the PMMH algorithm. We instead prioritise the adaptivity of our approach over the possible efficiency gains of @endoIntroductionParticleMarkovchain2019.
+
+Despite this, the overall framework of @endoIntroductionParticleMarkovchain2019 could be adapted to fit non-Markovian models by replacing their bootstrap filter with the one outlined in @sec-smc-bootstrap.
+
+
+## Yang et al. (2022)
+
+@yangBayesianDataAssimilation2022 introduce "*Bayesian data assimilation*" for $R_t$ estimation. Like our methods (and unlike those listed above), they introduce methods that can handle non-Markovian models, and thus are able to apply their methods to the renewal model.
+
+However, their paper and supplementary material do not contain sufficient detail to fully understand their approach. They claim to use a particle approximation to the forward filtering and backward smoothing equations separately, which is a different approach to ours (where smoothing is performed while filtering through fixed-lag resampling). Details on the specific particle filter used are scarce.
+
+@yangBayesianDataAssimilation2022 also do not provide methods for the estimation of fixed parameters $\theta$. Their methods are an alternative to the bootstrap filter (@sec-smc-bootstrap) but not to PMMH (@sec-smc-parameterestimation).
