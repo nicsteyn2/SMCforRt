@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>12&nbsp; Multiple sources of data – SMC and epidemic renewal models</title>
+<title>References – SMC and epidemic renewal models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,7 +20,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -30,8 +49,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./eval-precisioncalibration.html" rel="next">
-<link href="./models_imports.html" rel="prev">
+<link href="./notation.html" rel="next">
+<link href="./othermethods_epinow2.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -110,7 +129,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./models-simple.html">Models</a></li><li class="breadcrumb-item"><a href="./models_multipledata.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Multiple sources of data</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./references.html">References</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -241,95 +260,81 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Imported cases</span></span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./models_multipledata.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Multiple sources of data</span></span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Prediction</span></span>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Inference</span></span>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Evaluation</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./eval-precisioncalibration.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Precision and calibration</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Precision and calibration</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./eval-scoringrules.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Scoring rules</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Scoring rules</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./eval-additionalnotes.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Additional notes on model evaluation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Additional notes on model evaluation</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text">Other methods</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./othermethods_epiestim.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">EpiEstim</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">EpiEstim</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./othermethods_epifilter.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">EpiFilter</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">EpiFilter</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./othermethods_epinow2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">EpiNow2</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">EpiNow2</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">
+  <a href="./references.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">References</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
  <span class="menu-text">Appendices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./notation.html" class="sidebar-item-text sidebar-link">
@@ -367,9 +372,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./models-simple.html">Models</a></li><li class="breadcrumb-item"><a href="./models_multipledata.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Multiple sources of data</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-models-multidata" class="quarto-section-identifier"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Multiple sources of data</span></span></h1>
+<h1 class="title">References</h1>
 </div>
 
 
@@ -386,6 +391,172 @@ window.Quarto = {
 </header>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-abbottEstimatingTimevaryingReproduction2020" class="csl-entry" role="listitem">
+Abbott, Sam, Joel Hellewell, Robin N. Thompson, Katharine Sherratt,
+Hamish P. Gibbs, Nikos I. Bosse, James D. Munday, et al. 2020.
+<span>“Estimating the Time-Varying Reproduction Number of
+<span>SARS-CoV-2</span> Using National and Subnational Case
+Counts.”</span> <em>Wellcome Open Research</em> 5 (December): 112. <a href="https://doi.org/10.12688/wellcomeopenres.16006.2">https://doi.org/10.12688/wellcomeopenres.16006.2</a>.
+</div>
+<div id="ref-azmonEstimationReproductionNumber2014" class="csl-entry" role="listitem">
+Azmon, Amin, Christel Faes, and Niel Hens. 2014. <span>“On the
+Estimation of the Reproduction Number Based on Misreported Epidemic
+Data.”</span> <em>Statistics in Medicine</em> 33 (7): 1176–92. <a href="https://doi.org/10.1002/sim.6015">https://doi.org/10.1002/sim.6015</a>.
+</div>
+<div id="ref-banholzerComparisonShorttermProbabilistic2023" class="csl-entry" role="listitem">
+Banholzer, Nicolas, Thomas Mellan, H. Juliette T. Unwin, Stefan
+Feuerriegel, Swapnil Mishra, and Samir Bhatt. 2023. <span>“A Comparison
+of Short-Term Probabilistic Forecasts for the Incidence of
+<span>COVID-19</span> Using Mechanistic and Statistical Time Series
+Models.”</span> arXiv. <a href="https://doi.org/10.48550/arXiv.2305.00933">https://doi.org/10.48550/arXiv.2305.00933</a>.
+</div>
+<div id="ref-coriNewFrameworkSoftware2013" class="csl-entry" role="listitem">
+Cori, Anne, Neil M. Ferguson, Christophe Fraser, and Simon Cauchemez.
+2013. <span>“A <span>New Framework</span> and <span>Software</span> to
+<span>Estimate Time-Varying Reproduction Numbers During
+Epidemics</span>.”</span> <em>American Journal of Epidemiology</em> 178
+(9): 1505–12. <a href="https://doi.org/10.1093/aje/kwt133">https://doi.org/10.1093/aje/kwt133</a>.
+</div>
+<div id="ref-coriInferenceEpidemicDynamics2024" class="csl-entry" role="listitem">
+Cori, Anne, and Adam Kucharski. 2024. <span>“Inference of Epidemic
+Dynamics in the <span>COVID-19</span> Era and Beyond.”</span>
+<em>Epidemics</em> 48 (September): 100784. <a href="https://doi.org/10.1016/j.epidem.2024.100784">https://doi.org/10.1016/j.epidem.2024.100784</a>.
+</div>
+<div id="ref-crealSurveySequentialMonte2012" class="csl-entry" role="listitem">
+Creal, Drew. 2012. <span>“A <span>Survey</span> of <span>Sequential
+Monte Carlo Methods</span> for <span>Economics</span> and
+<span>Finance</span>.”</span> <em>Econometric Reviews</em> 31 (3):
+245–96. <a href="https://doi.org/10.1080/07474938.2011.607333">https://doi.org/10.1080/07474938.2011.607333</a>.
+</div>
+<div id="ref-creswellBayesianNonparametricMethod2023" class="csl-entry" role="listitem">
+Creswell, Richard, Martin Robinson, David Gavaghan, Kris V. Parag, Chon
+Lok Lei, and Ben Lambert. 2023. <span>“A <span>Bayesian</span>
+Nonparametric Method for Detecting Rapid Changes in Disease
+Transmission.”</span> <em>Journal of Theoretical Biology</em> 558
+(February): 111351. <a href="https://doi.org/10.1016/j.jtbi.2022.111351">https://doi.org/10.1016/j.jtbi.2022.111351</a>.
+</div>
+<div id="ref-endoIntroductionParticleMarkovchain2019" class="csl-entry" role="listitem">
+Endo, Akira, Edwin van Leeuwen, and Marc Baguelin. 2019.
+<span>“Introduction to Particle <span class="nocase">Markov-chain Monte
+Carlo</span> for Disease Dynamics Modellers.”</span> <em>Epidemics</em>
+29 (December): 100363. <a href="https://doi.org/10.1016/j.epidem.2019.100363">https://doi.org/10.1016/j.epidem.2019.100363</a>.
+</div>
+<div id="ref-evensenDataAssimilationFundamentals2022" class="csl-entry" role="listitem">
+Evensen, Geir, Femke C. Vossepoel, and Peter Jan Van Leeuwen. 2022.
+<em>Data <span>Assimilation Fundamentals</span>: <span>A Unified
+Formulation</span> of the <span>State</span> and <span>Parameter
+Estimation Problem</span></em>. Springer <span>Textbooks</span> in
+<span>Earth Sciences</span>, <span>Geography</span> and
+<span>Environment</span>. Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-030-96709-3">https://doi.org/10.1007/978-3-030-96709-3</a>.
+</div>
+<div id="ref-fergusonReportImpactNonpharmaceutical2020" class="csl-entry" role="listitem">
+Ferguson, N, D Laydon, G Nedjati Gilani, N Imai, K Ainslie, M Baguelin,
+S Bhatia, et al. 2020. <span>“Report 9: <span>Impact</span> of
+Non-Pharmaceutical Interventions (<span>NPIs</span>) to Reduce
+<span>COVID19</span> Mortality and Healthcare Demand.”</span> Imperial
+College London. <a href="https://doi.org/10.25561/77482">https://doi.org/10.25561/77482</a>.
+</div>
+<div id="ref-flaxmanEstimatingEffectsNonpharmaceutical2020" class="csl-entry" role="listitem">
+Flaxman, Seth, Swapnil Mishra, Axel Gandy, H. Juliette T. Unwin, Thomas
+A. Mellan, Helen Coupland, Charles Whittaker, et al. 2020.
+<span>“Estimating the Effects of Non-Pharmaceutical Interventions on
+<span>COVID-19</span> in <span>Europe</span>.”</span> <em>Nature</em>
+584 (7820): 257–61. <a href="https://doi.org/10.1038/s41586-020-2405-7">https://doi.org/10.1038/s41586-020-2405-7</a>.
+</div>
+<div id="ref-hendyMathematicalModellingInform2021" class="csl-entry" role="listitem">
+Hendy, Shaun, Nicholas Steyn, Alex James, Michael J. Plank, Kate Hannah,
+Rachelle N. Binny, and Audrey Lustig. 2021. <span>“Mathematical
+Modelling to Inform <span>New Zealand</span>’s <span>COVID-19</span>
+Response.”</span> <em>Journal of the Royal Society of New Zealand</em>
+51 (sup1): S86–106. <a href="https://doi.org/10.1080/03036758.2021.1876111">https://doi.org/10.1080/03036758.2021.1876111</a>.
+</div>
+<div id="ref-ionidesInferenceNonlinearDynamical2006" class="csl-entry" role="listitem">
+Ionides, E. L., C. Bretó, and A. A. King. 2006. <span>“Inference for
+Nonlinear Dynamical Systems.”</span> <em>Proceedings of the National
+Academy of Sciences</em> 103 (49): 18438–43. <a href="https://doi.org/10.1073/pnas.0603181103">https://doi.org/10.1073/pnas.0603181103</a>.
+</div>
+<div id="ref-ionidesIteratedFiltering2011" class="csl-entry" role="listitem">
+Ionides, Edward L., Anindya Bhadra, Yves Atchadé, and Aaron King. 2011.
+<span>“Iterated Filtering.”</span> <em>The Annals of Statistics</em> 39
+(3). <a href="https://doi.org/10.1214/11-AOS886">https://doi.org/10.1214/11-AOS886</a>.
+</div>
+<div id="ref-ionidesInferenceDynamicLatent2015" class="csl-entry" role="listitem">
+Ionides, Edward L., Dao Nguyen, Yves Atchadé, Stilian Stoev, and Aaron
+A. King. 2015. <span>“Inference for Dynamic and Latent Variable Models
+via Iterated, Perturbed <span>Bayes</span> Maps.”</span> <em>Proceedings
+of the National Academy of Sciences</em> 112 (3): 719–24. <a href="https://doi.org/10.1073/pnas.1410597112">https://doi.org/10.1073/pnas.1410597112</a>.
+</div>
+<div id="ref-kantasParticleMethodsParameter2015" class="csl-entry" role="listitem">
+Kantas, Nikolas, Arnaud Doucet, Sumeetpal S. Singh, Jan Maciejowski, and
+Nicolas Chopin. 2015. <span>“On <span>Particle Methods</span> for
+<span>Parameter Estimation</span> in <span>State-Space
+Models</span>.”</span> <em>Statistical Science</em> 30 (3): 328–51. <a href="https://doi.org/10.1214/14-STS511">https://doi.org/10.1214/14-STS511</a>.
+</div>
+<div id="ref-kingStatisticalInferencePartially2016" class="csl-entry" role="listitem">
+King, Aaron A., Dao Nguyen, and Edward L. Ionides. 2016.
+<span>“Statistical <span>Inference</span> for <span>Partially Observed
+Markov Processes</span> via the <span><em>R</em></span>
+<span>Package</span> <span><strong>Pomp</strong></span>.”</span>
+<em>Journal of Statistical Software</em> 69 (12). <a href="https://doi.org/10.18637/jss.v069.i12">https://doi.org/10.18637/jss.v069.i12</a>.
+</div>
+<div id="ref-ministryofhealthnzNewZealandCOVID192024" class="csl-entry" role="listitem">
+Ministry of Health NZ. 2024. <span>“New <span>Zealand COVID-19
+Data</span>.”</span>
+</div>
+<div id="ref-nashEstimatingEpidemicReproduction2023" class="csl-entry" role="listitem">
+Nash, Rebecca K., Samir Bhatt, Anne Cori, and Pierre Nouvellet. 2023.
+<span>“Estimating the Epidemic Reproduction Number from Temporally
+Aggregated Incidence Data: <span>A</span> Statistical Modelling Approach
+and Software Tool.”</span> Edited by Eric Hy Lau. <em>PLOS Computational
+Biology</em> 19 (8): e1011439. <a href="https://doi.org/10.1371/journal.pcbi.1011439">https://doi.org/10.1371/journal.pcbi.1011439</a>.
+</div>
+<div id="ref-ogi-gittinsSimulationbasedApproachEstimating2024" class="csl-entry" role="listitem">
+Ogi-Gittins, I., W. S. Hart, J. Song, R. K. Nash, J. Polonsky, A. Cori,
+E. M. Hill, and R. N. Thompson. 2024. <span>“A Simulation-Based Approach
+for Estimating the Time-Dependent Reproduction Number from Temporally
+Aggregated Disease Incidence Time Series Data.”</span>
+<em>Epidemics</em> 47: 100773. <a href="https://doi.org/10.1016/j.epidem.2024.100773">https://doi.org/10.1016/j.epidem.2024.100773</a>.
+</div>
+<div id="ref-paragImprovedEstimationTimevarying2021" class="csl-entry" role="listitem">
+Parag, Kris V. 2021. <span>“Improved Estimation of Time-Varying
+Reproduction Numbers at Low Case Incidence and Between Epidemic
+Waves.”</span> <em>PLOS Computational Biology</em> 17 (9): e1009347. <a href="https://doi.org/10.1371/journal.pcbi.1009347">https://doi.org/10.1371/journal.pcbi.1009347</a>.
+</div>
+<div id="ref-paragDecipheringEarlywarningSignals2021" class="csl-entry" role="listitem">
+Parag, Kris V., Benjamin J. Cowling, and Christl A. Donnelly. 2021.
+<span>“Deciphering Early-Warning Signals of <span>SARS-CoV-2</span>
+Elimination and Resurgence from Limited Data at Multiple Scales.”</span>
+<em>Journal of The Royal Society Interface</em> 18 (185): 20210569. <a href="https://doi.org/10.1098/rsif.2021.0569">https://doi.org/10.1098/rsif.2021.0569</a>.
+</div>
+<div id="ref-sarkkaBayesianFilteringSmoothing2013" class="csl-entry" role="listitem">
+Särkkä, Simo. 2013. <em>Bayesian <span>Filtering</span> and
+<span>Smoothing</span></em>. 1st ed. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9781139344203">https://doi.org/10.1017/CBO9781139344203</a>.
+</div>
+<div id="ref-steynRobustUncertaintyQuantification2024" class="csl-entry" role="listitem">
+Steyn, Nicholas, and Kris V. Parag. 2024. <span>“Robust Uncertainty
+Quantification in Popular Estimators of the Instantaneous Reproduction
+Number.”</span> medRxiv. <a href="https://doi.org/10.1101/2024.10.22.24315918">https://doi.org/10.1101/2024.10.22.24315918</a>.
+</div>
+<div id="ref-temfackReviewSequentialMonte2024b" class="csl-entry" role="listitem">
+Temfack, Dhorasso, and Jason Wyse. 2024. <span>“A Review of Sequential
+<span>Monte Carlo</span> Methods for Real-Time Disease Modeling.”</span>
+arXiv. <a href="https://doi.org/10.48550/ARXIV.2408.15739">https://doi.org/10.48550/ARXIV.2408.15739</a>.
+</div>
+<div id="ref-thompsonImprovedInferenceTimevarying2019" class="csl-entry" role="listitem">
+Thompson, R. N., J. E. Stockwin, R. D. van Gaalen, J. A. Polonsky, Z. N.
+Kamvar, P. A. Demarsh, E. Dahlqwist, et al. 2019. <span>“Improved
+Inference of Time-Varying Reproduction Numbers During Infectious Disease
+Outbreaks.”</span> <em>Epidemics</em> 29 (December): 100356. <a href="https://doi.org/10.1016/j.epidem.2019.100356">https://doi.org/10.1016/j.epidem.2019.100356</a>.
+</div>
+<div id="ref-yangBayesianDataAssimilation2022" class="csl-entry" role="listitem">
+Yang, Xian, Shuo Wang, Yuting Xing, Ling Li, Richard Yi Da Xu, Karl J.
+Friston, and Yike Guo. 2022. <span>“Bayesian Data Assimilation for
+Estimating Instantaneous Reproduction Numbers During Epidemics:
+<span>Applications</span> to <span>COVID-19</span>.”</span> <em>PLOS
+Computational Biology</em> 18 (2): e1009807. <a href="https://doi.org/10.1371/journal.pcbi.1009807">https://doi.org/10.1371/journal.pcbi.1009807</a>.
+</div>
+</div>
 
 
 
@@ -809,13 +980,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./models_imports.html" class="pagination-link" aria-label="Imported cases">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Imported cases</span></span>
+      <a href="./othermethods_epinow2.html" class="pagination-link" aria-label="EpiNow2">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">EpiNow2</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./eval-precisioncalibration.html" class="pagination-link" aria-label="Precision and calibration">
-        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Precision and calibration</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./notation.html" class="pagination-link" aria-label="Notation">
+        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Notation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
