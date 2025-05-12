@@ -135,6 +135,10 @@ function PMMH(bootstrapFilter::Function, Y::DataFrame, opts::Dict; verbose=false
         @warn("Algorithm never finished tuning. Returning PMMH results with all samples.")
         maxTuningInd = 0
     end
+
+    if ii >= opts["maxChunks"]
+        @warn("Algorithm reached maximum number of chunks. PMMH may not have convergeed.")
+    end
     
     lastInd = (ii-1)*chunkSize #TODO: check we are saving the correct final 
     return(θall[(maxTuningInd+1):lastInd, :, :], diag)

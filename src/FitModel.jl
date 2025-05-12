@@ -8,7 +8,10 @@ include("Likelihood.jl")
 
 # This performs a general start-to-finish model fitting procedure
 
-function fitModel(bootstrapFilter::Function, Y::DataFrame, opts::Dict; skipResamplingPMMH=false, predictiveValues=missing, verbose=false)  #TOOD: Include predcitve values fucnctionality
+function fitModel(bootstrapFilter::Function, Y::DataFrame, optsIn::Dict; skipResamplingPMMH=false, predictiveValues=missing, verbose=false, checkStdDevLogLik=true)  #TOOD: Include predcitve values fucnctionality
+    
+    # Ensure we do not edit the opts dictionary
+    opts = deepcopy(optsIn)
     
     # Extract options
     paramNames = opts["paramNames"] # PMMH parameter names (useful for storing tidy output)
@@ -31,14 +34,16 @@ function fitModel(bootstrapFilter::Function, Y::DataFrame, opts::Dict; skipResam
     end
     
     # Check the standard deviation of the log-likelihood
-    (loglikstddev, _) = estimateStdDevLogLik(100, bootstrapFilter, θtest, Y, opts; showProgress=verbose)
-    if verbose
-        println("Estimated standard deviation of the log-likelihood: ", loglikstddev)
-    end
-    if loglikstddev > 3
-        error("The standard deviation of the log-likelihood is too high. Consider increasing the number of particles used, or changing the model.")
-    elseif loglikstddev > 1.5
-        @warn("The standard deviation of the log-likelihood is high (>1.5). Consider increasing the number of particles used, or changing the model.")
+    if checkStdDevLogLik
+        (loglikstddev, _) = estimateStdDevLogLik(100, bootstrapFilter, θtest, Y, opts; showProgress=verbose)
+        if verbose
+            println("Estimated standard deviation of the log-likelihood: ", loglikstddev)
+        end
+        if loglikstddev > 4
+            error("The standard deviation of the log-likelihood is too high (>4). Consider increasing the number of particles used, or changing the model.")
+        elseif loglikstddev > 2
+            @warn("The standard deviation of the log-likelihood is high (>2). Consider increasing the number of particles used, or changing the model.")
+        end
     end
     
     # Run PMMH
