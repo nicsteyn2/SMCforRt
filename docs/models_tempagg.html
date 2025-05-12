@@ -51,7 +51,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./models_imports.html" rel="next">
-<link href="./models-obsnoise.html" rel="prev">
+<link href="./models_obsnoise.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -245,7 +245,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./models-obsnoise.html" class="sidebar-item-text sidebar-link">
+  <a href="./models_obsnoise.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></span></a>
   </div>
 </li>
@@ -408,7 +408,7 @@ window.Quarto = {
 <p>Given an appropriate inference method, there are also cases in which it makes sense to model temporally aggregated data. If day-of-the-week effects are present, large, and inconsistent, then modelling weekly-aggregated data can decrease observation variance. From a practical modelling perspective, in the SMC context, aggregated data feature fewer observations, thus requiring fewer particles to estimate the model log-likelihood with the same precision.</p>
 <section id="modelling-temporally-aggregated-data" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="modelling-temporally-aggregated-data"><span class="header-section-number">10.1</span> Modelling temporally aggregated data</h2>
-<p>We can use any model which separates latent infections <span class="math inline">\(I_t\)</span> from reported cases <span class="math inline">\(C_t\)</span>, for example, the model introduced in <a href="models-obsnoise.html#sec-models-obsnoise-underreport" class="quarto-xref"><span>Section 9.1</span></a> (where subscript <span class="math inline">\(t\)</span> still denotes time in days):</p>
+<p>We can use any model which separates latent infections <span class="math inline">\(I_t\)</span> from reported cases <span class="math inline">\(C_t\)</span>, for example, the model introduced in <a href="models_obsnoise.html#sec-models-obsnoise-underreport" class="quarto-xref"><span>Section 9.1</span></a> (where subscript <span class="math inline">\(t\)</span> still denotes time in days):</p>
 <p><span id="eq-models-tempaggstatespace"><span class="math display">\[
 \begin{align}
 \log R_t | \log R_{t-1} &amp;\sim \text{Normal}(\log R_{t-1}, \sigma) \\
@@ -863,7 +863,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./models-obsnoise.html" class="pagination-link" aria-label="Modelling observation noise">
+      <a href="./models_obsnoise.html" class="pagination-link" aria-label="Modelling observation noise">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></span>
       </a>          
   </div>

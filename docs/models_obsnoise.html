@@ -167,7 +167,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./models-simple.html">Models</a></li><li class="breadcrumb-item"><a href="./models-obsnoise.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./models-simple.html">Models</a></li><li class="breadcrumb-item"><a href="./models_obsnoise.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -282,7 +282,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./models-obsnoise.html" class="sidebar-item-text sidebar-link active">
+  <a href="./models_obsnoise.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></span></a>
   </div>
 </li>
@@ -424,7 +424,7 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./models-simple.html">Models</a></li><li class="breadcrumb-item"><a href="./models-obsnoise.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./models-simple.html">Models</a></li><li class="breadcrumb-item"><a href="./models_obsnoise.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title"><span id="sec-models-obsnoise" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling observation noise</span></span></h1>
 </div>
@@ -449,7 +449,7 @@ window.Quarto = {
 - @wilderTrackingDiseaseOutbreaks2021
 - @desimoneBayesianApproachMonitoring2020
 - @bhattSemimechanisticBayesianModelling2023 -->
-<div id="bd685173" class="cell" data-execution_count="1">
+<div id="5d1f7be5" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">Measures</span></span>
@@ -474,7 +474,7 @@ I_t | R_t, I_{1:t-1} &amp;\sim \text{Poisson}(R_t \Lambda_t)
 C_t | I_t \sim \text{Binomial}\left(I_t, \ \rho\right)
 \tag{9.2}\]</span></span></p>
 <p>The reporting rate <span class="math inline">\(\rho\)</span> is not identifiable from reported case data alone, so must be set by the user. We use <span class="math inline">\(\rho = 0.5\)</span> in this example. This model has the same number of fixed parameters as the basic model (one parameter, <span class="math inline">\(\sigma\)</span>). A Julia implementation of this hidden-state model is provided in the following drop-down box:</p>
-<div id="88fec422" class="cell" data-execution_count="2">
+<div id="3fc7bcea" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">underreportingModel</span>(σ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
@@ -526,7 +526,7 @@ C_t | I_t \sim \text{Binomial}\left(I_t, \ \rho\right)
 </details>
 </div>
 <p>we also specify the standard options dictionary:</p>
-<div id="9442ca69" class="cell" data-execution_count="3">
+<div id="d20be07c" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>opts <span class="op">=</span> <span class="fu">Dict</span>(</span>
@@ -559,11 +559,11 @@ C_t | I_t \sim \text{Binomial}\left(I_t, \ \rho\right)
 </details>
 </div>
 <p>Now we can use <code>fitModel()</code> to run the PMMH algorithm and return the marginalised estimates of <span class="math inline">\(R_t\)</span>. We fit this model to the same data used in <a href="models-simple.html" class="quarto-xref"><span>Chapter 8</span></a>.</p>
-<div id="89d9c4ec" class="cell" data-execution_count="4">
+<div id="b39dde20" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(df_states, df_params, θ, diag) <span class="op">=</span> <span class="fu">fitModel</span>(underreportingModel, Y, opts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finally, we extract the hidden-state estimates (both <span class="math inline">\(R_t\)</span> and <span class="math inline">\(I_t\)</span>) and plot them:</p>
-<div id="6a803eb3" class="cell" data-execution_count="5">
+<div id="0ba7c733" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df_R <span class="op">=</span> df_states[df_states.variable <span class="op">.==</span> <span class="st">"Rt"</span>,<span class="op">:</span>]</span>
@@ -576,7 +576,7 @@ C_t | I_t \sim \text{Binomial}\left(I_t, \ \rho\right)
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="models-obsnoise_files/figure-html/cell-6-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="models_obsnoise_files/figure-html/cell-6-output-1.svg" class="img-fluid figure-img"></p>
 <figcaption>Reproduction number and infection incidence estimates from fitting a binomial observation model to data from the first 100 days of the COVID-19 pandemic in New Zealand. A fixed reporting rate of <span class="math inline">\(\rho = 0.5\)</span> is assumed - results are heavily dependent on this assumption.</figcaption>
 </figure>
 </div>
@@ -594,7 +594,7 @@ C_t | I_t \sim \text{Beta-binomial}\left(I_t, \alpha_t, \beta_t\right)
 \alpha_t = \rho \left(\frac{1}{\phi} - 1\right), \ \ \beta_t = (1-\rho) \left(\frac{1}{\phi} - 1\right)
 \tag{9.4}\]</span></span></p>
 <p>This model also assumes a reporting rate of <span class="math inline">\(\rho\)</span>, but allows for additional variance through parameter <span class="math inline">\(\phi\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. We now must estimate two parameters: <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\phi\)</span>.</p>
-<div id="7436c476" class="cell" data-execution_count="6">
+<div id="f6e47d67" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">underreportedAndOverdispersedModel</span>(θ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
@@ -678,19 +678,19 @@ C_t | I_t \sim \text{Beta-binomial}\left(I_t, \alpha_t, \beta_t\right)
 </details>
 </div>
 <p>Investigating the parameter estimates and plotting the samples of <span class="math inline">\(\phi\)</span> suggest that overdispersion may be present, although we cannot rule out binomial noise (<span class="math inline">\(\phi = 0\)</span>), conditional on <span class="math inline">\(\rho = 0.5\)</span>.</p>
-<div id="62b36b11" class="cell" data-execution_count="7">
+<div id="6ab01956" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>θl <span class="op">=</span> <span class="fu">resizeParams</span>(θ)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">histogram</span>(θl[<span class="op">:</span>,<span class="fl">2</span>], bins<span class="op">=</span><span class="fl">50</span>, xlabel<span class="op">=</span><span class="st">"ϕ"</span>, ylabel<span class="op">=</span><span class="st">"Proportion of samples"</span>, color<span class="op">=:</span>darkorange, legend<span class="op">=</span><span class="cn">false</span>, normalize<span class="op">=:</span>probability, size <span class="op">=</span> (<span class="fl">600</span>,<span class="fl">400</span>), margins<span class="op">=</span><span class="fl">3</span>mm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 <figure class="figure">
-<p><img src="models-obsnoise_files/figure-html/cell-8-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="models_obsnoise_files/figure-html/cell-8-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Estimates of <span class="math inline">\(R_t\)</span> are similar, but slightly smoother, than the binomial model above.</p>
-<div id="03cee76f" class="cell" data-execution_count="8">
+<div id="ffddb5bc" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df_R <span class="op">=</span> df_states[df_states.variable <span class="op">.==</span> <span class="st">"Rt"</span>,<span class="op">:</span>]</span>
@@ -703,7 +703,7 @@ C_t | I_t \sim \text{Beta-binomial}\left(I_t, \alpha_t, \beta_t\right)
 <div class="cell-output cell-output-display" data-execution_count="9">
 <div>
 <figure class="figure">
-<p><img src="models-obsnoise_files/figure-html/cell-9-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="models_obsnoise_files/figure-html/cell-9-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -716,7 +716,7 @@ C_t | I_t \sim \text{Beta-binomial}\left(I_t, \alpha_t, \beta_t\right)
 C_t | I_t \sim \text{Negative binomial}\left(r = \frac{I_t}{k}, p=\frac{1}{1 + k} \right)
 \]</span></p>
 <p>which has mean <span class="math inline">\(I_t\)</span> and variance <span class="math inline">\((1+k) I_t\)</span>, where <span class="math inline">\(k\)</span> is a dispersion parameter. This results in two parameters to be estimated: <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(k\)</span>.</p>
-<div id="8886fe84" class="cell" data-execution_count="9">
+<div id="cb45bebf" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">overdispersedModel</span>(θ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
@@ -798,18 +798,18 @@ C_t | I_t \sim \text{Negative binomial}\left(r = \frac{I_t}{k}, p=\frac{1}{1 + k
 <span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>(df_states, df_params, θ, diag) <span class="op">=</span> <span class="fu">fitModel</span>(overdispersedModel, Y, opts; verbose<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="21efd784" class="cell" data-execution_count="10">
+<div id="ea7234d0" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>θl <span class="op">=</span> <span class="fu">resizeParams</span>(θ)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">histogram</span>(θl[<span class="op">:</span>,<span class="fl">2</span>], bins<span class="op">=</span><span class="fl">50</span>, xlabel<span class="op">=</span><span class="st">"k"</span>, ylabel<span class="op">=</span><span class="st">"Proportion of samples"</span>, color<span class="op">=:</span>darkorange, legend<span class="op">=</span><span class="cn">false</span>, normalize<span class="op">=:</span>probability, size <span class="op">=</span> (<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 <figure class="figure">
-<p><img src="models-obsnoise_files/figure-html/cell-11-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="models_obsnoise_files/figure-html/cell-11-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="62271094" class="cell" data-execution_count="11">
+<div id="f5b559be" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df_R <span class="op">=</span> df_states[df_states.variable <span class="op">.==</span> <span class="st">"Rt"</span>,<span class="op">:</span>]</span>
@@ -820,7 +820,7 @@ C_t | I_t \sim \text{Negative binomial}\left(r = \frac{I_t}{k}, p=\frac{1}{1 + k
 <div class="cell-output cell-output-display" data-execution_count="12">
 <div>
 <figure class="figure">
-<p><img src="models-obsnoise_files/figure-html/cell-12-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="models_obsnoise_files/figure-html/cell-12-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -835,7 +835,7 @@ C_t | I_t \sim \text{Negative binomial}\left(r = \frac{I_t}{k}, p=\frac{1}{1 + k
 <p>where <span class="math inline">\(d_u = \text{Gamma PDF}(u; \mu=5.5, \sigma=2.3)\)</span>. Using the same negative binomial distribution as above, we can model the number of reported cases as: <span class="math display">\[
 C_t | \mu_t, \phi \sim \text{Negative Binomial}\left(r = \frac{\mu_t}{k}, p=\frac{1}{1 + k} \right)
 \]</span></p>
-<div id="f85ed516" class="cell" data-execution_count="12">
+<div id="b8f32353" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">delayedModel</span>(θ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract frequently used options</span></span>
@@ -917,7 +917,7 @@ C_t | \mu_t, \phi \sim \text{Negative Binomial}\left(r = \frac{\mu_t}{k}, p=\fra
 <span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>(df_states, df_params, θ, diag) <span class="op">=</span> <span class="fu">fitModel</span>(delayedModel, Y, opts; verbose<span class="op">=</span><span class="cn">false</span>, checkStdDevLogLik<span class="op">=</span><span class="cn">false</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="49941397" class="cell" data-execution_count="13">
+<div id="2ca12231" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df_R_del <span class="op">=</span> df_states[df_states.variable <span class="op">.==</span> <span class="st">"Rt"</span>,<span class="op">:</span>]</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>plotR <span class="op">=</span> <span class="fu">plot</span>(df_R.date, df_R.mean, ribbon<span class="op">=</span>(df_R.mean<span class="op">-</span>df_R.lower, df_R.upper<span class="op">-</span>df_R.mean), color<span class="op">=:</span>lightgreen, xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, label<span class="op">=</span><span class="st">"Without delay"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">400</span>), margins<span class="op">=</span><span class="fl">3</span>mm)</span>
@@ -925,7 +925,7 @@ C_t | \mu_t, \phi \sim \text{Negative Binomial}\left(r = \frac{\mu_t}{k}, p=\fra
 <div class="cell-output cell-output-display" data-execution_count="14">
 <div>
 <figure class="figure">
-<p><img src="models-obsnoise_files/figure-html/cell-14-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="models_obsnoise_files/figure-html/cell-14-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -940,7 +940,7 @@ C_t | \mu_t, \phi, \{c_i\} \sim \text{Negative Binomial}\left(r = \frac{c_{\text
 \]</span></p>
 <p>where <span class="math inline">\(c_i, i = 1, \ldots, 7\)</span> are the relative reporting rates on each day of the week. Parameters <span class="math inline">\(c_1\)</span> through <span class="math inline">\(c_6\)</span> are estimated, with <span class="math inline">\(c_7 = 7 - \sum_{i=1}^6 c_i\)</span>.</p>
 <p>When fitting this, we use data from the COVID-19 pandemic in Aotearoa New Zealand between 1 April 2024 and 9 July 2024, a 100-day period in which a clear day-of-the-week effect was observed.</p>
-<div id="f10a746e" class="cell" data-execution_count="14">
+<div id="f23ec283" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Yin <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"NZCOVID_1APR2024"</span>);</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> Yin[<span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">:</span>];</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1055,14 +1055,10 @@ C_t | \mu_t, \phi, \{c_i\} \sim \text{Negative Binomial}\left(r = \frac{c_{\text
 <span id="cb14-112"><a href="#cb14-112" aria-hidden="true" tabindex="-1"></a>    yguidefont<span class="op">=</span><span class="fu">font</span>(<span class="fl">10</span>), xguidefont<span class="op">=</span><span class="fu">font</span>(<span class="fl">10</span>), size<span class="op">=</span>(<span class="fl">400</span>,<span class="fl">300</span>))</span>
 <span id="cb14-113"><a href="#cb14-113" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-114"><a href="#cb14-114" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">plot</span>(plt_cases, plt_Rt, plt_dow, layout<span class="op">=</span>(<span class="fl">3</span>,<span class="fl">1</span>), size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">600</span>), legend<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>┌ Warning: Algorithm reached maximum number of chunks. PMMH may not have convergeed.
-└ @ Main ~/Documents/SMC-for-Rt/SMCforRt/src/PMMH.jl:140</code></pre>
-</div>
 <div class="cell-output cell-output-display" data-execution_count="15">
 <div>
 <figure class="figure">
-<p><img src="models-obsnoise_files/figure-html/cell-15-output-2.svg" class="img-fluid figure-img"></p>
+<p><img src="models_obsnoise_files/figure-html/cell-15-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1080,107 +1076,107 @@ Var(C_t) = I_t \rho (1 - \rho)
 \]</span></p>
 <p>Holding <span class="math inline">\(E[C_t] = I_t \rho\)</span> fixed, we can see that the observation variance is a decreasing function of <span class="math inline">\(\rho\)</span>. That is, the smaller the estimated value of <span class="math inline">\(\rho\)</span>, the greater the estimated observation variance. This is somewhat approximate, as the model must choose a temporally fixed value of <span class="math inline">\(\rho\)</span>, but is free to vary <span class="math inline">\(I_t\)</span> (within the constraints of the epidemc model).</p>
 <p>A combination of model misspecification (reported cases <span class="math inline">\(C_t\)</span> are unlikely to perfectly follow a binomial distribution with mean <span class="math inline">\(I_t \rho\)</span>) and limited data (even if the model was correctly specified, a large quantity of data would be required to estimate this parameter) limit the real-world applicability of this approach for inference. In terms of predictions, where identifiabilitiy is not required, this may be a useful approach.</p>
-<div id="fa5cb072" class="cell" data-execution_count="15">
+<div id="fb0378d4" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"NZCOVID"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">underreportingModel2</span>(θ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract frequently used options</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> opts[<span class="st">"T"</span>]</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> opts[<span class="st">"N"</span>]</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> opts[<span class="st">"L"</span>]</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    ω <span class="op">=</span> opts[<span class="st">"ω"</span>]</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialise output matrices</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    R <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    I <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    W <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sample from initial distributions</span></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    R[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">rand</span>.(opts[<span class="st">"pR0"</span>], N)</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    I[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">rand</span>.(opts[<span class="st">"pI0"</span>], N)</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run the filter</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Project according to the state-space model</span></span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>        R[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">exp</span>.(<span class="fu">rand</span>.(<span class="fu">Normal</span>.(<span class="fu">log</span>.(R[<span class="op">:</span>,tt<span class="op">-</span><span class="fl">1</span>]), θ[<span class="fl">1</span>])))</span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        Λ <span class="op">=</span> <span class="fu">sum</span>(I[<span class="op">:</span>, (tt<span class="op">-</span><span class="fl">1</span>)<span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>(tt<span class="op">-</span><span class="fl">1</span>)]<span class="ch">', dims=2)</span></span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        I[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">rand</span>.(<span class="fu">Poisson</span>.(R[<span class="op">:</span>,tt] <span class="op">.*</span> Λ))</span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Weight according to the observation model</span></span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>        W[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Binomial</span>.(I[<span class="op">:</span>,tt], θ[<span class="fl">2</span>]), Y.Ct[tt])</span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Resample</span></span>
-<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>        inds <span class="op">=</span> <span class="fu">wsample</span>(<span class="fl">1</span><span class="op">:</span>N, W[<span class="op">:</span>,tt], N; replace<span class="op">=</span><span class="cn">true</span>)</span>
-<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>        R[<span class="op">:</span>, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="op">=</span> R[inds, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt]</span>
-<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>        I[<span class="op">:</span>, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="op">=</span> I[inds, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt]</span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Store output as three-dimensional array</span></span>
-<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> <span class="fu">zeros</span>(N, T, <span class="fl">2</span>)</span>
-<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>    X[<span class="op">:</span>,<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> R</span>
-<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>    X[<span class="op">:</span>,<span class="op">:</span>,<span class="fl">2</span>] <span class="op">=</span> I</span>
-<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(X, W)</span>
-<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>opts <span class="op">=</span> <span class="fu">Dict</span>(</span>
-<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Bootstrap filter options</span></span>
-<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>    <span class="st">"T"</span> <span class="op">=&gt;</span> <span class="fl">100</span>, <span class="co"># Number of time-steps</span></span>
-<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">"N"</span> <span class="op">=&gt;</span> <span class="fl">1000</span>, <span class="co"># Number of particles</span></span>
-<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>    <span class="st">"L"</span> <span class="op">=&gt;</span> <span class="fl">50</span>, <span class="co"># Fixed-lag resampling length</span></span>
-<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pR0"</span> <span class="op">=&gt;</span> <span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">10</span>), <span class="co"># Prior on Rt at t = 0</span></span>
-<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pI0"</span> <span class="op">=&gt;</span> <span class="fu">DiscreteUniform</span>(<span class="fl">1</span>, <span class="fl">5</span>), <span class="co"># Prior on It at t = 0</span></span>
-<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ω"</span> <span class="op">=&gt;</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>) <span class="op">/</span> <span class="fu">sum</span>(<span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>)), <span class="co"># Serial interval</span></span>
-<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># PMMH options</span></span>
-<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>    <span class="st">"nChains"</span> <span class="op">=&gt;</span> <span class="fl">3</span>,</span>
-<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>    <span class="st">"chunkSize"</span> <span class="op">=&gt;</span> <span class="fl">100</span>,</span>
-<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>    <span class="st">"maxChunks"</span> <span class="op">=&gt;</span> <span class="fl">50</span>,</span>
-<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>    <span class="st">"maxRhat"</span> <span class="op">=&gt;</span> <span class="fl">1.05</span>,</span>
-<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>    <span class="st">"minESS"</span> <span class="op">=&gt;</span> <span class="fl">500</span>,</span>
-<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>    <span class="st">"showChunkProgress"</span> <span class="op">=&gt;</span> <span class="cn">false</span>,</span>
-<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>    <span class="st">"propStdDevInit"</span> <span class="op">=&gt;</span> [<span class="fl">0.1</span>, <span class="fl">0.1</span>],</span>
-<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>    <span class="st">"paramPriors"</span> <span class="op">=&gt;</span> [<span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">1</span>), <span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">1</span>)],</span>
-<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>    <span class="st">"initialParamSamplers"</span> <span class="op">=&gt;</span> [<span class="fu">Uniform</span>(<span class="fl">0.1</span>, <span class="fl">0.3</span>), <span class="fu">Uniform</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>)],</span>
-<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a>    <span class="st">"paramNames"</span> <span class="op">=&gt;</span> [<span class="st">"σ"</span>, <span class="st">"ρ"</span>],</span>
-<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Marginal posterior options</span></span>
-<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>    <span class="st">"posteriorNumberOfParticles"</span> <span class="op">=&gt;</span> <span class="fl">10000</span>,</span>
-<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>    <span class="st">"posteriorParamSamples"</span> <span class="op">=&gt;</span> <span class="fl">100</span>,</span>
-<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>    <span class="st">"stateNames"</span> <span class="op">=&gt;</span> [<span class="st">"Rt"</span>, <span class="st">"It"</span>]</span>
-<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a>);</span>
-<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a>(df_states, df_params, θ, diag) <span class="op">=</span> <span class="fu">fitModel</span>(underreportingModel2, Y, opts)</span>
-<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a><span class="co">#| </span></span>
-<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a>df_R <span class="op">=</span> df_states[df_states.variable <span class="op">.==</span> <span class="st">"Rt"</span>,<span class="op">:</span>]</span>
-<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a>df_I <span class="op">=</span> df_states[df_states.variable <span class="op">.==</span> <span class="st">"It"</span>,<span class="op">:</span>]</span>
-<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a>plotR <span class="op">=</span> <span class="fu">plot</span>(df_R.date, df_R.mean, ribbon<span class="op">=</span>(df_R.mean<span class="op">-</span>df_R.lower, df_R.upper<span class="op">-</span>df_R.mean), label<span class="op">=</span><span class="cn">false</span>, color<span class="op">=:</span>darkgreen, xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm)</span>
-<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(df_params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"NZCOVID"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">underreportingModel2</span>(θ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract frequently used options</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> opts[<span class="st">"T"</span>]</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> opts[<span class="st">"N"</span>]</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> opts[<span class="st">"L"</span>]</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    ω <span class="op">=</span> opts[<span class="st">"ω"</span>]</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialise output matrices</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    R <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    I <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    W <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sample from initial distributions</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    R[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">rand</span>.(opts[<span class="st">"pR0"</span>], N)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    I[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">rand</span>.(opts[<span class="st">"pI0"</span>], N)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run the filter</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Project according to the state-space model</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>        R[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">exp</span>.(<span class="fu">rand</span>.(<span class="fu">Normal</span>.(<span class="fu">log</span>.(R[<span class="op">:</span>,tt<span class="op">-</span><span class="fl">1</span>]), θ[<span class="fl">1</span>])))</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>        Λ <span class="op">=</span> <span class="fu">sum</span>(I[<span class="op">:</span>, (tt<span class="op">-</span><span class="fl">1</span>)<span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>(tt<span class="op">-</span><span class="fl">1</span>)]<span class="ch">', dims=2)</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>        I[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">rand</span>.(<span class="fu">Poisson</span>.(R[<span class="op">:</span>,tt] <span class="op">.*</span> Λ))</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Weight according to the observation model</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>        W[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Binomial</span>.(I[<span class="op">:</span>,tt], θ[<span class="fl">2</span>]), Y.Ct[tt])</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Resample</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>        inds <span class="op">=</span> <span class="fu">wsample</span>(<span class="fl">1</span><span class="op">:</span>N, W[<span class="op">:</span>,tt], N; replace<span class="op">=</span><span class="cn">true</span>)</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>        R[<span class="op">:</span>, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="op">=</span> R[inds, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt]</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>        I[<span class="op">:</span>, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="op">=</span> I[inds, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt]</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Store output as three-dimensional array</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> <span class="fu">zeros</span>(N, T, <span class="fl">2</span>)</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>    X[<span class="op">:</span>,<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> R</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>    X[<span class="op">:</span>,<span class="op">:</span>,<span class="fl">2</span>] <span class="op">=</span> I</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(X, W)</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>opts <span class="op">=</span> <span class="fu">Dict</span>(</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Bootstrap filter options</span></span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>    <span class="st">"T"</span> <span class="op">=&gt;</span> <span class="fl">100</span>, <span class="co"># Number of time-steps</span></span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">"N"</span> <span class="op">=&gt;</span> <span class="fl">1000</span>, <span class="co"># Number of particles</span></span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>    <span class="st">"L"</span> <span class="op">=&gt;</span> <span class="fl">50</span>, <span class="co"># Fixed-lag resampling length</span></span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pR0"</span> <span class="op">=&gt;</span> <span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">10</span>), <span class="co"># Prior on Rt at t = 0</span></span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pI0"</span> <span class="op">=&gt;</span> <span class="fu">DiscreteUniform</span>(<span class="fl">1</span>, <span class="fl">5</span>), <span class="co"># Prior on It at t = 0</span></span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ω"</span> <span class="op">=&gt;</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>) <span class="op">/</span> <span class="fu">sum</span>(<span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>)), <span class="co"># Serial interval</span></span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># PMMH options</span></span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a>    <span class="st">"nChains"</span> <span class="op">=&gt;</span> <span class="fl">3</span>,</span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a>    <span class="st">"chunkSize"</span> <span class="op">=&gt;</span> <span class="fl">100</span>,</span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>    <span class="st">"maxChunks"</span> <span class="op">=&gt;</span> <span class="fl">50</span>,</span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a>    <span class="st">"maxRhat"</span> <span class="op">=&gt;</span> <span class="fl">1.05</span>,</span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a>    <span class="st">"minESS"</span> <span class="op">=&gt;</span> <span class="fl">500</span>,</span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a>    <span class="st">"showChunkProgress"</span> <span class="op">=&gt;</span> <span class="cn">false</span>,</span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a>    <span class="st">"propStdDevInit"</span> <span class="op">=&gt;</span> [<span class="fl">0.1</span>, <span class="fl">0.1</span>],</span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a>    <span class="st">"paramPriors"</span> <span class="op">=&gt;</span> [<span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">1</span>), <span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">1</span>)],</span>
+<span id="cb15-66"><a href="#cb15-66" aria-hidden="true" tabindex="-1"></a>    <span class="st">"initialParamSamplers"</span> <span class="op">=&gt;</span> [<span class="fu">Uniform</span>(<span class="fl">0.1</span>, <span class="fl">0.3</span>), <span class="fu">Uniform</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>)],</span>
+<span id="cb15-67"><a href="#cb15-67" aria-hidden="true" tabindex="-1"></a>    <span class="st">"paramNames"</span> <span class="op">=&gt;</span> [<span class="st">"σ"</span>, <span class="st">"ρ"</span>],</span>
+<span id="cb15-68"><a href="#cb15-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-69"><a href="#cb15-69" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Marginal posterior options</span></span>
+<span id="cb15-70"><a href="#cb15-70" aria-hidden="true" tabindex="-1"></a>    <span class="st">"posteriorNumberOfParticles"</span> <span class="op">=&gt;</span> <span class="fl">10000</span>,</span>
+<span id="cb15-71"><a href="#cb15-71" aria-hidden="true" tabindex="-1"></a>    <span class="st">"posteriorParamSamples"</span> <span class="op">=&gt;</span> <span class="fl">100</span>,</span>
+<span id="cb15-72"><a href="#cb15-72" aria-hidden="true" tabindex="-1"></a>    <span class="st">"stateNames"</span> <span class="op">=&gt;</span> [<span class="st">"Rt"</span>, <span class="st">"It"</span>]</span>
+<span id="cb15-73"><a href="#cb15-73" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb15-74"><a href="#cb15-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-75"><a href="#cb15-75" aria-hidden="true" tabindex="-1"></a>(df_states, df_params, θ, diag) <span class="op">=</span> <span class="fu">fitModel</span>(underreportingModel2, Y, opts)</span>
+<span id="cb15-76"><a href="#cb15-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-77"><a href="#cb15-77" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb15-78"><a href="#cb15-78" aria-hidden="true" tabindex="-1"></a><span class="co">#| </span></span>
+<span id="cb15-79"><a href="#cb15-79" aria-hidden="true" tabindex="-1"></a>df_R <span class="op">=</span> df_states[df_states.variable <span class="op">.==</span> <span class="st">"Rt"</span>,<span class="op">:</span>]</span>
+<span id="cb15-80"><a href="#cb15-80" aria-hidden="true" tabindex="-1"></a>df_I <span class="op">=</span> df_states[df_states.variable <span class="op">.==</span> <span class="st">"It"</span>,<span class="op">:</span>]</span>
+<span id="cb15-81"><a href="#cb15-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-82"><a href="#cb15-82" aria-hidden="true" tabindex="-1"></a>plotR <span class="op">=</span> <span class="fu">plot</span>(df_R.date, df_R.mean, ribbon<span class="op">=</span>(df_R.mean<span class="op">-</span>df_R.lower, df_R.upper<span class="op">-</span>df_R.mean), label<span class="op">=</span><span class="cn">false</span>, color<span class="op">=:</span>darkgreen, xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">300</span>), margins<span class="op">=</span><span class="fl">3</span>mm)</span>
+<span id="cb15-83"><a href="#cb15-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-84"><a href="#cb15-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-85"><a href="#cb15-85" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(df_params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<p>2 rows × 6 columns</p><table class="data-frame table table-sm table-striped small"><thead><tr><th></th><th>param</th><th>m</th><th>l</th><th>u</th><th>rhat</th><th>ess</th></tr><tr><th></th><th>String</th><th>Float64</th><th>Float64</th><th>Float64</th><th>Float64</th><th>Float64</th></tr></thead><tbody><tr><th>1</th><td>σ</td><td>0.223849</td><td>0.149519</td><td>0.32472</td><td>1.00279</td><td>655.556</td></tr><tr><th>2</th><td>ρ</td><td>0.311539</td><td>0.0227185</td><td>0.886841</td><td>1.00537</td><td>512.333</td></tr></tbody></table>
+<p>2 rows × 6 columns</p><table class="data-frame table table-sm table-striped small"><thead><tr><th></th><th>param</th><th>m</th><th>l</th><th>u</th><th>rhat</th><th>ess</th></tr><tr><th></th><th>String</th><th>Float64</th><th>Float64</th><th>Float64</th><th>Float64</th><th>Float64</th></tr></thead><tbody><tr><th>1</th><td>σ</td><td>0.222293</td><td>0.151875</td><td>0.32569</td><td>1.00763</td><td>517.501</td></tr><tr><th>2</th><td>ρ</td><td>0.305748</td><td>0.0387135</td><td>0.864569</td><td>1.00584</td><td>527.193</td></tr></tbody></table>
 </div>
 </div>
-<p>The model has estimated <span class="math inline">\(\rho = 0.31 \ (0.02, 0.89)\)</span>. Plotting the samples of <span class="math inline">\(\rho\)</span> below demonstrates a clear non-uniform posterior distribution, so there is <em>some</em> information about this parameter in the data, even if we are not necessarily estimating an interpretable quantity.</p>
-<div id="5581632d" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>θl <span class="op">=</span> <span class="fu">resizeParams</span>(θ)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">histogram</span>(θl[<span class="op">:</span>,<span class="fl">2</span>], bins<span class="op">=</span><span class="fl">50</span>, xlabel<span class="op">=</span><span class="st">"ρ"</span>, ylabel<span class="op">=</span><span class="st">"Proportion of samples"</span>, color<span class="op">=:</span>darkorange, legend<span class="op">=</span><span class="cn">false</span>, normalize<span class="op">=:</span>probability, size <span class="op">=</span> (<span class="fl">600</span>,<span class="fl">400</span>), margins<span class="op">=</span><span class="fl">3</span>mm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The model has estimated <span class="math inline">\(\rho = 0.31 \ (0.04, 0.86)\)</span>. Plotting the samples of <span class="math inline">\(\rho\)</span> below demonstrates a clear non-uniform posterior distribution, so there is <em>some</em> information about this parameter in the data, even if we are not necessarily estimating an interpretable quantity.</p>
+<div id="122a32fd" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>θl <span class="op">=</span> <span class="fu">resizeParams</span>(θ)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>plt <span class="op">=</span> <span class="fu">histogram</span>(θl[<span class="op">:</span>,<span class="fl">2</span>], bins<span class="op">=</span><span class="fl">50</span>, xlabel<span class="op">=</span><span class="st">"ρ"</span>, ylabel<span class="op">=</span><span class="st">"Proportion of samples"</span>, color<span class="op">=:</span>darkorange, legend<span class="op">=</span><span class="cn">false</span>, normalize<span class="op">=:</span>probability, size <span class="op">=</span> (<span class="fl">600</span>,<span class="fl">400</span>), margins<span class="op">=</span><span class="fl">3</span>mm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <div>
 <figure class="figure">
-<p><img src="models-obsnoise_files/figure-html/cell-17-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="models_obsnoise_files/figure-html/cell-17-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
