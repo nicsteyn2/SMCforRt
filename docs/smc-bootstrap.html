@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -380,7 +414,10 @@ window.Quarto = {
   <li><a href="#the-bootstrap-filter" id="toc-the-bootstrap-filter" class="nav-link" data-scroll-target="#the-bootstrap-filter"><span class="header-section-number">4.2</span> The bootstrap filter</a></li>
   <li><a href="#fixed-lag-smoothing" id="toc-fixed-lag-smoothing" class="nav-link" data-scroll-target="#fixed-lag-smoothing"><span class="header-section-number">4.3</span> Fixed-lag smoothing</a></li>
   <li><a href="#algorithm" id="toc-algorithm" class="nav-link" data-scroll-target="#algorithm"><span class="header-section-number">4.4</span> Algorithm</a></li>
-  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">4.5</span> Example</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">4.5</span> Example</a>
+  <ul class="collapse">
+  <li><a href="#choosing-the-number-of-particles" id="toc-choosing-the-number-of-particles" class="nav-link" data-scroll-target="#choosing-the-number-of-particles"><span class="header-section-number">4.5.1</span> Choosing the number of particles</a></li>
+  </ul></li>
   <li><a href="#sec-smc-bootstrap-additional" id="toc-sec-smc-bootstrap-additional" class="nav-link" data-scroll-target="#sec-smc-bootstrap-additional"><span class="header-section-number">4.6</span> Additional resources</a></li>
   </ul>
 </nav>
@@ -471,7 +508,7 @@ w_t^{(i)} = P(y_t | \tilde{x}_t^{(i)}, \theta)
 <li>Sample from the state-space transition distribution</li>
 <li>Evaluate the observation distribution</li>
 </ol>
-<p>Crucially, we do not need to <em>evalute</em> the state-space transition distribution, allowing for easy <strong>simulation-based inference</strong>.</p>
+<p>Crucially, we do not need to <em>evaluate</em> the state-space transition distribution, allowing for easy <strong>simulation-based inference</strong>.</p>
 <p>Simulation-based inference methods rely on simulations rather than analytical solutions and are very popular in statistical epidemiology. In this case, sampling from the state-space transition distribtion is the same as running the “simulator” one-step forward into the future. This simulator implies a likelihood even though we never need to find its precise form.</p>
 </section>
 </section>
@@ -515,32 +552,216 @@ x_t^{(i)} \sim P(X_t | y_{1:t}, \theta)
 </section>
 <section id="algorithm" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="algorithm"><span class="header-section-number">4.4</span> Algorithm</h2>
-<p>We present the algorithm as a Julia code-snippet. For a pseudocode implementation, please see our preprint #TODO: add link.</p>
+<p>We present the algorithm as a Julia code-snippet. For a pseudocode implementation, please see our <a href="https://doi.org/10.48550/arXiv.2503.18875">preprint</a>.</p>
+<p>The entire algorithm can be written in seven lines of code, although we use eight and some comments below for clarity. To fit a specific model, simply replace the initial distribution <code>pX0</code>, the state-space transition distribution <code>pXt</code>, and observation distribution <code>pYt</code>, with those of the hidden-state model.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inputs:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  - θ: a parameter vector</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  - y: a vector of data</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  - N: the number of particles</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  - L: fixed-lag resampling window length</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">SimpleBootstrapFilter</span>(θ, y, N, L)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>     <span class="co"># Pre-allocate an empty matrix of particles</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> <span class="fu">zeros</span>(N, <span class="fu">length</span>(Ct))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sample initial values</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    X[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">rand</span>(pX0, N) </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For each time step:</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fu">length</span>(Ct)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Project the hidden states</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        X[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">rand</span>.(<span class="fu">pXt</span>(X[<span class="op">:</span>,tt<span class="op">-</span><span class="fl">1</span>], θ))</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate weights</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        W <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">pYt</span>(X[<span class="op">:</span>,tt], θ), y[tt])</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Resample</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        indices <span class="op">=</span> <span class="fu">wsample</span>(<span class="fl">1</span><span class="op">:</span>N, W, N)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        X[<span class="op">:</span>, <span class="fu">max</span>(tt<span class="op">-</span>L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="op">=</span> X[indices, <span class="fu">max</span>(tt<span class="op">-</span>L, <span class="fl">1</span>)<span class="op">:</span>tt]</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(R, Y)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="example" class="level2" data-number="4.5">
 <h2 data-number="4.5" class="anchored" data-anchor-id="example"><span class="header-section-number">4.5</span> Example</h2>
-<p>For demonstration, we consider a simple reproduction number estimator. First assume that <span class="math inline">\(\log R_t\)</span> follows a Gaussian random walk:</p>
-<p>[#TODO]</p>
+<p>For demonstration, we consider a simple reproduction number estimator. First assume that <span class="math inline">\(\log R_t\)</span> follows a Gaussian random walk with standard deviation <span class="math inline">\(0.2\)</span>:</p>
+<p><span class="math display">\[
+\log R_t | R_{t-1} \sim \text{Normal}(\log R_{t-1}, 0.2)
+\]</span></p>
+<p>and then assume that reported cases follow the Poisson renewal model (<a href="introduction.html#eq-intro-poissonrenewal" class="quarto-xref">Equation&nbsp;<span>1.2</span></a>):</p>
+<p><span class="math display">\[
+C_t | R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \omega_u\right)
+\]</span></p>
+<p>Finally, we use a <span class="math inline">\(\text{Uniform}(0, 10)\)</span> initial distribution for <span class="math inline">\(R_t\)</span>. This behaves somewhat like a prior distribution, except that resmapling ensures the early estimates of <span class="math inline">\(R_t\)</span> reflect later data, so this has limited impact on the final estimates.</p>
+<p>We load the same data used in the first two example models of the <a href="https://doi.org/10.48550/arXiv.2503.18875">preprint</a>. The entire algorithm (implemented below) takes approximately 0.4s to run on an M1 MacBook Pro.</p>
+<div id="8961b117" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Distributions</span>, <span class="bu">Plots</span>, <span class="bu">Measures</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/LoadData.jl"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">runSimpleExample</span>()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Setup:</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> <span class="fl">10000</span> <span class="co"># Number of particles</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> <span class="fl">100</span> <span class="co"># Number of time steps</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    ω <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span>T) <span class="co"># Serial interval</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"NZCOVID"</span>) <span class="co"># Load data (Y is a DataFrame with column Ct)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> <span class="fl">40</span> <span class="co"># Fixed-lag resampling window</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Pre-allocate and sample initial values:</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    R <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    R[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">log</span>.(<span class="fu">rand</span>(<span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">10</span>), N))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run the bootstrap filter:</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        R[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">rand</span>.(<span class="fu">Normal</span>.(R[<span class="op">:</span>,tt<span class="op">-</span><span class="fl">1</span>], <span class="fl">0.2</span>)) <span class="co"># Project Rt</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        Λ <span class="op">=</span> <span class="fu">sum</span>(Y.Ct[(tt<span class="op">-</span><span class="fl">1</span>)<span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>(tt<span class="op">-</span><span class="fl">1</span>)]) <span class="co"># Calculate the force-of-infection</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        W <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Poisson</span>.(Λ <span class="op">*</span> <span class="fu">exp</span>.(R[<span class="op">:</span>,tt])), Y.Ct[tt]) <span class="co"># Calculate weights</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        R[<span class="fl">1</span><span class="op">:</span>N, <span class="fu">max</span>(tt<span class="op">-</span>L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="op">=</span> R[<span class="fu">wsample</span>(<span class="fl">1</span><span class="op">:</span>N, W, N), <span class="fu">max</span>(tt<span class="op">-</span>L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="co"># Resample</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Process and plot the results</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> <span class="fu">vec</span>(<span class="fu">mean</span>(<span class="fu">exp</span>.(R), dims<span class="op">=</span><span class="fl">1</span>))</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    l <span class="op">=</span> [<span class="fu">quantile</span>(Rt, <span class="fl">0.025</span>) for Rt <span class="kw">in</span> <span class="fu">eachcol</span>(<span class="fu">exp</span>.(R))]</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> [<span class="fu">quantile</span>(Rt, <span class="fl">0.975</span>) for Rt <span class="kw">in</span> <span class="fu">eachcol</span>(<span class="fu">exp</span>.(R))]</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(Y.date, m, ribbon<span class="op">=</span>(m<span class="op">-</span>l, u<span class="op">-</span>m), size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">400</span>), xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, label<span class="op">=</span><span class="cn">false</span>, margins<span class="op">=</span><span class="fl">3</span>mm)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">runSimpleExample</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+<figure class="figure">
+<p><img src="smc-bootstrap_files/figure-html/cell-2-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Julia">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Julia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The total elapsed time is <span class="math inline">\(&lt;1\)</span>s. If running this example locally, the first time may take longer as Julia must compile the function and load the plotting backend. This long “time-to-first-plot” is a <a href="https://docs.juliaplots.org/latest/tutorial/">well-known annoyance</a> in Julia.</p>
+</div>
+</div>
+<section id="choosing-the-number-of-particles" class="level3" data-number="4.5.1">
+<h3 data-number="4.5.1" class="anchored" data-anchor-id="choosing-the-number-of-particles"><span class="header-section-number">4.5.1</span> Choosing the number of particles</h3>
+<p>In the example above, we used <span class="math inline">\(N = 10{,}000\)</span> particles. Heuristically, we can check whether <span class="math inline">\(N\)</span> is large enough by refitting the model and checking that our results are visually stable.</p>
+<p>Alternatively, the effective sample size (ESS) is a measure of the number of independent samples that would be equivalent to a given weighted sample <span class="citation" data-cites="elviraRethinkingEffectiveSample2022">(<a href="references.html#ref-elviraRethinkingEffectiveSample2022" role="doc-biblioref">Elvira, Martino, and Robert 2022</a>)</span>. It is typically written as:</p>
+<p><span class="math display">\[
+\hat{ESS} = \frac{1}{\sum_{i=1}^N \bar{w}_i^2}
+\]</span></p>
+<p>where <span class="math inline">\(\bar{w}_i\)</span> is the normalised weight of the <span class="math inline">\(i^{th}\)</span> sample. As we resample past states without tracking particle weights we cannot directly apply this formula. Instead, we approximate it using:</p>
+<p><span class="math display">\[
+\hat{ESS} \approx \frac{1}{\sum_{j=1}^M \left(n_j/N\right)^2}
+\]</span></p>
+<p>where <span class="math inline">\(n_j\)</span> is the number of times that the <span class="math inline">\(j^{th}\)</span> unique value features in the resampled set of particles (and <span class="math inline">\(M\)</span> is the total number of unique particles after resampling). We calculate this after running the bootstrap filter using:</p>
+<div id="54250bbc" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">approximateESS</span>(Rvec)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> <span class="fu">length</span>(Rvec)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fetch a dictionary of the unique values of Rvec and the count</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    nj <span class="op">=</span> <span class="fu">countmap</span>(<span class="fu">vec</span>(Rvec))    </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute ESS approximation</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    ESS <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fu">sum</span>([(v<span class="op">/</span>N)<span class="op">^</span><span class="fl">2</span> for v <span class="kw">in</span> <span class="fu">values</span>(nj)])</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(ESS)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We apply this to each column of <code>R</code> in the example above to estimate the ESS (full code is collapsed for brevity):</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ESS <span class="op">=</span> [<span class="fu">approximateESS</span>(Rt) for Rt <span class="kw">in</span> <span class="fu">eachcol</span>(R)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="2e31414a" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Distributions</span>, <span class="bu">Plots</span>, <span class="bu">Measures</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/LoadData.jl"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">runSimpleExampleWithESS</span>()</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Setup:</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> <span class="fl">10000</span> <span class="co"># Number of particles</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> <span class="fl">100</span> <span class="co"># Number of time steps</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    ω <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(<span class="fl">2.36</span>, <span class="fl">2.74</span>), <span class="fl">1</span><span class="op">:</span>T) <span class="co"># Serial interval</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"NZCOVID"</span>) <span class="co"># Load data (Y is a DataFrame with column Ct)</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> <span class="fl">40</span> <span class="co"># Fixed-lag resampling window</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Pre-allocate and sample initial values:</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    R <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    R[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">log</span>.(<span class="fu">rand</span>(<span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">10</span>), N))</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run the bootstrap filter:</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        R[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">rand</span>.(<span class="fu">Normal</span>.(R[<span class="op">:</span>,tt<span class="op">-</span><span class="fl">1</span>], <span class="fl">0.2</span>)) <span class="co"># Project Rt</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        Λ <span class="op">=</span> <span class="fu">sum</span>(Y.Ct[(tt<span class="op">-</span><span class="fl">1</span>)<span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>(tt<span class="op">-</span><span class="fl">1</span>)]) <span class="co"># Calculate the force-of-infection</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        W <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">Poisson</span>.(Λ <span class="op">*</span> <span class="fu">exp</span>.(R[<span class="op">:</span>,tt])), Y.Ct[tt]) <span class="co"># Calculate weights</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        R[<span class="fl">1</span><span class="op">:</span>N, <span class="fu">max</span>(tt<span class="op">-</span>L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="op">=</span> R[<span class="fu">wsample</span>(<span class="fl">1</span><span class="op">:</span>N, W, N), <span class="fu">max</span>(tt<span class="op">-</span>L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="co"># Resample</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Process and plot the effective sample size</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    ESS <span class="op">=</span> [<span class="fu">approximateESS</span>(Rt) for Rt <span class="kw">in</span> <span class="fu">eachcol</span>(R)]</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(Y.date, ESS, size<span class="op">=</span>(<span class="fl">800</span>,<span class="fl">400</span>), xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Effective sample size"</span>, label<span class="op">=</span><span class="cn">false</span>, margins<span class="op">=</span><span class="fl">3</span>mm)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="fu">runSimpleExampleWithESS</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+<figure class="figure">
+<p><img src="smc-bootstrap_files/figure-html/cell-4-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The ESS decreases rapidly as we move left along the x-axis. In general we expect the ESS at all <span class="math inline">\(t &lt; T - L\)</span> to be similar (i.e.&nbsp;the plot of ESS against time should be flat until the final <span class="math inline">\(L\)</span> time steps). In this example, the data are more unpredictable in earlier time-steps, which causes the projection step to select fewer “good” particles, thus also decreasing the ESS.</p>
+<p>In this example, the minimum ESS is 36, which results in unstable credible intervals for estimates at small <span class="math inline">\(t\)</span>. The ESS can be increased by:</p>
+<ul>
+<li>Increasing <span class="math inline">\(N\)</span></li>
+<li>Decreasing <span class="math inline">\(L\)</span></li>
+<li>Fitting a “better” model (one where the projections are more likely)</li>
+<li>Using more complex tools from the SMC literature, such as an auxillary particle filter, which uses future data in the proposal density <span class="citation" data-cites="doucetTutorialParticleFiltering2011">(<a href="references.html#ref-doucetTutorialParticleFiltering2011" role="doc-biblioref">Doucet and Johansen 2011</a>)</span></li>
+</ul>
+<p>In this case, increasing <span class="math inline">\(N\)</span> to <span class="math inline">\(100{,}000\)</span> only adds a couple of seconds of computation time, and results in much more stable estimates (a minimum ESS of approximately 360).</p>
+</section>
 </section>
 <section id="sec-smc-bootstrap-additional" class="level2" data-number="4.6">
 <h2 data-number="4.6" class="anchored" data-anchor-id="sec-smc-bootstrap-additional"><span class="header-section-number">4.6</span> Additional resources</h2>
 <p>Bootstrap filters (and SMC methods more generally) have found use in many fields. Each field has their own motivation for and notation describing these methods. We provide an overview of other resources here.</p>
-<p><strong>Sequential Importance Sampling</strong></p>
-<p>Sequential imporance sampling is the name given to the general class of algorithms, of which the bootstrap filter is one. #TODO: finish writing this</p>
 <p><strong>Bayesian Filtering and Smoothing <span class="citation" data-cites="sarkkaBayesianFilteringSmoothing2013">(<a href="references.html#ref-sarkkaBayesianFilteringSmoothing2013" role="doc-biblioref">Särkkä 2013</a>)</span></strong></p>
 <p>Those with an <strong>engineering background</strong> may be familiar with “filtering and smoothing”, where the state of a time-varying system is tracked through the observation of noisy measurements. Classical examples include GPS position tracking or audio signal processing.</p>
 <p>The Kalman filter, which provides an analytical solution when the state-space transition and observation models are linear Gaussian and Markovian, is perhaps the best-known example of a filtering method from engineering.</p>
 <p>Chapters 7 and 11 of <span class="citation" data-cites="sarkkaBayesianFilteringSmoothing2013">Särkkä (<a href="references.html#ref-sarkkaBayesianFilteringSmoothing2013" role="doc-biblioref">2013</a>)</span> introduce SMC methods under the headings “particle filtering” and “particle smoothing”. We also recommend chapters 1 (<em>What are Bayesian filtering and smoothing?</em>), 4 (<em>Bayesian filtering equations and exact solutions</em>), and 8 (<em>Bayesian smoothing equations and exact solutions</em>).</p>
 <p><strong>A survey of Sequential Monte Carlo Methods for Economics and Finance <span class="citation" data-cites="crealSurveySequentialMonte2012">(<a href="references.html#ref-crealSurveySequentialMonte2012" role="doc-biblioref">Creal 2012</a>)</span></strong></p>
 <p>Those with an <strong>econometrics background</strong> may find this extensive review helpful, although the author focusses on Markovian models. Examples employed in this review include a stochastic volatility model and a nonlinear dynamic stochastic general equilibrium model.</p>
-<p><em>This list is incomplete. If you know of any additional resources that may be helpful, <a href="mailto:nicholas.steyn@univ.ox.ac.uk">please get in touch</a>!</em></p>
 <p><strong>Data Assimilation Fundamentals: … <span class="citation" data-cites="evensenDataAssimilationFundamentals2022">(<a href="references.html#ref-evensenDataAssimilationFundamentals2022" role="doc-biblioref">Evensen, Vossepoel, and Van Leeuwen 2022</a>)</span></strong></p>
-<p>Those with a background in <strong>atmospheric science, oceanography, metereology, or other environmental sciences</strong> may be familiar with “data assimilation”, where focus is placed on combining model predictions with observational data. Chapter 9 of this book introduces particle filters as a method for solving the “fully nonlinear data assimilation” problem.</p>
+<p>Those with a background in <strong>atmospheric science, oceanography, meteorology, or other environmental sciences</strong> may be familiar with “data assimilation”, where focus is placed on combining model predictions with observational data. Chapter 9 of this book introduces particle filters as a method for solving the “fully nonlinear data assimilation” problem.</p>
+<p><em>This list is incomplete. If you know of any additional resources that may be helpful, <a href="mailto:nicholas.steyn@univ.ox.ac.uk">please get in touch</a>!</em></p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-crealSurveySequentialMonte2012" class="csl-entry" role="listitem">
 Creal, Drew. 2012. <span>“A <span>Survey</span> of <span>Sequential Monte Carlo Methods</span> for <span>Economics</span> and <span>Finance</span>.”</span> <em>Econometric Reviews</em> 31 (3): 245–96. <a href="https://doi.org/10.1080/07474938.2011.607333">https://doi.org/10.1080/07474938.2011.607333</a>.
+</div>
+<div id="ref-doucetTutorialParticleFiltering2011" class="csl-entry" role="listitem">
+Doucet, Arnaud, and Adam M. Johansen. 2011. <span>“A Tutorial on Particle Filtering and Smoothing : Fiteen Years Later.”</span> In, edited by Dan Crisan and Boris Rozovskii, 656–705. Oxford ; N.Y.: Oxford University Press.
+</div>
+<div id="ref-elviraRethinkingEffectiveSample2022" class="csl-entry" role="listitem">
+Elvira, Víctor, Luca Martino, and Christian P. Robert. 2022. <span>“Rethinking the <span>Effective Sample Size</span>.”</span> <em>International Statistical Review</em> 90 (3): 525–50. <a href="https://doi.org/10.1111/insr.12500">https://doi.org/10.1111/insr.12500</a>.
 </div>
 <div id="ref-evensenDataAssimilationFundamentals2022" class="csl-entry" role="listitem">
 Evensen, Geir, Femke C. Vossepoel, and Peter Jan Van Leeuwen. 2022. <em>Data <span>Assimilation Fundamentals</span>: <span>A Unified Formulation</span> of the <span>State</span> and <span>Parameter Estimation Problem</span></em>. Springer <span>Textbooks</span> in <span>Earth Sciences</span>, <span>Geography</span> and <span>Environment</span>. Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-030-96709-3">https://doi.org/10.1007/978-3-030-96709-3</a>.

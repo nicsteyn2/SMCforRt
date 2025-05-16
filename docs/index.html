@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Nicholas Steyn">
-<meta name="dcterms.date" content="2025-04-02">
+<meta name="dcterms.date" content="2025-05-16">
 
 <title>SMC and epidemic renewal models</title>
 <style>
@@ -439,7 +439,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 2, 2025</p>
+      <p class="date">May 16, 2025</p>
     </div>
   </div>
   
@@ -461,9 +461,9 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This is a very early beta version of this site and will change significantly over the coming weeks.</p>
+<p>This is an early beta version of this site and will change substantially over the coming weeks.</p>
 <p>Comments, suggestions, and feedback are very welcome and can be sent to: nicholas.steyn@univ.ox.ac.uk. Please also get in touch if you would like to collaborate!</p>
-<p>Please see the <a href="https://doi.org/10.48550/arXiv.2503.18875">preprint</a> for a more complete overview of the topics that will be covered here.</p>
+<p>Please see our <a href="https://doi.org/10.48550/arXiv.2503.18875">preprint</a> for a more complete overview of the topics that will be covered here.</p>
 </div>
 </div>
 <section id="welcome" class="level2 unnumbered">
@@ -498,9 +498,8 @@ Warning
 <ul>
 <li><strong>Introduction:</strong> We introduce key concepts such as the <a href="introduction.html">renewal model</a> and <a href="intro-hiddenstatemodels.html">hidden-state models</a>. Those already familiar with these concepts can safely skip these pages.</li>
 <li><strong>Sequential Monte Carlo:</strong> We introduce specific SMC methods. This includes defining the <a href="smc-bootstrap.html">bootstrap filter</a> and <a href="smc-pmmh.html">particle marginal Metropolis Hastings</a>.</li>
-<li><strong>Models:</strong> A collection of epidemic models accounting for various statistical artefacts. The focus in this chapter is on <span class="math inline">\(R_t\)</span> estimation.</li>
-<li><strong>Prediction:</strong> We use the models developed to <a href="link.link">produce short-term forecasts</a>, estimate the <a href="link.link">probability of elimination</a>, and <a href="link.link">estimate missing data</a>.</li>
-<li><strong>Inference:</strong> #TODO</li>
+<li><strong>Models:</strong> A collection of epidemic models accounting for various statistical artefacts. The focus in this chapter is on <span class="math inline">\(R_t\)</span> estimation. <!-- - **Prediction:** We use the models developed to [produce short-term forecasts](link.link), estimate the [probability of elimination](link.link), and [estimate missing data](link.link). 
+- **Inference:** #TODO --></li>
 <li><strong>Evaluation:</strong> We introduce key metrics for <a href="eval-scoringrules.html">model evaluation</a>, including <a href="eval-scoringrules.html">scoring rules</a>, <a href="./eval-additionalnotes.html">KL-divergence</a>, and TBC. <!-- - **Additional models:** We demonstrate how these methods can be used for [epidemic forecasting](link.link), [inference](link.link), and [elimination probabilities](link.link). --></li>
 <li><strong>Other methods:</strong> We compare our methods to popular alternatives in the literature. Where possible, Julia implementations are provided for these.</li>
 </ul>
@@ -509,6 +508,19 @@ Warning
 <h2 class="anchored" data-anchor-id="using-julia">Using Julia</h2>
 <p>We recognise that Julia is not widely used in epidemiology. While we would love to implement our methods in R, they would be extremely slow without a C++ backend. Instead, our methods are all natively implemented in Julia and require no external software - making the entire process much simpler!</p>
 <p>Getting started with Julia is easy (see below) and our examples are written for those with no prior knowledge of the language.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Julia">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Julia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Throughout the examples, we use blocks like this one to clarify any notation that may be confusing to users new to Julia.</p>
+</div>
+</div>
 </section>
 <section id="getting-started" class="level2">
 <h2 class="anchored" data-anchor-id="getting-started">Getting started</h2>
@@ -523,7 +535,7 @@ Warning
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">IJulia</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">notebook</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This will open a Jupyter notebook in your browser. Navigate to the GitHub repository and open <code>main.ipynb</code> to get started.</p>
-<p><em>Alternatively, you can open the cloned repository in VS Code (or your preferred IDE) and run the notebooks this way. If using VS Code, we recommend installing the <a href="link.link">Julia extension</a>.</em></p>
+<p><em>Alternatively, you can open the cloned repository in VS Code (or your preferred IDE) and run the notebooks this way. If using VS Code, we recommend installing the <a href="https://code.visualstudio.com/docs/languages/julia">Julia extension</a>.</em></p>
 <section id="github-layout" class="level3">
 <h3 class="anchored" data-anchor-id="github-layout">GitHub layout</h3>
 <p>The files and folders you should care about:</p>
