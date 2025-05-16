@@ -26,7 +26,7 @@ Binder can take a few minutes to start up, but saves you the hassle of downloadi
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/nicsteyn2/SMCforRt/main)
 
-To run the more computationally intensive models, we recommend running the code locally. Fortunately as there are no external dependencies, this is very easy to do. To get started, all you need to do is:
+To run the more computationally intensive models, we recommend running the code locally. Fortunately, as there are no external dependencies, this is very easy to do. To get started, all you need to do is:
 
 1. Install Julia from [julialang.org](https://julialang.org/downloads/)
 2. Clone this repository
@@ -41,7 +41,9 @@ notebook()
 
 This will open a Jupyter notebook in your browser. Navigate to the local copy of the GitHub repository and open `gettingstarted.ipynb` to get started.
 
-**Alternatively**, you can run the 
+**Alternatively**, you can run the notebooks themselves in VS Code (or your preferred IDE). The VS Code Julia extension is helpful for this, as it provides a nice interface for running Julia code. You can install the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia).
+
+Opening the root directory of this repository in VSCode and then opening any of the notebooks should work out of the box. A short script to install the required packages is included in `gettingstarted.ipynb`.
 
 ## Structure of this repository
 
