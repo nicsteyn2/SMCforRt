@@ -1,2 +1,15 @@
 [compat]
-julia = "1.8"
+julia = "1.8.0"
+
+[deps]
+DataFrames = ""
+Plots = ""
+CSV = ""
+StatsBase = ""
+Distributions = ""
+ProgressMeter = ""
+Dates = ""
+MCMCChains = ""
+LinearAlgebra = ""
+Measures = ""
+HDF5 = ""
