@@ -22,7 +22,7 @@ The primer and website are designed for researchers with a basic understanding o
 
 All code for both the [primer](https://doi.org/10.48550/arXiv.2503.18875) and the [website](https://nicsteyn2.github.io/SMCforRt/) is available as interactive notebooks in this repository. We encourage you to check them out on [Binder](https://mybinder.org/v2/gh/nicsteyn2/SMCforRt/main), a free cloud-based Jupyter notebook service.
 
-Binder can take a few minutes to start up, but saves you the hassle of downloading the repository and installing Julia (if you do not already have it). As this is a free service, there are substantial computational limitations, but we have succeeded in running the simpler models (such as [visualising the data](https://hub.2i2c.mybinder.org/user/nicsteyn2-smcforrt-ub2yewfu/lab/tree/paper/00data.ipynb) and [running Model 1](https://hub.2i2c.mybinder.org/user/nicsteyn2-smcforrt-ub2yewfu/lab/tree/paper/01simple.ipynb) from the primer).
+Binder can take a few minutes to start up, but saves you the hassle of downloading the repository and installing Julia (if you do not already have it). As this is a free service, there are substantial computational limitations, but we have succeeded in running the simpler models using this service. You can try visualising the data we use in the primer (by opening [binder](https://mybinder.org/v2/gh/nicsteyn2/SMCforRt/main) and navigating to ``paper/00data.ipynb``) or fitting example model 1 (``paper/01simple.ipynb``).
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/nicsteyn2/SMCforRt/main)
 
