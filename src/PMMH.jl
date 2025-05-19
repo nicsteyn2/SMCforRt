@@ -83,7 +83,7 @@ function PMMH(bootstrapFilter::Function, Y::DataFrame, opts::Dict; verbose=false
             diag_tmp.tuning = repeat([true], nParams)
             diag_tmp.pAccept = repeat([sum(nAcceptAll)/(nChains * (chunkSize - 1))],  nParams)
             diag_tmp.Rhat = dfc.rhat
-            diag_tmp.ESS = dfc.ess
+            diag_tmp.ESS = dfc.ess_bulk
             diag_tmp.mean = dfc.mean
             diag_tmp.std = dfc.std
             diag = vcat(diag, diag_tmp)
@@ -107,7 +107,7 @@ function PMMH(bootstrapFilter::Function, Y::DataFrame, opts::Dict; verbose=false
 
             # Fetch max Rhat and min ESS
             Rhat = maximum(dfc.rhat)
-            ESS = minimum(dfc.ess)
+            ESS = minimum(dfc.ess_bulk)
             
             # Save diagnostics
             diag_tmp = DataFrame()
@@ -115,7 +115,7 @@ function PMMH(bootstrapFilter::Function, Y::DataFrame, opts::Dict; verbose=false
             diag_tmp.tuning = repeat([false], nParams)
             diag_tmp.pAccept = repeat([sum(nAcceptAll)/(nChains * (chunkSize - 1))],  nParams)
             diag_tmp.Rhat = dfc.rhat
-            diag_tmp.ESS = dfc.ess
+            diag_tmp.ESS = dfc.ess_bulk
             diag_tmp.mean = dfc.mean
             diag_tmp.std = dfc.std
             diag = vcat(diag, diag_tmp)
@@ -140,7 +140,7 @@ function PMMH(bootstrapFilter::Function, Y::DataFrame, opts::Dict; verbose=false
         @warn("Algorithm reached maximum number of chunks. PMMH may not have convergeed.")
     end
     
-    lastInd = (ii-1)*chunkSize #TODO: check we are saving the correct final 
+    lastInd = (ii-1)*chunkSize
     return(θall[(maxTuningInd+1):lastInd, :, :], diag)
     
 end
