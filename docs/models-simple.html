@@ -411,7 +411,7 @@ window.Quarto = {
   <ul>
   <li><a href="#example-1-indepdendent-daily-estimates" id="toc-example-1-indepdendent-daily-estimates" class="nav-link active" data-scroll-target="#example-1-indepdendent-daily-estimates"><span class="header-section-number">8.1</span> Example 1: indepdendent daily estimates</a></li>
   <li><a href="#example-2-temporally-smoothed-estimates" id="toc-example-2-temporally-smoothed-estimates" class="nav-link" data-scroll-target="#example-2-temporally-smoothed-estimates"><span class="header-section-number">8.2</span> Example 2: temporally smoothed estimates</a></li>
-  <li><a href="#example-3-with-observation-noise" id="toc-example-3-with-observation-noise" class="nav-link" data-scroll-target="#example-3-with-observation-noise"><span class="header-section-number">8.3</span> Example 3: with observation noise</a></li>
+  <li><a href="#sec-models-simple-example3" id="toc-sec-models-simple-example3" class="nav-link" data-scroll-target="#sec-models-simple-example3"><span class="header-section-number">8.3</span> Example 3: with observation noise</a></li>
   </ul>
 </nav>
     </div>
@@ -473,7 +473,7 @@ R_t \sim \text{Gamma}(1, 1/0.2)
 C_t | R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \omega_u\right)
 \]</span></p>
 <p>We write this as a hidden-state model in Julia:</p>
-<div id="a84565eb" class="cell" data-execution_count="2">
+<div id="c347322a" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">ExampleModel1</span>(θ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract frequently used options</span></span>
@@ -522,7 +522,7 @@ Tip
 </div>
 </div>
 <p>There are no parameters to estimate, so we simply fit this model to the data:</p>
-<div id="1d69af14" class="cell" data-execution_count="3">
+<div id="13345e97" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify bootstrap filter options (the {String, Any} term allows us to use any type of value in this dictionary)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>opts <span class="op">=</span> <span class="fu">Dict</span><span class="dt">{String, Any}</span>(<span class="st">"N"</span> <span class="op">=&gt;</span> <span class="fl">1000</span>, <span class="st">"T"</span> <span class="op">=&gt;</span> <span class="fl">100</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -535,7 +535,7 @@ Tip
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>UpperRt <span class="op">=</span> [<span class="fu">quantile</span>(Rt, <span class="fl">0.975</span>) for Rt <span class="kw">in</span> <span class="fu">eachcol</span>(R)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can also find the posterior means and credible intervals for this model analytically (<a href="introduction.html#sec-intro-Rtestimation" class="quarto-xref"><span>Section 1.2</span></a>), useful for checking our algorithm.</p>
-<div id="02e4a0f7" class="cell" data-execution_count="4">
+<div id="00e5267a" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(MeanRtTrue, LowerRtTrue, UpperRtTrue) <span class="op">=</span> (<span class="fu">zeros</span>(opts[<span class="st">"T"</span>]), <span class="fu">zeros</span>(opts[<span class="st">"T"</span>]), <span class="fu">zeros</span>(opts[<span class="st">"T"</span>])) <span class="co"># Pre-allocate results vectors</span></span>
@@ -593,7 +593,7 @@ Figure&nbsp;8.2: Reproduction number estimates from example model 1 fit to data 
 C_t | R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \omega_u\right)
 \]</span></p>
 <p>In Julia:</p>
-<div id="14e8f28a" class="cell" data-execution_count="6">
+<div id="3bfbd511" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">ExampleModel2</span>(θ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract frequently used options</span></span>
@@ -633,7 +633,7 @@ C_t | R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \
 <span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we have parameter <span class="math inline">\(\sigma\)</span> to estimate. We use PMMH to do this. First, we define our model-fitting options:</p>
-<div id="da095fad" class="cell" data-execution_count="7">
+<div id="dc07886a" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>opts <span class="op">=</span> <span class="fu">Dict</span>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Bootstrap filter options</span></span>
@@ -659,7 +659,7 @@ C_t | R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \
 <span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And the <code>PMMH()</code> function handles the rest:</p>
-<div id="76b94a19" class="cell" data-execution_count="8">
+<div id="fd99ee7c" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/PMMH.jl"</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>(θ, diag) <span class="op">=</span> <span class="fu">PMMH</span>(ExampleModel2, Y, opts; verbose<span class="op">=</span><span class="cn">false</span>) <span class="co">#  Set verbose = true to see </span></span>
@@ -675,11 +675,11 @@ parameters        = σ
 Summary Statistics
  <span class="ansi-bold"> parameters </span> <span class="ansi-bold">    mean </span> <span class="ansi-bold">     std </span> <span class="ansi-bold"> naive_se </span> <span class="ansi-bold">    mcse </span> <span class="ansi-bold">      ess </span> <span class="ansi-bold">    rhat </span>
  <span class="ansi-bright-black-fg">     Symbol </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg">  Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg">  Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span>
-           σ    0.2415    0.0438     0.0018    0.0041   111.8087    1.0340
+           σ    0.2462    0.0493     0.0020    0.0049   113.5474    1.0251
 Quantiles
  <span class="ansi-bold"> parameters </span> <span class="ansi-bold">    2.5% </span> <span class="ansi-bold">   25.0% </span> <span class="ansi-bold">   50.0% </span> <span class="ansi-bold">   75.0% </span> <span class="ansi-bold">   97.5% </span>
  <span class="ansi-bright-black-fg">     Symbol </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span> <span class="ansi-bright-black-fg"> Float64 </span>
-           σ    0.1706    0.2102    0.2412    0.2631    0.3481
+           σ    0.1661    0.2142    0.2347    0.2823    0.3590
 </pre>
 </div>
 </div>
@@ -687,12 +687,12 @@ Quantiles
 <p>Which tells us <span class="math inline">\(\sigma = 0.24 \ (0.17, 0.33)\)</span>.</p>
 <p>In isolation, this isn’t a particularly useful quantity. We actually care about the estimates of <span class="math inline">\(R_t\)</span>, ideally after accouting for uncertainty about <span class="math inline">\(\sigma\)</span>. We do this by marginalising out this parameter - this is performed by the <code>marginalPosterior()</code> function.</p>
 <p>First, we need to specify two more options, to tell the function to run the bootstrap filter at 100 samples of <span class="math inline">\(\sigma\)</span>, for 1,000 particles each (a total of 100,000 particles).</p>
-<div id="cfa2f9a0" class="cell" data-execution_count="9">
+<div id="9886f96d" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"posteriorNumberOfParticles"</span>] <span class="op">=</span> <span class="fl">1000</span>;</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"posteriorParamSamples"</span>] <span class="op">=</span> <span class="fl">100</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can then call the <code>marginalPosterior()</code> function, also processing and plotting the output:</p>
-<div id="97d6411b" class="cell" data-execution_count="10">
+<div id="d24fd6a7" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/MarginalPosterior.jl"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> <span class="fu">marginalPosterior</span>(ExampleModel2, θ, Y, opts; showProgress<span class="op">=</span><span class="cn">true</span>)</span>
@@ -712,8 +712,8 @@ Quantiles
 </div>
 <p>Which demonstrates much smoother estimates of <span class="math inline">\(R_t\)</span>. However, this model does not allow for observation noise, other than in the stochasticity in transmission (the Poisson renewal model). In practice, reported cases are noisy observations of true infections - the final example accounts for this.</p>
 </section>
-<section id="example-3-with-observation-noise" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="example-3-with-observation-noise"><span class="header-section-number">8.3</span> Example 3: with observation noise</h2>
+<section id="sec-models-simple-example3" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="sec-models-simple-example3"><span class="header-section-number">8.3</span> Example 3: with observation noise</h2>
 <p>To allow for observation noise, we now employ the Poisson renewal model in the <strong>state-space model</strong>, using <span class="math inline">\(I_t\)</span> to represent unobserved infections:</p>
 <p><span class="math display">\[
 \log R_t | \log R_{t-1} \sim \text{Normal}(\log R_{t-1}, \sigma)
@@ -728,7 +728,7 @@ C_t | I_t \sim \text{Negative Binomial}\left(r=\frac{1}{\phi}, p=\frac{1}{1+\phi
 <p>For simplicity, we use the same PMF for <span class="math inline">\(\omega_u\)</span> here, even though it now represents the generation time distribution (time from infection-to-infection), rather than the serial interval (time from reporting-to-reporting).</p>
 <p>We have two fixed parameters: <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\phi\)</span>, with the latter controlling the level of observation noise.</p>
 <p>Writing this as a bootstrap filter in Julia:</p>
-<div id="940caf7e" class="cell" data-execution_count="11">
+<div id="31730084" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">ExampleModel3</span>(θ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract frequently used options</span></span>
@@ -781,7 +781,7 @@ C_t | I_t \sim \text{Negative Binomial}\left(r=\frac{1}{\phi}, p=\frac{1}{1+\phi
 <span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This time we use <code>fitModel()</code> function to perform parameter inference and marginalistion in a single step. We also update some PMMH options to reflect the additional parameter being estimated.</p>
-<div id="acaf6106" class="cell" data-execution_count="12">
+<div id="330c5297" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/FitModel.jl"</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"pI0"</span>] <span class="op">=</span> <span class="fu">Dirac</span>(<span class="fl">1</span>) <span class="co"># Initial distiribution for It at t = 0, we assume one case to start the epidemic</span></span>
@@ -793,17 +793,17 @@ C_t | I_t \sim \text{Negative Binomial}\left(r=\frac{1}{\phi}, p=\frac{1}{1+\phi
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"paramNames"</span>] <span class="op">=</span> [<span class="st">"σ"</span>, <span class="st">"ϕ"</span>]</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"stateNames"</span>] <span class="op">=</span> [<span class="st">"Rt"</span>, <span class="st">"It"</span>]</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>(df_states, df_params, θ, diag) <span class="op">=</span> <span class="fu">fitModel</span>(ExampleModel3, Y, opts; skipResamplingPMMH<span class="op">=</span><span class="cn">true</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>(df_states, df_params, θ, diag) <span class="op">=</span> <span class="fu">fitModel</span>(ExampleModel3, Y, opts; skipResamplingPMMH<span class="op">=</span><span class="cn">false</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Interrogating the output, we first check the parameter estimates:</p>
-<div id="f59032ff" class="cell" data-execution_count="13">
+<div id="abe05972" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(df_params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p>2 rows × 6 columns</p><table class="data-frame table table-sm table-striped small"><thead><tr><th></th><th>param</th><th>m</th><th>l</th><th>u</th><th>rhat</th><th>ess</th></tr><tr><th></th><th>String</th><th>Float64</th><th>Float64</th><th>Float64</th><th>Float64</th><th>Float64</th></tr></thead><tbody><tr><th>1</th><td>σ</td><td>0.234753</td><td>0.163199</td><td>0.35992</td><td>1.02213</td><td>136.854</td></tr><tr><th>2</th><td>ϕ</td><td>0.0168323</td><td>0.000602409</td><td>0.0650971</td><td>1.02049</td><td>125.617</td></tr></tbody></table>
+<p>2 rows × 6 columns</p><table class="data-frame table table-sm table-striped small"><thead><tr><th></th><th>param</th><th>m</th><th>l</th><th>u</th><th>rhat</th><th>ess</th></tr><tr><th></th><th>String</th><th>Float64</th><th>Float64</th><th>Float64</th><th>Float64</th><th>Float64</th></tr></thead><tbody><tr><th>1</th><td>σ</td><td>0.228492</td><td>0.142113</td><td>0.36593</td><td>1.04315</td><td>126.778</td></tr><tr><th>2</th><td>ϕ</td><td>0.0189256</td><td>0.000239832</td><td>0.0741912</td><td>1.024</td><td>111.536</td></tr></tbody></table>
 </div>
 </div>
 <p>And plot the reproduction number estimates:</p>
-<div id="9d814c25" class="cell" data-execution_count="14">
+<div id="fd18aeac" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df_Rt  <span class="op">=</span> df_states[df_states.variable<span class="op">.==</span><span class="st">"Rt"</span>,<span class="op">:</span>]</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df_It <span class="op">=</span> df_states[df_states.variable<span class="op">.==</span><span class="st">"It"</span>,<span class="op">:</span>]</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
