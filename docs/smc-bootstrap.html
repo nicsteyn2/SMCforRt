@@ -444,6 +444,7 @@ window.Quarto = {
 </header>
 
 
+<p><a href="https://github.com/nicsteyn2/SMCforRt/blob/main/notebooks/smc-bootstrap.ipynb"><img src="https://img.shields.io/badge/Notebook-Download-blue.svg" class="img-fluid"></a> <a href="https://mybinder.org/v2/gh/nicsteyn2/SMCforRt/main"><img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder"></a></p>
 <p><em>This chapter assumes fixed and known values of the model parameters. <a href="smc-pmmh.html" class="quarto-xref"><span>Chapter 5</span></a> considers the estimation of <span class="math inline">\(\theta\)</span>.</em></p>
 <section id="background" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="background"><span class="header-section-number">4.1</span> Background</h2>
@@ -599,7 +600,7 @@ C_t | R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \
 \]</span></p>
 <p>Finally, we use a <span class="math inline">\(\text{Uniform}(0, 10)\)</span> initial distribution for <span class="math inline">\(R_t\)</span>. This behaves somewhat like a prior distribution, except that resmapling ensures the early estimates of <span class="math inline">\(R_t\)</span> reflect later data, so this has limited impact on the final estimates.</p>
 <p>We load the same data used in the first two example models of the <a href="https://doi.org/10.48550/arXiv.2503.18875">preprint</a>. The entire algorithm (implemented below) takes approximately 0.4s to run on an M1 MacBook Pro.</p>
-<div id="8961b117" class="cell" data-execution_count="1">
+<div id="97e2b44b" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Distributions</span>, <span class="bu">Plots</span>, <span class="bu">Measures</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/LoadData.jl"</span>)</span>
@@ -634,7 +635,7 @@ C_t | R_t, C_{1:t-1} \sim \text{Poisson}\left(R_t \sum_{u=1}^{u_{max}} C_{t-u} \
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">runSimpleExample</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 <figure class="figure">
 <p><img src="smc-bootstrap_files/figure-html/cell-2-output-1.svg" class="img-fluid figure-img"></p>
@@ -667,7 +668,7 @@ Julia
 \hat{ESS} \approx \frac{1}{\sum_{j=1}^M \left(n_j/N\right)^2}
 \]</span></p>
 <p>where <span class="math inline">\(n_j\)</span> is the number of times that the <span class="math inline">\(j^{th}\)</span> unique value features in the resampled set of particles (and <span class="math inline">\(M\)</span> is the total number of unique particles after resampling). We calculate this after running the bootstrap filter using:</p>
-<div id="54250bbc" class="cell" data-execution_count="2">
+<div id="1ee2e0c8" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">approximateESS</span>(Rvec)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> <span class="fu">length</span>(Rvec)</span>
@@ -684,7 +685,7 @@ Julia
 </div>
 <p>We apply this to each column of <code>R</code> in the example above to estimate the ESS (full code is collapsed for brevity):</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ESS <span class="op">=</span> [<span class="fu">approximateESS</span>(Rt) for Rt <span class="kw">in</span> <span class="fu">eachcol</span>(R)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="2e31414a" class="cell" data-execution_count="3">
+<div id="5b7dc783" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Distributions</span>, <span class="bu">Plots</span>, <span class="bu">Measures</span></span>
@@ -720,7 +721,7 @@ Julia
 <span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="fu">runSimpleExampleWithESS</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 <figure class="figure">
 <p><img src="smc-bootstrap_files/figure-html/cell-4-output-1.svg" class="img-fluid figure-img"></p>

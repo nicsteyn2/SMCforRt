@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -372,11 +406,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#modelling-temporally-aggregated-data" id="toc-modelling-temporally-aggregated-data" class="nav-link active" data-scroll-target="#modelling-temporally-aggregated-data"><span class="header-section-number">10.1</span> Modelling temporally aggregated data</a></li>
-  <li><a href="#concluding-remarks" id="toc-concluding-remarks" class="nav-link" data-scroll-target="#concluding-remarks"><span class="header-section-number">10.2</span> Concluding remarks</a>
+  <li><a href="#modelling-temporally-aggregated-data" id="toc-modelling-temporally-aggregated-data" class="nav-link active" data-scroll-target="#modelling-temporally-aggregated-data"><span class="header-section-number">10.1</span> Modelling temporally aggregated data</a>
   <ul class="collapse">
-  <li><a href="#benefits-to-modelling-temporally-aggregated-data" id="toc-benefits-to-modelling-temporally-aggregated-data" class="nav-link" data-scroll-target="#benefits-to-modelling-temporally-aggregated-data"><span class="header-section-number">10.2.1</span> Benefits to modelling temporally aggregated data</a></li>
+  <li><a href="#example-influenza-in-wales" id="toc-example-influenza-in-wales" class="nav-link" data-scroll-target="#example-influenza-in-wales"><span class="header-section-number">10.1.1</span> Example: Influenza in Wales</a></li>
   </ul></li>
+  <li><a href="#concluding-remarks" id="toc-concluding-remarks" class="nav-link" data-scroll-target="#concluding-remarks"><span class="header-section-number">10.2</span> Concluding remarks</a></li>
   </ul>
 </nav>
     </div>
@@ -402,31 +436,205 @@ window.Quarto = {
 </header>
 
 
-<p>Temporally aggregated incidence data (such as weekly instead of daily reported cases) can make <span class="math inline">\(R_t\)</span> estimation using tools like EpiEstim and EpiFilter difficult, particularly when the durtion of the aggregation period exceeds the scale at which transmission occurs. The fundamental issue is methods like EpiEstim and EpiFilter assume that reported cases at the current time-step are caused only by reported cases on previous time-steps, whereas in aggregated data, we must also account for within-period transmission.</p>
-<p>Existing approaches to estimating <span class="math inline">\(R_t\)</span> from temporally aggregated data all reconstruct finer-grained incidence data from the aggregated data, before applying more standard methods. For example, <span class="citation" data-cites="nashEstimatingEpidemicReproduction2023">Nash et al. (<a href="references.html#ref-nashEstimatingEpidemicReproduction2023" role="doc-biblioref">2023</a>)</span> use an Expectation-Maximisation algorithm to infer daily incidence and then apply an EpiEstim-type method, while <span class="citation" data-cites="ogi-gittinsSimulationbasedApproachEstimating2024">Ogi-Gittins et al. (<a href="references.html#ref-ogi-gittinsSimulationbasedApproachEstimating2024" role="doc-biblioref">2024</a>)</span> pair an exact form of approximate Bayesian computation with a simulation based approach to infer sub-daily incidence. One method that does not require substantial adaption is EpiNow2 <span class="citation" data-cites="abbottEstimatingTimevaryingReproduction2020">Abbott et al. (<a href="references.html#ref-abbottEstimatingTimevaryingReproduction2020" role="doc-biblioref">2020</a>)</span>, which models the latent infections already.</p>
-<p>The approach demonstrated below can also be viewed as a generalisation of [Ogi-Gittins, Steyn, et al’s recent paper]…. #TODO: Write rest of this paragraph.</p>
+<p>Temporally aggregated incidence data (such as weekly instead of daily reported cases) can make <span class="math inline">\(R_t\)</span> estimation using tools like EpiEstim and EpiFilter difficult, particularly when the duration of the aggregation period exceeds the scale at which transmission occurs. The fundamental issue is methods like EpiEstim and EpiFilter assume that reported cases at the current time-step are caused only by reported cases on previous time-steps, whereas in aggregated data, we must also account for within-period transmission.</p>
+<p>Existing approaches to estimating <span class="math inline">\(R_t\)</span> from temporally aggregated data all reconstruct finer-grained incidence data from the aggregated data, before applying more standard methods. For example, <span class="citation" data-cites="nashEstimatingEpidemicReproduction2023">Nash et al. (<a href="references.html#ref-nashEstimatingEpidemicReproduction2023" role="doc-biblioref">2023</a>)</span> use an Expectation-Maximisation algorithm to infer daily incidence and then apply an EpiEstim-type method, while <span class="citation" data-cites="ogi-gittinsSimulationbasedApproachEstimating2024">I. Ogi-Gittins et al. (<a href="references.html#ref-ogi-gittinsSimulationbasedApproachEstimating2024" role="doc-biblioref">2024</a>)</span> pair an exact form of approximate Bayesian computation with a simulation based approach to infer sub-daily incidence. One method that does not require substantial adaption is EpiNow2 <span class="citation" data-cites="abbottEstimatingTimevaryingReproduction2020">Abbott et al. (<a href="references.html#ref-abbottEstimatingTimevaryingReproduction2020" role="doc-biblioref">2020</a>)</span>, which models the latent infections already.</p>
 <p>Given an appropriate inference method, there are also cases in which it makes sense to model temporally aggregated data. If day-of-the-week effects are present, large, and inconsistent, then modelling weekly-aggregated data can decrease observation variance. From a practical modelling perspective, in the SMC context, aggregated data feature fewer observations, thus requiring fewer particles to estimate the model log-likelihood with the same precision.</p>
 <section id="modelling-temporally-aggregated-data" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="modelling-temporally-aggregated-data"><span class="header-section-number">10.1</span> Modelling temporally aggregated data</h2>
-<p>We can use any model which separates latent infections <span class="math inline">\(I_t\)</span> from reported cases <span class="math inline">\(C_t\)</span>, for example, the model introduced in <a href="models_obsnoise.html#sec-models-obsnoise-underreport" class="quarto-xref"><span>Section 9.1</span></a> (where subscript <span class="math inline">\(t\)</span> still denotes time in days):</p>
+<p>We can use any model which separates latent infections <span class="math inline">\(I_t\)</span> from reported cases <span class="math inline">\(C_t\)</span>, for example, the model introduced in <span class="quarto-unresolved-ref">?sec-models-obsnoise-obsnoisenounder</span> (where subscript <span class="math inline">\(t\)</span> still denotes time in days):</p>
 <p><span id="eq-models-tempaggstatespace"><span class="math display">\[
 \begin{align}
 \log R_t | \log R_{t-1} &amp;\sim \text{Normal}(\log R_{t-1}, \sigma) \\
 I_t | R_t, I_{1:t-1} &amp;\sim \text{Poisson}(R_t \Lambda_t)
 \end{align}
 \tag{10.1}\]</span></span></p>
-<p>and the observation model is modified slightly to reflect the assumed aggregation (using weekly as an example):</p>
+<p>where the observation model is modified slightly to reflect the assumed aggregation (using weekly as an example):</p>
 <p><span class="math display">\[
-C_t | I_{1:t} \sim \text{Binomial}\left(\sum_{s=0}^6 I_{t-s}, \ \rho\right) \text{if} \ \text{mod}(t, 7) = 0
+C_t | I_{1:t} \sim \text{Negative binomial}\left(r = \frac{\sum_{s=0}^6 I_{t-s}}{k}, p = \frac{1}{1+k} \right), \ \ \text{if} \ \text{mod}(t, 7) = 0
 \]</span></p>
-<p>Algorithmically, this is equivalent to skipping the weighting and resampling steps on the time-steps for which we have no observations.</p>
-<p>We highlight the flexibility of this method, even irregular reporting can be accounted for by summing over the relevant indices.</p>
+<p>Algorithmically, we just skip the weighting and resampling steps on the time steps for which we have no observations.</p>
+<section id="example-influenza-in-wales" class="level3" data-number="10.1.1">
+<h3 data-number="10.1.1" class="anchored" data-anchor-id="example-influenza-in-wales"><span class="header-section-number">10.1.1</span> Example: Influenza in Wales</h3>
+<p>Borrowing the example data and generation time distribution from <span class="citation" data-cites="ogi-gittinsSimulationbasedApproachEstimating2024">I. Ogi-Gittins et al. (<a href="references.html#ref-ogi-gittinsSimulationbasedApproachEstimating2024" role="doc-biblioref">2024</a>)</span>, we estimate <span class="math inline">\(R_t\)</span> in Wales over two influenza seaons (2019-2020 and 2022-2023). The data are reported as weekly case counts, which as above, we assume reflect all reported cases over the preceding week. We edit the bootstrap filter to only weight and resample on days on which data are observed:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Project according to the state-space model</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    I[<span class="op">:</span>,tt] <span class="op">=</span> <span class="op">...</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Weight according to the observation model,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ... but only on the days that we observe data</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> tt <span class="op">%</span> <span class="fl">7</span> <span class="op">==</span> <span class="fl">0</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Fetch expected reported cases (sum over the preceding 7 days)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        μt <span class="op">=</span> <span class="fu">sum</span>(I[<span class="op">:</span>,(tt<span class="op">-</span><span class="fl">6</span>)<span class="op">:</span><span class="fl">1</span><span class="op">:</span>tt], dims<span class="op">=</span><span class="fl">2</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate weights</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        W[<span class="op">:</span>,tt] <span class="op">=</span> <span class="op">...</span> <span class="co"># Some function of expected reported cases</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Resample</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Fitting the model and plotting the estiamtes of <span class="math inline">\(R_t\)</span> and daily incidence <span class="math inline">\(I_t\)</span> produces:</p>
+<div id="2dd17d8c" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">Measures</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/LoadData.jl"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/PMMH.jl"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/FitModel.jl"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/MarginalPosterior.jl"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">"../src/Support.jl"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">temporallyAggregatedModel</span>(θ, Y<span class="op">::</span><span class="dt">DataFrame</span>, opts<span class="op">::</span><span class="dt">Dict</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract frequently used options</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> opts[<span class="st">"T"</span>]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> opts[<span class="st">"N"</span>]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> opts[<span class="st">"L"</span>]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    ω <span class="op">=</span> opts[<span class="st">"ω"</span>]</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialise output matrices</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    R <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    I <span class="op">=</span> <span class="fu">zeros</span>(N, T)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    W <span class="op">=</span> <span class="fu">ones</span>(N, T)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sample from initial distributions</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    R[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">rand</span>(opts[<span class="st">"pR0"</span>], N)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    I[<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> <span class="fu">rand</span>(opts[<span class="st">"pI0"</span>], N)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run the filter</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> tt <span class="op">=</span> <span class="fl">2</span><span class="op">:</span>T</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Project according to the state-space model</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        R[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">exp</span>.(<span class="fu">rand</span>.(<span class="fu">Normal</span>.(<span class="fu">log</span>.(R[<span class="op">:</span>,tt<span class="op">-</span><span class="fl">1</span>]), θ[<span class="fl">1</span>])))</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        Λ <span class="op">=</span> <span class="fu">sum</span>(I[<span class="op">:</span>, (tt<span class="op">-</span><span class="fl">1</span>)<span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>] <span class="op">.*</span> ω[<span class="fl">1</span><span class="op">:</span>(tt<span class="op">-</span><span class="fl">1</span>)]<span class="ch">', dims=2) ./ sum(ω[1:(tt-1)])</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        I[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">rand</span>.(<span class="fu">Poisson</span>.(R[<span class="op">:</span>,tt] <span class="op">.*</span> Λ))</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Weight according to the observation model, but only on the day that we observe data</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> tt <span class="op">%</span> <span class="fl">7</span> <span class="op">==</span> <span class="fl">0</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Fetch expected reported cases</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>            μt <span class="op">=</span> <span class="fu">sum</span>(I[<span class="op">:</span>,(tt<span class="op">-</span><span class="fl">6</span>)<span class="op">:</span><span class="fl">1</span><span class="op">:</span>tt], dims<span class="op">=</span><span class="fl">2</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Calculate weights</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>            r <span class="op">=</span> <span class="fu">max</span>.(μt, <span class="fl">1</span>)<span class="op">/</span>θ[<span class="fl">2</span>]</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>            p <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> (<span class="fl">1</span> <span class="op">+</span> θ[<span class="fl">2</span>])</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>            W[<span class="op">:</span>,tt] <span class="op">=</span> <span class="fu">pdf</span>.(<span class="fu">NegativeBinomial</span>.(r, p), Y.Ct[tt])</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Resample</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>            inds <span class="op">=</span> <span class="fu">wsample</span>(<span class="fl">1</span><span class="op">:</span>N, W[<span class="op">:</span>,tt], N; replace<span class="op">=</span><span class="cn">true</span>)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>            R[<span class="op">:</span>, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="op">=</span> R[inds, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt]</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>            I[<span class="op">:</span>, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt] <span class="op">=</span> I[inds, <span class="fu">max</span>(tt <span class="op">-</span> L, <span class="fl">1</span>)<span class="op">:</span>tt]</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Store output as three-dimensional array</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> <span class="fu">zeros</span>(N, T, <span class="fl">2</span>)</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    X[<span class="op">:</span>,<span class="op">:</span>,<span class="fl">1</span>] <span class="op">=</span> R</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    X[<span class="op">:</span>,<span class="op">:</span>,<span class="fl">2</span>] <span class="op">=</span> I</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Forecast</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(X, W)</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify generation time distribution parameters</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>gamma_mean <span class="op">=</span> <span class="fl">2.6</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>gamma_sd <span class="op">=</span> <span class="fl">1.3</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>gamma_shape <span class="op">=</span> gamma_mean<span class="op">^</span><span class="fl">2</span> <span class="op">/</span> gamma_sd<span class="op">^</span><span class="fl">2</span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>gamma_scale <span class="op">=</span> gamma_sd<span class="op">^</span><span class="fl">2</span> <span class="op">/</span> gamma_mean</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>opts <span class="op">=</span> <span class="fu">Dict</span>(</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Bootstrap filter options</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>    <span class="st">"T"</span> <span class="op">=&gt;</span> <span class="cn">missing</span>, <span class="co"># Number of time-steps</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>    <span class="st">"N"</span> <span class="op">=&gt;</span> <span class="fl">1000</span>, <span class="co"># Number of particles</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>    <span class="st">"L"</span> <span class="op">=&gt;</span> <span class="fl">50</span>, <span class="co"># Fixed-lag resampling length</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pR0"</span> <span class="op">=&gt;</span> <span class="fu">Uniform</span>(<span class="fl">0.5</span>, <span class="fl">3</span>), <span class="co"># Prior on Rt at t = 0</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pI0"</span> <span class="op">=&gt;</span> <span class="fu">DiscreteUniform</span>(<span class="fl">1</span>, <span class="fl">5</span>), <span class="co"># Prior on It at t = 0</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generation time distribution</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ω"</span> <span class="op">=&gt;</span> <span class="fu">pdf</span>.(<span class="fu">Gamma</span>(gamma_shape, gamma_scale), <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>) <span class="op">/</span> <span class="fu">sum</span>(<span class="fu">pdf</span>.(<span class="fu">Gamma</span>(gamma_shape, gamma_scale), <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>)), <span class="co"># Serial interval: Gamma with mean 2.6 and sd 1.3 days</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>    <span class="co"># PMMH options</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>    <span class="st">"nChains"</span> <span class="op">=&gt;</span> <span class="fl">3</span>,</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>    <span class="st">"chunkSize"</span> <span class="op">=&gt;</span> <span class="fl">100</span>,</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>    <span class="st">"maxChunks"</span> <span class="op">=&gt;</span> <span class="fl">50</span>,</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>    <span class="st">"maxRhat"</span> <span class="op">=&gt;</span> <span class="fl">1.05</span>,</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>    <span class="st">"minESS"</span> <span class="op">=&gt;</span> <span class="fl">100</span>,</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>    <span class="st">"showChunkProgress"</span> <span class="op">=&gt;</span> <span class="cn">false</span>,</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>    <span class="st">"propStdDevInit"</span> <span class="op">=&gt;</span> [<span class="fl">0.05</span>, <span class="fl">0.5</span>],</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>    <span class="st">"paramPriors"</span> <span class="op">=&gt;</span> [<span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">1</span>), <span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">10</span>)],</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>    <span class="st">"initialParamSamplers"</span> <span class="op">=&gt;</span> [<span class="fu">Uniform</span>(<span class="fl">0.1</span>, <span class="fl">0.3</span>), <span class="fu">Uniform</span>(<span class="fl">4</span>, <span class="fl">6</span>)],</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>    <span class="st">"paramNames"</span> <span class="op">=&gt;</span> [<span class="st">"σ"</span>, <span class="st">"k"</span>],</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Marginal posterior options</span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>    <span class="st">"posteriorNumberOfParticles"</span> <span class="op">=&gt;</span> <span class="fl">5000</span>,</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>    <span class="st">"posteriorParamSamples"</span> <span class="op">=&gt;</span> <span class="fl">100</span>,</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>    <span class="st">"stateNames"</span> <span class="op">=&gt;</span> [<span class="st">"Rt"</span>, <span class="st">"It"</span>]</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>Y1 <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"Ogi-Gittins-201920"</span>);</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"T"</span>] <span class="op">=</span> <span class="fu">size</span>(Y1)[<span class="fl">1</span>]</span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"pI0"</span>] <span class="op">=</span> <span class="fu">DiscreteUniform</span>(<span class="fl">5</span>, <span class="fl">10</span>)</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>(df_states1, df_params1, θ<span class="fl">1</span>, diag1) <span class="op">=</span> <span class="fu">fitModel</span>(temporallyAggregatedModel, Y1, opts; verbose<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>df_states1.<span class="dt">Date</span> <span class="op">=</span> [Y1.<span class="dt">Date</span>; Y1.<span class="dt">Date</span>]</span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the second set of data</span></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>Y2 <span class="op">=</span> <span class="fu">loadData</span>(<span class="st">"Ogi-Gittins-202223"</span>);</span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"T"</span>] <span class="op">=</span> <span class="fu">size</span>(Y2)[<span class="fl">1</span>]</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>opts[<span class="st">"pI0"</span>] <span class="op">=</span> <span class="fu">DiscreteUniform</span>(<span class="fl">20</span>, <span class="fl">40</span>)</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model to the second set of data</span></span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>(df_states2, df_params2, θ<span class="fl">2</span>, diag2) <span class="op">=</span> <span class="fu">fitModel</span>(temporallyAggregatedModel, Y2, opts; verbose<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>df_states2.<span class="dt">Date</span> <span class="op">=</span> [Y2.<span class="dt">Date</span>; Y2.<span class="dt">Date</span>]</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the data and the results</span></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>df_R_1 <span class="op">=</span> df_states1[df_states1.variable <span class="op">.==</span> <span class="st">"Rt"</span>, <span class="op">:</span>]</span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>df_I_1 <span class="op">=</span> df_states1[df_states1.variable <span class="op">.==</span> <span class="st">"It"</span>, <span class="op">:</span>]</span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>df_R_2 <span class="op">=</span> df_states2[df_states2.variable <span class="op">.==</span> <span class="st">"Rt"</span>, <span class="op">:</span>]</span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>df_I_2 <span class="op">=</span> df_states2[df_states2.variable <span class="op">.==</span> <span class="st">"It"</span>, <span class="op">:</span>]</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>plot_R_1 <span class="op">=</span> <span class="fu">plot</span>(df_R_1.<span class="dt">Date</span>, df_R_1.mean, ribbon<span class="op">=</span>(df_R_1.mean <span class="op">.-</span> df_R_1.lower, df_R_1.upper <span class="op">.-</span> df_R_1.mean), xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, legend<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>plot_I_1 <span class="op">=</span> <span class="fu">plot</span>(df_I_1.<span class="dt">Date</span>, df_I_1.mean, ribbon<span class="op">=</span>(df_I_1.mean <span class="op">.-</span> df_I_1.lower, df_I_1.upper <span class="op">.-</span> df_I_1.mean), xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Infection incidence"</span>, legend<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>plot_R_2 <span class="op">=</span> <span class="fu">plot</span>(df_R_2.<span class="dt">Date</span>, df_R_2.mean, ribbon<span class="op">=</span>(df_R_2.mean <span class="op">.-</span> df_R_2.lower, df_R_2.upper <span class="op">.-</span> df_R_2.mean), xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Reproduction number"</span>, legend<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>plot_I_2 <span class="op">=</span> <span class="fu">plot</span>(df_I_2.<span class="dt">Date</span>, df_I_2.mean, ribbon<span class="op">=</span>(df_I_2.mean <span class="op">.-</span> df_I_2.lower, df_I_2.upper <span class="op">.-</span> df_I_2.mean), xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Infection incidence"</span>, legend<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>plot_C_1 <span class="op">=</span> <span class="fu">bar</span>(Y1.<span class="dt">Date</span>, Y1.Ct, xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Weekly reported cases"</span>, legend<span class="op">=</span><span class="cn">false</span>, bar_width<span class="op">=</span><span class="fl">3</span>)</span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>plot_C_2 <span class="op">=</span> <span class="fu">bar</span>(Y2.<span class="dt">Date</span>, Y2.Ct, xlabel<span class="op">=</span><span class="st">"Date"</span>, ylabel<span class="op">=</span><span class="st">"Weekly reported cases"</span>, legend<span class="op">=</span><span class="cn">false</span>, bar_width<span class="op">=</span><span class="fl">3</span>)</span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>plot_all_1 <span class="op">=</span> <span class="fu">plot</span>(plot_R_1, plot_I_1, plot_C_1, layout<span class="op">=</span>(<span class="fl">3</span>, <span class="fl">1</span>), size<span class="op">=</span>(<span class="fl">800</span>, <span class="fl">800</span>))</span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>plot_all_2 <span class="op">=</span> <span class="fu">plot</span>(plot_R_2, plot_I_2, plot_C_2, layout<span class="op">=</span>(<span class="fl">3</span>, <span class="fl">1</span>), size<span class="op">=</span>(<span class="fl">800</span>, <span class="fl">800</span>))</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">plot</span>(plot_all_1, plot_all_2, layout<span class="op">=</span>(<span class="fl">1</span>, <span class="fl">2</span>), size<span class="op">=</span>(<span class="fl">1600</span>, <span class="fl">800</span>), titlefontsize<span class="op">=</span><span class="fl">16</span>, margins<span class="op">=</span><span class="fl">6</span>mm)</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">plot!</span>(p[<span class="fl">1</span>], title<span class="op">=</span><span class="st">"Influenza in Wales, 2019-20"</span>)</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">plot!</span>(p[<span class="fl">4</span>], title<span class="op">=</span><span class="st">"Influenza in Wales, 2022-23"</span>)</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="models_tempagg_files/figure-html/cell-2-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 </section>
 <section id="concluding-remarks" class="level2" data-number="10.2">
 <h2 data-number="10.2" class="anchored" data-anchor-id="concluding-remarks"><span class="header-section-number">10.2</span> Concluding remarks</h2>
-<section id="benefits-to-modelling-temporally-aggregated-data" class="level3" data-number="10.2.1">
-<h3 data-number="10.2.1" class="anchored" data-anchor-id="benefits-to-modelling-temporally-aggregated-data"><span class="header-section-number">10.2.1</span> Benefits to modelling temporally aggregated data</h3>
-<p>If reporting biases are significant</p>
+<p>The approach highlighted above can be viewed as a generalisation of the two Ogi-Gittins methods for modelling temporally aggregated data. If <span class="math inline">\(R_t\)</span> is assumed to be weekly-constant and independent, and there is assumed to be no observation noise (i.e.&nbsp;the observation distribution for total infection incidence is dirac at the number of observed cases), then the model of <span class="citation" data-cites="ogi-gittinsSimulationbasedApproachEstimating2024">(<a href="references.html#ref-ogi-gittinsSimulationbasedApproachEstimating2024" role="doc-biblioref">I. Ogi-Gittins et al. 2024</a>)</span> is recovered. Alternatively, if binomial underreporting is assumed, then the model of <span class="citation" data-cites="ogi-gittinsSimulationbasedInferenceTimedependent2025">(<a href="references.html#ref-ogi-gittinsSimulationbasedInferenceTimedependent2025" role="doc-biblioref">Isaac Ogi-Gittins et al. 2025</a>)</span> is recovered.</p>
+<p>We also highlight the flexibility of this method: the observation model can be modified in a variety of ways. The weekly reporting window is arbitrary, and even irregular reporting windows can be implemented. Furthermore, the daily time steps are also arbitrary, and a finer discretisation could be used (for infectious diseases with very short serial intervals) or a coarser discretiation could be used (for infectious diseases with long serial intervals, to save computation time).</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
@@ -439,8 +647,10 @@ Nash, Rebecca K., Samir Bhatt, Anne Cori, and Pierre Nouvellet. 2023. <span>“E
 <div id="ref-ogi-gittinsSimulationbasedApproachEstimating2024" class="csl-entry" role="listitem">
 Ogi-Gittins, I., W. S. Hart, J. Song, R. K. Nash, J. Polonsky, A. Cori, E. M. Hill, and R. N. Thompson. 2024. <span>“A Simulation-Based Approach for Estimating the Time-Dependent Reproduction Number from Temporally Aggregated Disease Incidence Time Series Data.”</span> <em>Epidemics</em> 47: 100773. <a href="https://doi.org/10.1016/j.epidem.2024.100773">https://doi.org/10.1016/j.epidem.2024.100773</a>.
 </div>
+<div id="ref-ogi-gittinsSimulationbasedInferenceTimedependent2025" class="csl-entry" role="listitem">
+Ogi-Gittins, Isaac, Nicholas Steyn, Jonathan Polonsky, William S. Hart, Mory Keita, Steve Ahuka-Mundeke, Edward M. Hill, and Robin N. Thompson. 2025. <span>“Simulation-Based Inference of the Time-Dependent Reproduction Number from Temporally Aggregated and Under-Reported Disease Incidence Time Series Data.”</span> <em>Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engineering Sciences</em> 383 (2293): 20240412. <a href="https://doi.org/10.1098/rsta.2024.0412">https://doi.org/10.1098/rsta.2024.0412</a>.
 </div>
-</section>
+</div>
 </section>
 
 </main> <!-- /main -->
